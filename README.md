@@ -14,5 +14,16 @@
 * Поиск товаров по названию
 * Поиск товаров по категории
 ### Use-case диаграмма
-![Use-case.png](Use-case.png)
+![Use-case.png](images/use-case.png)
 ### ER-диаграмма
+![ER.png](images/er.png)
+### Технологический стек
+#### Frontend
+* Javascript / Typescript
+* React
+* Redux
+#### Backend
+* Django
+* PostgreSQL
+### Схема базы данных
+![Database schema.png](images/database_schema.png)

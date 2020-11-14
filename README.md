@@ -14,9 +14,9 @@
 * Поиск товаров по названию
 * Поиск товаров по категории
 ### Use-case диаграмма
-![Use-case.png](images/use-case.png)
+![Use-case.png](/images/Use-case.png)
 ### ER-диаграмма
-![ER.png](images/er.png)
+![ER.png](/images/ER.png)
 ### Технологический стек
 #### Frontend
 * Javascript / Typescript
@@ -26,4 +26,4 @@
 * Django
 * PostgreSQL
 ### Схема базы данных
-![Database schema.png](images/database_schema.png)
+![Database schema.png](/images/Database_schema.png)

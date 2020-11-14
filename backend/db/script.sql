@@ -60,8 +60,8 @@ CREATE TABLE category
 
 CREATE TABLE categories
 (
-    product_id integer REFERENCES product,
-    category_id integer REFERENCES category
+    product_id integer NOT NULL REFERENCES product,
+    category_id integer NOT NULL REFERENCES category
 );
 
 CREATE TABLE "order"

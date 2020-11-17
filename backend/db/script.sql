@@ -92,7 +92,8 @@ CREATE TABLE review
 CREATE TABLE orders
 (
     order_id integer NOT NULL REFERENCES "order",
-    product_id integer NOT NULL REFERENCES product
+    product_id integer NOT NULL REFERENCES product,
+    count integer NOT NULL
 );
 
 DROP TABLE role CASCADE;

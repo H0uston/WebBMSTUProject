@@ -14,8 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.urls import re_path
+from rest_framework import routers
+from Shopich import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    re_path(r'^api/product/$', views.ProductAPIView.as_view()),
+    re_path(r'^api/product/(?P<product_id>\d+)/$', views.ProductAPIView.as_view()),
+    re_path(r'^api/category/$', views.CategoryAPIView.as_view()),
+    re_path(r'^api/category/(?P<category_id>\d+)/$', views.CategoryAPIView.as_view()),
+    re_path(r'^api/review/$', views.ReviewAPIView.as_view())
 ]

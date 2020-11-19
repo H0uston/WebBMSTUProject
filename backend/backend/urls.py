@@ -15,7 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import re_path
+from Shopich import views
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', views.index),
+    path('order_list/', views.OrderView.as_view()),
+    path('order_list/<int:pk>', views.SingleOrderView.as_view()),
+    path('user/', views.UserView.as_view()),
+    path('user/<int:pk>', views.SingleUserView.as_view()),
+    path('admin/', admin.site.urls)
 ]

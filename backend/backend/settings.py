@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Shopich.apps.ShopichConfig',
-    'rest_framework'
+    'rest_framework_swagger',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

@@ -79,6 +79,7 @@ class Categories(models.Model):
     category = models.ForeignKey('Category', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
+        verbose_name_plural = "categories"
         managed = False
         db_table = 'categories'
 
@@ -91,6 +92,7 @@ class Category(models.Model):
     class Meta:
         managed = False
         db_table = 'category'
+        verbose_name_plural = "category"
 
 
 class DjangoAdminLog(models.Model):
@@ -146,6 +148,7 @@ class Order(models.Model):
     class Meta:
         managed = False
         db_table = 'order'
+        verbose_name_plural = 'order'
 
 
 class Orders(models.Model):
@@ -156,6 +159,7 @@ class Orders(models.Model):
     class Meta:
         managed = False
         db_table = 'orders'
+        verbose_name_plural = 'orders'
 
 
 class Product(models.Model):
@@ -168,6 +172,7 @@ class Product(models.Model):
     class Meta:
         managed = False
         db_table = 'product'
+        verbose_name_plural = 'product'
 
 
 class Review(models.Model):
@@ -181,6 +186,7 @@ class Review(models.Model):
     class Meta:
         managed = False
         db_table = 'review'
+        verbose_name_plural = 'review'
 
 
 class Role(models.Model):
@@ -191,6 +197,7 @@ class Role(models.Model):
     class Meta:
         managed = False
         db_table = 'role'
+        verbose_name_plural = 'role'
 
 
 class User(models.Model):
@@ -211,3 +218,4 @@ class User(models.Model):
     class Meta:
         managed = False
         db_table = 'user'
+        verbose_name_plural = 'user'

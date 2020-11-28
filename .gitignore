@@ -105,7 +105,7 @@ celerybeat.pid
 .env
 .venv
 env/
-venv/
+backend/venv/
 ENV/
 env.bak/
 venv.bak/
@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# MacOS
+.idea/
+.DS_Store
+
+# Secret data
+config.py

@@ -6,7 +6,7 @@ from django.conf import settings
 
 from .serializers import UserSerializer
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, authentication
 
 
 class RegisterView(GenericAPIView):
@@ -23,14 +23,18 @@ class RegisterView(GenericAPIView):
 
 
 class LoginView(GenericAPIView):
+
     def post(self, request):
         data = request.data
         username = data.get('username', '')
         password = data.get('password', '')
+        # print("auth_data = " + str(authentication.get_authorization_header(request)))
         user = auth.authenticate(username=username, password=password)
-        print("==========")
-        print(user)
-        print("==========")
+        '''
+        print("auth_data = " + str(authentication.get_authorization_header(request)))
+        print("user = " + str(auth.authenticate(username=username, password=password)))
+        print("user.username = " + user.username)
+        '''
         if user:
             auth_token = jwt.encode({'username': user.username}, settings.JWT_SECRET_KEY)
 

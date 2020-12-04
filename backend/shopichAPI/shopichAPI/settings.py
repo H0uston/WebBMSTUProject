@@ -25,7 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'yp4ufhz$1hc3$(6gmllajkd0z%pjdx6!uyxty6pq^p)cd05n-6'
 
 # JWT
-JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+#JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+JWT_SECRET_KEY = "fdsfaf"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -58,7 +59,7 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSED': (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'authentication.backends.JWTAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',

@@ -3,9 +3,8 @@ from django.contrib.auth.models import User
 
 
 class Review(models.Model):
-    owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    country_code = models.CharField(max_length=30) # TODO
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    phone_number = models.CharField(max_length=30)
+    user_id = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    product_id = models.IntegerField()  # TODO morph into foreignkey one(product) to many(reviews) btw
+    review_text = models.CharField(max_length=500)
+    review_rating = models.IntegerField()  # TODO don't forget about min/max value
 

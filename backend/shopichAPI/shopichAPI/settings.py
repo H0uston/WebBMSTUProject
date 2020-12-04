@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'authentication',
     'review',
+    'user',
+    'product',
 ]
 
 MIDDLEWARE = [
@@ -61,10 +63,13 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'authentication.backends.JWTAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    )
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
+
+AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']
 
 ROOT_URLCONF = 'shopichAPI.urls'
 

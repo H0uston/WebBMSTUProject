@@ -1,20 +1,29 @@
 import jwt
 from django.contrib import auth
-from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
 from django.conf import settings
 
-from .serializers import UserSerializer
+from user.serializers import UserSerializer
 from rest_framework.response import Response
-from rest_framework import status, authentication
+from rest_framework import status
+
+from user.models import get_default_action_status
+
+
+def form_user_model(data):  # TODO to logic
+    for key in list(data):  # for all keys
+        data["user_" + str(key)] = data.pop(key)  # change key
+    data["role_id"] = get_default_action_status()  # adding default role
+    return data
 
 
 class RegisterView(GenericAPIView):
     serializer_class = UserSerializer
 
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
-
+        data = request.data
+        formatted_data = form_user_model(data)
+        serializer = UserSerializer(data=formatted_data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -26,17 +35,11 @@ class LoginView(GenericAPIView):
 
     def post(self, request):
         data = request.data
-        username = data.get('username', '')
+        email = data.get('email', '')
         password = data.get('password', '')
-        # print("auth_data = " + str(authentication.get_authorization_header(request)))
-        user = auth.authenticate(username=username, password=password)
-        '''
-        print("auth_data = " + str(authentication.get_authorization_header(request)))
-        print("user = " + str(auth.authenticate(username=username, password=password)))
-        print("user.username = " + user.username)
-        '''
+        user = auth.authenticate(email=email, password=password)
         if user:
-            auth_token = jwt.encode({'username': user.username}, settings.JWT_SECRET_KEY)
+            auth_token = jwt.encode({'email': user.user_email}, settings.JWT_SECRET_KEY)
 
             serializer = UserSerializer(user)
 
@@ -48,3 +51,4 @@ class LoginView(GenericAPIView):
             return Response(data, status=status.HTTP_200_OK)
 
         return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+

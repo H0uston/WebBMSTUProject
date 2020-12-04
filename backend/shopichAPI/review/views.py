@@ -1,25 +1,38 @@
+from django.core.serializers import serialize
+from django.http import JsonResponse
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveDestroyAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.response import Response
+
 from .models import Review
 from .serializers import ReviewSerializer
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
+from user.models import User
+from product.models import Product
+from datetime import datetime
 
 
 class ReviewList(ListCreateAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save(user_id=self.request.user)
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        data['user_id'] = request.user.user_id
+        data['review_date'] = datetime.now().date()
+        serializer = ReviewSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def get_queryset(self):  # TODO make get (AllowAny)
-        return Review.objects.filter(user_id=self.request.user)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class ReviewDetailView(RetrieveUpdateDestroyAPIView):  # TODO delete method, actually, we already have it
+class ReviewDetailView(ListCreateAPIView):  # TODO delete method, actually, we already have it
     serializer_class = ReviewSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-    lookup_field = "id"
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Review.objects.filter(user_id=self.request.user)
+        product_id = self.kwargs['product_id']
+        return Review.objects.filter(product_id=product_id)

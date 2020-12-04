@@ -1,9 +1,9 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ListSerializer, ModelSerializer
 from .models import Review
 
 
 class ReviewSerializer(ModelSerializer):
-
     class Meta:
         model = Review
-        fields = ['user_id', 'product_id', 'review_text', 'review_rating']
+        fields = ['review_id', 'user_id', 'product_id', 'review_text', 'review_rating', 'review_date']
+

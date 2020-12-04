@@ -1,10 +1,16 @@
 from django.db import models
-from django.contrib.auth.models import User
+from user.models import User
+from product.models import Product
 
 
 class Review(models.Model):
-    user_id = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    product_id = models.IntegerField()  # TODO morph into foreignkey one(product) to many(reviews) btw
-    review_text = models.CharField(max_length=500)
-    review_rating = models.IntegerField()  # TODO don't forget about min/max value
+    review_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(to=User, on_delete=models.DO_NOTHING, db_column='user_id')
+    product_id = models.ForeignKey(to=Product, on_delete=models.DO_NOTHING, db_column='product_id')
+    review_text = models.TextField(blank=True, null=True)
+    review_date = models.DateField()
+    review_rating = models.IntegerField()
+
+    class Meta:
+        db_table = 'review'
 

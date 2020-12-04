@@ -31,7 +31,7 @@ CREATE TABLE "user"
     user_flat text,
     user_index integer,
     user_birthday date,
-    user_role integer NOT NULL REFERENCES role,
+    role_id integer NOT NULL REFERENCES role,
     CHECK(user_id > 0),
     CHECK(user_index > 0),
 

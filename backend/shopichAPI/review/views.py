@@ -15,7 +15,7 @@ from datetime import datetime
 
 class ReviewList(ListCreateAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -31,7 +31,7 @@ class ReviewList(ListCreateAPIView):
 
 class ReviewDetailView(ListCreateAPIView):  # TODO delete method, actually, we already have it
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         product_id = self.kwargs['product_id']

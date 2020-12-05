@@ -21,9 +21,11 @@ class RegisterView(GenericAPIView):
     serializer_class = UserSerializer
 
     def post(self, request):
+
         data = request.data
         formatted_data = form_user_model(data)
         serializer = UserSerializer(data=formatted_data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

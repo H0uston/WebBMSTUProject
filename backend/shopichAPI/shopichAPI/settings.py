@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'yp4ufhz$1hc3$(6gmllajkd0z%pjdx6!uyxty6pq^p)cd05n-6'
 
 # JWT
-#JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+# JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 JWT_SECRET_KEY = "fdsfaf"
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'review',
     'user',
     'product',
+    'category',
 ]
 
 MIDDLEWARE = [
@@ -63,10 +64,7 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'authentication.backends.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ]
+    )
 }
 
 AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']

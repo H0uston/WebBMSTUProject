@@ -86,6 +86,7 @@ INSERT INTO category VALUES (2, 'Fruits', 'Fruits');
 INSERT INTO category VALUES (3, 'Meat', 'Meat');
 INSERT INTO category VALUES (4, 'Fish', 'Fish');
 INSERT INTO category VALUES (5, 'Dairy', 'Dairy');
+INSERT INTO category VALUES (6, 'Apples', 'Apples');
 
 CREATE TABLE categories
 (
@@ -130,7 +131,7 @@ CREATE TABLE review
     product_id integer NOT NULL REFERENCES product,
     review_text text,
     review_date date NOT NULL,
-    review_rating integer NOT NULL, /* from 0 to 10 */
+    review_rating integer NOT NULL, /* from 0 to 5 */
 
     PRIMARY KEY (review_id)
 );

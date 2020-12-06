@@ -1,21 +1,16 @@
-from django.core.serializers import serialize
-from django.http import JsonResponse
-from django.shortcuts import render
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveDestroyAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 
 from .models import Review
 from .serializers import ReviewSerializer
 from rest_framework.permissions import IsAuthenticated
-from user.models import User
-from product.models import Product
 from datetime import datetime
 
 
 class ReviewList(ListCreateAPIView):
     serializer_class = ReviewSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -31,7 +26,6 @@ class ReviewList(ListCreateAPIView):
 
 class ReviewDetailView(ListCreateAPIView):  # TODO delete method, actually, we already have it
     serializer_class = ReviewSerializer
-    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         product_id = self.kwargs['product_id']

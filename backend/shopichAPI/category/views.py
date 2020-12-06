@@ -15,7 +15,6 @@ from datetime import datetime
 
 class CategoryList(ListCreateAPIView):
     serializer_class = CategorySerializer
-    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Category.objects.filter()
@@ -23,7 +22,6 @@ class CategoryList(ListCreateAPIView):
 
 class CategoryDetailView(ListCreateAPIView):  # TODO delete method, actually, we already have it
     serializer_class = CategorySerializer
-    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         category_id = self.kwargs['category_id']

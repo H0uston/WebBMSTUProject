@@ -1,16 +1,7 @@
-from django.core.serializers import serialize
-from django.http import JsonResponse
-from django.shortcuts import render
-from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveDestroyAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.response import Response
+from rest_framework.generics import ListCreateAPIView
 
 from .models import Category
 from .serializers import CategorySerializer
-from rest_framework.permissions import IsAuthenticated
-from user.models import User
-from product.models import Product
-from datetime import datetime
 
 
 class CategoryList(ListCreateAPIView):

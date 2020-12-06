@@ -1,3 +1,4 @@
+from django.contrib.auth import hashers
 from django.db import models
 
 
@@ -17,7 +18,7 @@ class Role(models.Model):
 
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
-    user_email = models.TextField()
+    user_email = models.EmailField()
     user_password = models.TextField()
     user_phone = models.TextField(blank=True, null=True)
     user_name = models.TextField(blank=True, null=True)
@@ -34,7 +35,7 @@ class User(models.Model):
         db_table = 'user'
 
     def check_password(self, password):  # TODO to logic?
-        return self.user_password == password
+        return hashers.check_password(password, self.user_password)
 
     def is_authenticated(self):
         return True

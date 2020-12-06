@@ -15,6 +15,7 @@ class UserSerializer(ModelSerializer):
         model = User
         fields = ['user_id', 'role_id', 'user_email', 'user_password', 'user_phone', 'user_name', 'user_surname', 'user_city',
                   'user_street', 'user_house', 'user_flat', 'user_index', 'user_birthday']
+        extra_kwargs = {'user_password': {'write_only': True}, 'role_id': {'write_only': True}}
 
     def validate(self, attrs):
         email = attrs.get('user_email')

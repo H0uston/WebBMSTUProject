@@ -25,8 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'yp4ufhz$1hc3$(6gmllajkd0z%pjdx6!uyxty6pq^p)cd05n-6'
 
 # JWT
-# JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
-JWT_SECRET_KEY = "fdsfaf"
+JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+# JWT_SECRET_KEY = "fdsfaf"
+SECRET_PASSWORD_SALT = os.environ.get("SECRET_PASSWORD_SALT")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -119,6 +120,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

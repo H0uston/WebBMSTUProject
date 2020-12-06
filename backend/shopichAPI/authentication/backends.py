@@ -1,6 +1,7 @@
 import jwt
 from user.models import User
 from rest_framework import authentication, exceptions
+from  django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.backends import ModelBackend
 from django.conf import settings
 
@@ -23,6 +24,8 @@ class JWTAuthentication(authentication.BaseAuthentication):
             raise exceptions.AuthenticationFailed('Your token is invalid, login')
         except jwt.ExpiredSignatureError as identifier:
             raise exceptions.AuthenticationFailed('Your token is expired, login')
+        except ObjectDoesNotExist:
+            raise exceptions.AuthenticationFailed('Your token is expired, login')
 
         return super().authenticate(request)
 
@@ -32,6 +35,7 @@ class EmailBackend(ModelBackend):
         try:
             user = User.objects.get(user_email=email)
         except:  # TODO
+            print("ERROR: EmailBackend")
             return None
 
         if user.check_password(password) and self.user_can_authenticate(user):

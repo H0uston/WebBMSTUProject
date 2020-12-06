@@ -7,13 +7,13 @@ from user.serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
-from user.models import get_default_action_status
+from user.models import get_default_role_id
 
 
 def form_user_model(data):  # TODO to logic
     for key in list(data):  # for all keys
         data["user_" + str(key)] = data.pop(key)  # change key
-    data["role_id"] = get_default_action_status()  # adding default role
+    data["role_id"] = get_default_role_id()  # adding default role
     return data
 
 

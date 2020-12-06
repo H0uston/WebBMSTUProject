@@ -1,6 +1,7 @@
+from django.forms import model_to_dict
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-from .models import Role, User, get_default_action_status, get_users
+from .models import Role, User
 
 
 class RoleSerializer(ModelSerializer):

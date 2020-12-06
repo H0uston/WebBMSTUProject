@@ -1,15 +1,9 @@
 from django.db import models
 
 
-def get_default_action_status():
+def get_default_role_id():
     role = Role.objects.get(role_name="user")
-    print("Role: ", role.role_id)
     return role.role_id
-
-
-def get_users():
-    users = User.objects.all()
-    print("Users: ", users)
 
 
 class Role(models.Model):

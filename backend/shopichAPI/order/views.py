@@ -30,7 +30,7 @@ class OrderListView(ListCreateAPIView):
         data = request.data
         data['user'] = request.user.user_id
         data['order_date'] = datetime.now().date()
-        data['is_approved'] = False
+        data['is_approved'] = True
         serializer = OrderSerializer(data=data)
         if serializer.is_valid():
             serializer.save()

@@ -27,3 +27,6 @@
 * PostgreSQL
 ### Схема базы данных
 ![Database schema.png](/images/Database_schema.png)
+
+### MoodBoard
+https://www.behance.net/collection/180954729/WEB-project

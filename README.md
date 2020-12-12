@@ -30,3 +30,6 @@
 
 ### MoodBoard
 https://www.behance.net/collection/180954729/WEB-project
+
+### Макет пользовательского интерфейса в Figma
+https://www.figma.com/proto/S9dUjadAPo6xLq7oz1p00j/Task-3?node-id=1%3A2&viewport=258%2C353%2C0.2662522792816162&scaling=scale-down-width

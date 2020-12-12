@@ -1,8 +1,10 @@
 from django.db import models
 
+# from category.models import Category
+
 
 class Product(models.Model):
-    product_id = models.IntegerField(primary_key=True)
+    product_id = models.AutoField(primary_key=True)
     product_name = models.TextField()
     product_price = models.FloatField()
     product_availability = models.BooleanField()

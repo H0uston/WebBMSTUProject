@@ -158,18 +158,20 @@ INSERT INTO review VALUES (3, 4, 2, 'Ауф памидорычи.', '2020-11-14'
 /* Отправка заказа */
 CREATE TABLE orders
 (
+    orders_id integer NOT NULL,
     order_id integer NOT NULL REFERENCES "order",
     product_id integer NOT NULL REFERENCES product,
-    count integer NOT NULL
+    count integer NOT NULL,
+    PRIMARY KEY (orders_id)
 );
 
-INSERT INTO orders VALUES (2, 2, 24);
-INSERT INTO orders VALUES (2, 4, 1);
-INSERT INTO orders VALUES (2, 5, 63);
-INSERT INTO orders VALUES (6, 6, 4);
-INSERT INTO orders VALUES (6, 8, 7);
-INSERT INTO orders VALUES (6, 9, 16);
-INSERT INTO orders VALUES (6, 11, 65);
+INSERT INTO orders VALUES (1, 2, 2, 24);
+INSERT INTO orders VALUES (2, 2, 4, 1);
+INSERT INTO orders VALUES (3, 2, 5, 63);
+INSERT INTO orders VALUES (4, 6, 6, 4);
+INSERT INTO orders VALUES (5, 6, 8, 7);
+INSERT INTO orders VALUES (6, 6, 9, 16);
+INSERT INTO orders VALUES (7, 6, 11, 65);
 
 DROP TABLE role CASCADE;
 DROP TABLE "user" CASCADE;

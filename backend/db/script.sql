@@ -90,21 +90,34 @@ INSERT INTO category VALUES (6, 'Apples', 'Apples');
 
 CREATE TABLE categories
 (
+    categories_id integer NOT NULL,
     product_id integer NOT NULL REFERENCES product,
-    category_id integer NOT NULL REFERENCES category
+    category_id integer NOT NULL REFERENCES category,
+    PRIMARY KEY (categories_id)
 );
 
-INSERT INTO categories VALUES (1, 1);
-INSERT INTO categories VALUES (2, 1);
-INSERT INTO categories VALUES (3, 1);
-INSERT INTO categories VALUES (4, 3);
-INSERT INTO categories VALUES (5, 3);
-INSERT INTO categories VALUES (6, 5);
-INSERT INTO categories VALUES (7, 1);
-INSERT INTO categories VALUES (8, 5);
-INSERT INTO categories VALUES (9, 4);
-INSERT INTO categories VALUES (10, 2);
-INSERT INTO categories VALUES (11, 2);
+INSERT INTO categories VALUES (1, 1, 1);
+INSERT INTO categories VALUES (2, 2, 1);
+INSERT INTO categories VALUES (3, 3, 1);
+INSERT INTO categories VALUES (4, 4, 3);
+INSERT INTO categories VALUES (5, 5, 3);
+INSERT INTO categories VALUES (6, 6, 5);
+INSERT INTO categories VALUES (7, 7, 1);
+INSERT INTO categories VALUES (8, 8, 5);
+INSERT INTO categories VALUES (9, 9, 4);
+INSERT INTO categories VALUES (10, 10, 2);
+INSERT INTO categories VALUES (11, 11, 2);
+INSERT INTO categories VALUES (12, 1, 1);
+INSERT INTO categories VALUES (13, 1, 2);
+INSERT INTO categories VALUES (14, 1, 3);
+INSERT INTO categories VALUES (15, 2, 4);
+INSERT INTO categories VALUES (16, 6, 5);
+INSERT INTO categories VALUES (17, 3, 6);
+INSERT INTO categories VALUES (18, 4, 1);
+INSERT INTO categories VALUES (19, 7, 2);
+INSERT INTO categories VALUES (20, 9, 3);
+INSERT INTO categories VALUES (21, 4, 4);
+INSERT INTO categories VALUES (22, 9, 5);
 
 CREATE TABLE "order"
 (

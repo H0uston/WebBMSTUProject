@@ -1,46 +1,58 @@
 from datetime import datetime
 
+from django.forms import model_to_dict
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from order.models import Order
 from order.serializers import OrderSerializer
 from user.models import User
 
 
-class OrderListView(ListCreateAPIView):
+class OrderListView(ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        current = int(self.request.GET.get('current', 1))
-        size = int(self.request.GET.get('size', 5))
+    def get_orders(self, request):
+        current = int(request.GET.get('current', 1))
+        size = int(request.GET.get('size', 5))
 
-        user_id = self.request.user.user_id
+        elements = Order.objects.filter(user_id=request.user.user_id, is_approved=True)
 
-        elements = Order.objects.filter(user=user_id)
         filtered_elements = elements[(current - 1) * size:current * size]
 
-        return filtered_elements
+        return Response(data=list(filtered_elements.values()), status=status.HTTP_200_OK)
+
+    def get_order(self, request, order_id):
+        if not Order.objects.filter(order_id=order_id, user_id=request.user.user_id).exists():
+            return Response({"messages": "Order does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+        order = model_to_dict(Order.objects.get(order_id=order_id, user_id=request.user.user_id))
+
+        return Response(data=order, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        data = request.data
-        data['user'] = request.user.user_id
-        data['order_date'] = datetime.now().date()
-        data['is_approved'] = True
-        serializer = OrderSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        order = Order.objects.filter(user_id=self.request.user.user_id, is_approved=False)
 
-        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+        if len(order) > 1:
+            print("ERROR CART HAVE MORE THAN ONE ORDER")  # TODO
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def delete(self, request, pk, format=None):
-        if Order.objects.filter(order_id=pk).exists():
-            Order.objects.get(order_id=pk).delete()
+        if order.exists():
+            [order] = order
+            order.is_approved = True
+            order.save()
+
+            return Response(model_to_dict(order), status=status.HTTP_201_CREATED)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, order_id):  # TODO
+        if Order.objects.filter(order_id=order_id, user_id=self.request.user.user_id).exists():
+            Order.objects.get(order_id=order_id).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({"message": "object does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 

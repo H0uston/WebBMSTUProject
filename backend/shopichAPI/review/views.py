@@ -1,3 +1,4 @@
+from django.forms import model_to_dict
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
@@ -25,6 +26,8 @@ class ReviewList(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        if Review.objects.filter(user_id=self.request.user.user_id).exists():
+            return Response({"message": "Review is already exist"}, status=status.HTTP_400_BAD_REQUEST)
         data = request.data
         data['user_id'] = request.user.user_id
         data['review_date'] = datetime.now().date()
@@ -35,9 +38,18 @@ class ReviewList(ListCreateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
-    def delete(self, request, pk, format=None):
-        if Review.objects.filter(review_id=pk).exists():
-            Review.objects.get(review_id=pk).delete()
+    def put(self, request):
+        if Review.objects.filter(user_id=self.request.user.user_id).exists():
+            review = model_to_dict(Review.objects.get(user_id=self.request.user.user_id))
+            review.review_date = datetime.now().date()
+            review.review_text = request.data["review_text"]
+            review.review_rating = request.data["review_rating"]
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "object does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, review_id, format=None):
+        if Review.objects.filter(review_id=review_id).exists():
+            Review.objects.get(review_id=review_id).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({"message": "object does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -46,7 +58,7 @@ class ReviewDetailView(ListCreateAPIView):
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
-        product_id = self.kwargs['pk']
+        product_id = self.kwargs['review_id']
         return Review.objects.filter(product_id=product_id)
 
 
@@ -55,4 +67,5 @@ class ReviewManageView(BaseManageView):
         'DELETE': ReviewList.as_view,
         'GET': ReviewDetailView.as_view,
         'POST': ReviewList.as_view,
+        'PUT': ReviewList.as_view
     }

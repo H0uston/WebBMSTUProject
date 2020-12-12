@@ -29,7 +29,7 @@ class User(models.Model):
     user_flat = models.TextField(blank=True, null=True)
     user_index = models.IntegerField(blank=True, null=True)
     user_birthday = models.DateField(blank=True, null=True)
-    role_id = models.ForeignKey(to=Role, on_delete=models.DO_NOTHING, db_column='role_id')
+    role_id = models.ForeignKey(to=Role, on_delete=models.CASCADE, db_column='role_id')
 
     class Meta:
         db_table = 'user'

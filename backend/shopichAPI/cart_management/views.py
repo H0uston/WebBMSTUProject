@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from category.serializers import CategoriesSerializer
+from cart_management.serializers import CartSerializer
 from order.models import Order, Orders
 from order.serializers import OrderSerializer, OrdersSerializer
 from product.models import Product
@@ -14,6 +14,7 @@ from product.models import Product
 
 class CartManagementView(ModelViewSet):
     permission_classes = [IsAuthenticated]
+    serializer_class = CartSerializer
 
     def get_cart(self, request):
         current = int(self.request.GET.get('current', 1))

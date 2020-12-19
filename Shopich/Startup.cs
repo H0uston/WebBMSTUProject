@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Shopich
 {
@@ -34,6 +36,28 @@ namespace Shopich
 
             services.AddControllersWithViews(); // TODO
             scopeInterfaceRepository(services);
+
+            // JWT
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;  // TODO to true
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        // указывает, будет ли валидироваться издатель при валидации токена
+                        ValidateIssuer = true,
+                        // строка, представляющая издателя
+                        ValidIssuer = Config.AuthOptions.ISSUER,
+
+                        ValidateAudience = true,
+                        ValidAudience = Config.AuthOptions.AUDIENCE,
+                        ValidateLifetime = true,
+
+                        IssuerSigningKey = Config.AuthOptions.GetSymmetricSecurityKey(),
+                        ValidateIssuerSigningKey = true,
+                    };
+                });
+
         }
 
         public void scopeInterfaceRepository(IServiceCollection services)
@@ -71,13 +95,14 @@ namespace Shopich
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "/admin/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

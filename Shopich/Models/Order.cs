@@ -7,12 +7,17 @@ namespace Shopich.Models
 {
     public partial class Order
     {
-        public int OrdersId { get; set; }
-        public int OrderId { get; set; }
-        public int ProductId { get; set; }
-        public int Count { get; set; }
+        public Order()
+        {
+            OrderCollection = new HashSet<Orders>();
+        }
 
-        public virtual Orders OrderNavigation { get; set; }
-        public virtual Product Product { get; set; }
+        public int OrderId { get; set; }
+        public int UserId { get; set; }
+        public DateTime? OrderDate { get; set; }
+        public bool IsApproved { get; set; }
+
+        public virtual User User { get; set; }
+        public virtual ICollection<Orders> OrderCollection { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Shopich.Models
     {
         public User()
         {
-            OrderCollection = new HashSet<Orders>();
+            OrderCollection = new HashSet<Order>();
             Reviews = new HashSet<Review>();
         }
 
@@ -28,7 +28,7 @@ namespace Shopich.Models
         public int RoleId { get; set; }
 
         public virtual Role Role { get; set; }
-        public virtual ICollection<Orders> OrderCollection { get; set; }
+        public virtual ICollection<Order> OrderCollection { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace Shopich.Controllers
         // GET: Order
         public async Task<IActionResult> Index()
         {
-            var shopichContext = _context.Orders.Include(o => o.OrderNavigation).Include(o => o.Product);
+            var shopichContext = _context.OrderCollection.Include(o => o.User);
             return View(await shopichContext.ToListAsync());
         }
 
@@ -33,10 +33,9 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(o => o.OrderNavigation)
-                .Include(o => o.Product)
-                .FirstOrDefaultAsync(m => m.OrdersId == id);
+            var order = await _context.OrderCollection
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
             {
                 return NotFound();
@@ -48,8 +47,7 @@ namespace Shopich.Controllers
         // GET: Order/Create
         public IActionResult Create()
         {
-            ViewData["OrderId"] = new SelectList(_context.OrderCollection, "OrderId", "OrderId");
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName");
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail");
             return View();
         }
 
@@ -58,7 +56,7 @@ namespace Shopich.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrdersId,OrderId,ProductId,Count")] Order order)
+        public async Task<IActionResult> Create([Bind("OrderId,UserId,OrderDate,IsApproved")] Order order)
         {
             if (ModelState.IsValid)
             {
@@ -66,8 +64,7 @@ namespace Shopich.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.OrderCollection, "OrderId", "OrderId", order.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", order.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
             return View(order);
         }
 
@@ -79,13 +76,12 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.OrderCollection.FindAsync(id);
             if (order == null)
             {
                 return NotFound();
             }
-            ViewData["OrderId"] = new SelectList(_context.OrderCollection, "OrderId", "OrderId", order.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", order.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
             return View(order);
         }
 
@@ -94,9 +90,9 @@ namespace Shopich.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrdersId,OrderId,ProductId,Count")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,UserId,OrderDate,IsApproved")] Order order)
         {
-            if (id != order.OrdersId)
+            if (id != order.OrderId)
             {
                 return NotFound();
             }
@@ -110,7 +106,7 @@ namespace Shopich.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.OrdersId))
+                    if (!OrderExists(order.OrderId))
                     {
                         return NotFound();
                     }
@@ -121,8 +117,7 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.OrderCollection, "OrderId", "OrderId", order.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", order.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
             return View(order);
         }
 
@@ -134,10 +129,9 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(o => o.OrderNavigation)
-                .Include(o => o.Product)
-                .FirstOrDefaultAsync(m => m.OrdersId == id);
+            var order = await _context.OrderCollection
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
             {
                 return NotFound();
@@ -151,15 +145,15 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
-            _context.Orders.Remove(order);
+            var order = await _context.OrderCollection.FindAsync(id);
+            _context.OrderCollection.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool OrderExists(int id)
         {
-            return _context.Orders.Any(e => e.OrdersId == id);
+            return _context.OrderCollection.Any(e => e.OrderId == id);
         }
     }
 }

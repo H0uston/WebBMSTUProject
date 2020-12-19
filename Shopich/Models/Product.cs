@@ -10,7 +10,7 @@ namespace Shopich.Models
         public Product()
         {
             CategoryCollection = new HashSet<Categories>();
-            Orders = new HashSet<Order>();
+            Orders = new HashSet<Orders>();
             Reviews = new HashSet<Review>();
         }
 
@@ -21,7 +21,7 @@ namespace Shopich.Models
         public int? ProductDiscount { get; set; }
 
         public virtual ICollection<Categories> CategoryCollection { get; set; }
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Orders> Orders { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
     }
 }

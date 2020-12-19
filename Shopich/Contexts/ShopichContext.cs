@@ -19,8 +19,8 @@ namespace Shopich.Models
 
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Categories> CategoryCollection { get; set; }
-        public virtual DbSet<Order> Orders { get; set; }
-        public virtual DbSet<Orders> OrderCollection { get; set; }
+        public virtual DbSet<Orders> Orders { get; set; }
+        public virtual DbSet<Order> OrderCollection { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
@@ -44,7 +44,7 @@ namespace Shopich.Models
                 entity.ToTable("category");
 
                 entity.Property(e => e.CategoryId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("category_id");
 
                 entity.Property(e => e.CategoryDescription).HasColumnName("category_description");
@@ -62,7 +62,7 @@ namespace Shopich.Models
                 entity.ToTable("categories");
 
                 entity.Property(e => e.CategoriesId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("categories_id");
 
                 entity.Property(e => e.CategoryId).HasColumnName("category_id");
@@ -82,7 +82,7 @@ namespace Shopich.Models
                     .HasConstraintName("categories_product_id_fkey");
             });
 
-            modelBuilder.Entity<Order>(entity =>
+            modelBuilder.Entity<Orders>(entity =>
             {
                 entity.HasKey(e => e.OrdersId)
                     .HasName("orders_pkey");
@@ -90,7 +90,7 @@ namespace Shopich.Models
                 entity.ToTable("orders");
 
                 entity.Property(e => e.OrdersId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("orders_id");
 
                 entity.Property(e => e.Count).HasColumnName("count");
@@ -102,17 +102,17 @@ namespace Shopich.Models
                 entity.HasOne(d => d.OrderNavigation)
                     .WithMany(p => p.OrderCollection)
                     .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("orders_order_id_fkey");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("orders_product_id_fkey");
             });
 
-            modelBuilder.Entity<Orders>(entity =>
+            modelBuilder.Entity<Order>(entity =>
             {
                 entity.HasKey(e => e.OrderId)
                     .HasName("order_pkey");
@@ -120,7 +120,7 @@ namespace Shopich.Models
                 entity.ToTable("order");
 
                 entity.Property(e => e.OrderId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("order_id");
 
                 entity.Property(e => e.IsApproved).HasColumnName("is_approved");
@@ -134,7 +134,7 @@ namespace Shopich.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.OrderCollection)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("order_user_id_fkey");
             });
 
@@ -143,7 +143,7 @@ namespace Shopich.Models
                 entity.ToTable("product");
 
                 entity.Property(e => e.ProductId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("product_id");
 
                 entity.Property(e => e.ProductAvailability).HasColumnName("product_availability");
@@ -162,7 +162,7 @@ namespace Shopich.Models
                 entity.ToTable("review");
 
                 entity.Property(e => e.ReviewId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("review_id");
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
@@ -180,13 +180,13 @@ namespace Shopich.Models
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("review_product_id_fkey");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("review_user_id_fkey");
             });
 
@@ -195,7 +195,7 @@ namespace Shopich.Models
                 entity.ToTable("role");
 
                 entity.Property(e => e.RoleId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("role_id");
 
                 entity.Property(e => e.RoleDescription).HasColumnName("role_description");
@@ -210,7 +210,7 @@ namespace Shopich.Models
                 entity.ToTable("user");
 
                 entity.Property(e => e.UserId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("user_id");
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
@@ -246,7 +246,7 @@ namespace Shopich.Models
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("user_role_id_fkey");
             });
 

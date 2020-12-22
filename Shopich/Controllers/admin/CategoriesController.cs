@@ -6,26 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Shopich.Controllers
 {
-    public class ReviewController : Controller
+    [Authorize(Roles = "Admin")]
+    public class CategoriesController : Controller
     {
         private readonly ShopichContext _context;
 
-        public ReviewController(ShopichContext context)
+        public CategoriesController(ShopichContext context)
         {
             _context = context;
         }
 
-        // GET: Review
+        // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var shopichContext = _context.Reviews.Include(r => r.Product).Include(r => r.User);
+            var shopichContext = _context.CategoryCollection.Include(c => c.Category).Include(c => c.Product);
             return View(await shopichContext.ToListAsync());
         }
 
-        // GET: Review/Details/5
+        // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,45 +35,45 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var review = await _context.Reviews
-                .Include(r => r.Product)
-                .Include(r => r.User)
-                .FirstOrDefaultAsync(m => m.ReviewId == id);
-            if (review == null)
+            var categories = await _context.CategoryCollection
+                .Include(c => c.Category)
+                .Include(c => c.Product)
+                .FirstOrDefaultAsync(m => m.CategoriesId == id);
+            if (categories == null)
             {
                 return NotFound();
             }
 
-            return View(review);
+            return View(categories);
         }
 
-        // GET: Review/Create
+        // GET: Categories/Create
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
             ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName");
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail");
             return View();
         }
 
-        // POST: Review/Create
+        // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReviewId,UserId,ProductId,ReviewText,ReviewDate,ReviewRating")] Review review)
+        public async Task<IActionResult> Create([Bind("CategoriesId,ProductId,CategoryId")] Categories categories)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(review);
+                _context.Add(categories);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", review.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", review.UserId);
-            return View(review);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", categories.CategoryId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", categories.ProductId);
+            return View(categories);
         }
 
-        // GET: Review/Edit/5
+        // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,24 +81,24 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var review = await _context.Reviews.FindAsync(id);
-            if (review == null)
+            var categories = await _context.CategoryCollection.FindAsync(id);
+            if (categories == null)
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", review.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", review.UserId);
-            return View(review);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", categories.CategoryId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", categories.ProductId);
+            return View(categories);
         }
 
-        // POST: Review/Edit/5
+        // POST: Categories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ReviewId,UserId,ProductId,ReviewText,ReviewDate,ReviewRating")] Review review)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoriesId,ProductId,CategoryId")] Categories categories)
         {
-            if (id != review.ReviewId)
+            if (id != categories.CategoriesId)
             {
                 return NotFound();
             }
@@ -105,12 +107,12 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(review);
+                    _context.Update(categories);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReviewExists(review.ReviewId))
+                    if (!CategoriesExists(categories.CategoriesId))
                     {
                         return NotFound();
                     }
@@ -121,12 +123,12 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", review.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", review.UserId);
-            return View(review);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", categories.CategoryId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", categories.ProductId);
+            return View(categories);
         }
 
-        // GET: Review/Delete/5
+        // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,32 +136,32 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var review = await _context.Reviews
-                .Include(r => r.Product)
-                .Include(r => r.User)
-                .FirstOrDefaultAsync(m => m.ReviewId == id);
-            if (review == null)
+            var categories = await _context.CategoryCollection
+                .Include(c => c.Category)
+                .Include(c => c.Product)
+                .FirstOrDefaultAsync(m => m.CategoriesId == id);
+            if (categories == null)
             {
                 return NotFound();
             }
 
-            return View(review);
+            return View(categories);
         }
 
-        // POST: Review/Delete/5
+        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
-            _context.Reviews.Remove(review);
+            var categories = await _context.CategoryCollection.FindAsync(id);
+            _context.CategoryCollection.Remove(categories);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ReviewExists(int id)
+        private bool CategoriesExists(int id)
         {
-            return _context.Reviews.Any(e => e.ReviewId == id);
+            return _context.CategoryCollection.Any(e => e.CategoriesId == id);
         }
     }
 }

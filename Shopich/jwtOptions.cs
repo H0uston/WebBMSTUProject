@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Shopich.Config
 {
-    public class AuthOptions
+    public class jwtOptions
     {
         public const string ISSUER = "MyAuthServer";  // издатель токена
         public const string AUDIENCE = "MyAuthClient";  // потребитель клиента

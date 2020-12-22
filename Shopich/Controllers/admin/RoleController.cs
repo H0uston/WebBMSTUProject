@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,22 +10,23 @@ using Shopich.Models;
 
 namespace Shopich.Controllers
 {
-    public class CategoryController : Controller
+    [Authorize(Roles = "Admin")]
+    public class RoleController : Controller
     {
         private readonly ShopichContext _context;
 
-        public CategoryController(ShopichContext context)
+        public RoleController(ShopichContext context)
         {
             _context = context;
         }
 
-        // GET: Category
+        // GET: Role
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await _context.Roles.ToListAsync());
         }
 
-        // GET: Category/Details/5
+        // GET: Role/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,39 +34,39 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
+            var role = await _context.Roles
+                .FirstOrDefaultAsync(m => m.RoleId == id);
+            if (role == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(role);
         }
 
-        // GET: Category/Create
+        // GET: Role/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Category/Create
+        // POST: Role/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,CategoryDescription")] Category category)
+        public async Task<IActionResult> Create([Bind("RoleId,RoleName,RoleDescription")] Role role)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                _context.Add(role);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(role);
         }
 
-        // GET: Category/Edit/5
+        // GET: Role/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +74,22 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            var role = await _context.Roles.FindAsync(id);
+            if (role == null)
             {
                 return NotFound();
             }
-            return View(category);
+            return View(role);
         }
 
-        // POST: Category/Edit/5
+        // POST: Role/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,CategoryDescription")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("RoleId,RoleName,RoleDescription")] Role role)
         {
-            if (id != category.CategoryId)
+            if (id != role.RoleId)
             {
                 return NotFound();
             }
@@ -96,12 +98,12 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Update(role);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.CategoryId))
+                    if (!RoleExists(role.RoleId))
                     {
                         return NotFound();
                     }
@@ -112,10 +114,10 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(role);
         }
 
-        // GET: Category/Delete/5
+        // GET: Role/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,30 +125,30 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
+            var role = await _context.Roles
+                .FirstOrDefaultAsync(m => m.RoleId == id);
+            if (role == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(role);
         }
 
-        // POST: Category/Delete/5
+        // POST: Role/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
+            var role = await _context.Roles.FindAsync(id);
+            _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool RoleExists(int id)
         {
-            return _context.Categories.Any(e => e.CategoryId == id);
+            return _context.Roles.Any(e => e.RoleId == id);
         }
     }
 }

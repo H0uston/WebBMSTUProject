@@ -21,11 +21,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                     </ul>
                 </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <ul class="nav navbar-nav navbar-right ml-auto">
+                        <li class="mr-auto navbar-nav nav-item">
+                            <form asp-controller="Account" asp-action="logout">
+                                <input type="submit" class="btn btn-outline-dark" value="log out" />
+                            </form>
+                        </li>
+                    </ul>
+                }
             </div>
         </nav>
     </header>

@@ -5,24 +5,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Shopich.Models; 
+using Shopich.Models;
 using Shopich.Config;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Shopich.ViewModels;
 
-namespace TokenApp.Controllers
+namespace Shopich.Controllers
 {
-    public class AccountController : Controller
+    [ApiController]
+    public class AuthController : Controller
     {
         private readonly ShopichContext _context;
 
-        public AccountController(ShopichContext context)
+        public AuthController(ShopichContext context)
         {
             _context = context;
         }
 
-        [HttpPost("/token")]
-        public IActionResult Token(string email, string password)
+        [HttpPost("api/v2/auth/login")]
+        public IActionResult Login(LoginModel user)
         {
-            var identity = GetIdentity(email, password);
+            var identity = GetIdentity(user.Email, user.Password);
             if (identity == null)
             {
                 return BadRequest(new { errorText = "Invalid username or password." });
@@ -31,12 +35,12 @@ namespace TokenApp.Controllers
             var now = DateTime.UtcNow;
             // создаем JWT-токен
             var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
+                    issuer: jwtOptions.ISSUER,
+                    audience: jwtOptions.AUDIENCE,
                     notBefore: now,
                     claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                    expires: now.Add(TimeSpan.FromMinutes(jwtOptions.LIFETIME + (user.RememberMe ? 10 : 0))),
+                    signingCredentials: new SigningCredentials(jwtOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var response = new
@@ -48,9 +52,24 @@ namespace TokenApp.Controllers
             return Json(response);
         }
 
+        [HttpPost("api/v2/auth/register")]
+        public async Task<IActionResult> Register(RegisterModel user)
+        {
+            var old_user = _context.Users.FirstOrDefault(u => u.UserEmail == user.email);
+            if (old_user != null)
+            {
+                return BadRequest(new { errorText = "Email is already in use." });
+            }
+
+            await _context.Users.AddAsync(new User(user));
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("User", user);
+        }
+
         private ClaimsIdentity GetIdentity(string email, string password)
         {
-            User person = _context.Users.FirstOrDefault(x => x.UserEmail == email && x.UserPassword == password);
+            User person = _context.Users.Include(u => u.Role).FirstOrDefault(x => x.UserEmail == email && x.UserPassword == password);
             if (person != null)
             {
                 var claims = new List<Claim>

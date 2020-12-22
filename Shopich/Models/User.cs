@@ -13,6 +13,22 @@ namespace Shopich.Models
             Reviews = new HashSet<Review>();
         }
 
+        public User(RegisterModel user)
+        {
+            UserEmail = user.email;
+            UserPassword = user.password;
+            UserPhone = user.phone;
+            UserName = user.name;
+            UserSurname = user.surname;
+            UserCity = user.city;
+            UserStreet = user.street;
+            UserHouse = user.house;
+            UserFlat = user.flat;
+            UserIndex = user.index;
+            UserBirthday = user.birthday;
+            RoleId = 3;
+        }
+
         public int UserId { get; set; }
         public string UserEmail { get; set; }
         public string UserPassword { get; set; }

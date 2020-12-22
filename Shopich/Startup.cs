@@ -1,19 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Shopich.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Shopich.Config;
 
 namespace Shopich
 {
@@ -29,34 +25,38 @@ namespace Shopich
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddControllers();
-            
             services.AddDbContext<ShopichContext>(option =>
                 option.UseNpgsql(Configuration.GetConnectionString("ShopichDB")));
 
-            services.AddControllersWithViews(); // TODO
-            scopeInterfaceRepository(services);
-
-            // JWT
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = new PathString("/Account/Login");
+                })
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;  // TODO to true
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        // указывает, будет ли валидироваться издатель при валидации токена
                         ValidateIssuer = true,
-                        // строка, представляющая издателя
-                        ValidIssuer = Config.AuthOptions.ISSUER,
+                        ValidIssuer = jwtOptions.ISSUER,
 
                         ValidateAudience = true,
-                        ValidAudience = Config.AuthOptions.AUDIENCE,
+                        ValidAudience = jwtOptions.AUDIENCE,
                         ValidateLifetime = true,
 
-                        IssuerSigningKey = Config.AuthOptions.GetSymmetricSecurityKey(),
+                        IssuerSigningKey = jwtOptions.GetSymmetricSecurityKey(),
                         ValidateIssuerSigningKey = true,
                     };
                 });
+
+
+            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+            scopeInterfaceRepository(services);
 
         }
 
@@ -100,6 +100,8 @@ namespace Shopich
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "/admin/{controller=Home}/{action=Index}/{id?}");

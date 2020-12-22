@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Shopich.Models;
 using System;
@@ -20,12 +21,16 @@ namespace Shopich.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
+            if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                return View();
+            }
+            else if (!User.Identity.IsAuthenticated)
+            {
+                return LocalRedirect("/admin/Account/Login");
+            }
 
-        public IActionResult Privacy()
-        {
-            return View();
+            return LocalRedirect("/admin/Account/AccessDenied");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

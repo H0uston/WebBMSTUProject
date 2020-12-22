@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,23 +10,24 @@ using Shopich.Models;
 
 namespace Shopich.Controllers
 {
-    public class OrderController : Controller
+    [Authorize(Roles = "Admin")]
+    public class UserController : Controller
     {
         private readonly ShopichContext _context;
 
-        public OrderController(ShopichContext context)
+        public UserController(ShopichContext context)
         {
             _context = context;
         }
 
-        // GET: Order
+        // GET: User
         public async Task<IActionResult> Index()
         {
-            var shopichContext = _context.OrderCollection.Include(o => o.User);
+            var shopichContext = _context.Users.Include(u => u.Role);
             return View(await shopichContext.ToListAsync());
         }
 
-        // GET: Order/Details/5
+        // GET: User/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +35,42 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var order = await _context.OrderCollection
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(m => m.UserId == id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            return View(user);
         }
 
-        // GET: Order/Create
+        // GET: User/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail");
+            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName");
             return View();
         }
 
-        // POST: Order/Create
+        // POST: User/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,UserId,OrderDate,IsApproved")] Order order)
+        public async Task<IActionResult> Create([Bind("UserId,UserEmail,UserPassword,UserPhone,UserName,UserSurname,UserCity,UserStreet,UserHouse,UserFlat,UserIndex,UserBirthday,RoleId")] User user)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(order);
+                _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
-            return View(order);
+            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", user.RoleId);
+            return View(user);
         }
 
-        // GET: Order/Edit/5
+        // GET: User/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +78,23 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var order = await _context.OrderCollection.FindAsync(id);
-            if (order == null)
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
-            return View(order);
+            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", user.RoleId);
+            return View(user);
         }
 
-        // POST: Order/Edit/5
+        // POST: User/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,UserId,OrderDate,IsApproved")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,UserEmail,UserPassword,UserPhone,UserName,UserSurname,UserCity,UserStreet,UserHouse,UserFlat,UserIndex,UserBirthday,RoleId")] User user)
         {
-            if (id != order.OrderId)
+            if (id != user.UserId)
             {
                 return NotFound();
             }
@@ -101,12 +103,12 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(order);
+                    _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.OrderId))
+                    if (!UserExists(user.UserId))
                     {
                         return NotFound();
                     }
@@ -117,11 +119,11 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
-            return View(order);
+            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", user.RoleId);
+            return View(user);
         }
 
-        // GET: Order/Delete/5
+        // GET: User/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,31 +131,31 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var order = await _context.OrderCollection
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(m => m.UserId == id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            return View(user);
         }
 
-        // POST: Order/Delete/5
+        // POST: User/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var order = await _context.OrderCollection.FindAsync(id);
-            _context.OrderCollection.Remove(order);
+            var user = await _context.Users.FindAsync(id);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OrderExists(int id)
+        private bool UserExists(int id)
         {
-            return _context.OrderCollection.Any(e => e.OrderId == id);
+            return _context.Users.Any(e => e.UserId == id);
         }
     }
 }

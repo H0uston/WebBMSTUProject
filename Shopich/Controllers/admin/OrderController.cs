@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,22 +10,24 @@ using Shopich.Models;
 
 namespace Shopich.Controllers
 {
-    public class ProductController : Controller
+    [Authorize(Roles = "Admin")]
+    public class OrderController : Controller
     {
         private readonly ShopichContext _context;
 
-        public ProductController(ShopichContext context)
+        public OrderController(ShopichContext context)
         {
             _context = context;
         }
 
-        // GET: Product
+        // GET: Order
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            var shopichContext = _context.OrderCollection.Include(o => o.User);
+            return View(await shopichContext.ToListAsync());
         }
 
-        // GET: Product/Details/5
+        // GET: Order/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,39 +35,42 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
+            var order = await _context.OrderCollection
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(m => m.OrderId == id);
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(order);
         }
 
-        // GET: Product/Create
+        // GET: Order/Create
         public IActionResult Create()
         {
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail");
             return View();
         }
 
-        // POST: Product/Create
+        // POST: Order/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductPrice,ProductAvailability,ProductDiscount")] Product product)
+        public async Task<IActionResult> Create([Bind("OrderId,UserId,OrderDate,IsApproved")] Order order)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                _context.Add(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
+            return View(order);
         }
 
-        // GET: Product/Edit/5
+        // GET: Order/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +78,23 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            var order = await _context.OrderCollection.FindAsync(id);
+            if (order == null)
             {
                 return NotFound();
             }
-            return View(product);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
+            return View(order);
         }
 
-        // POST: Product/Edit/5
+        // POST: Order/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductPrice,ProductAvailability,ProductDiscount")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,UserId,OrderDate,IsApproved")] Order order)
         {
-            if (id != product.ProductId)
+            if (id != order.OrderId)
             {
                 return NotFound();
             }
@@ -96,12 +103,12 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+                    _context.Update(order);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.ProductId))
+                    if (!OrderExists(order.OrderId))
                     {
                         return NotFound();
                     }
@@ -112,10 +119,11 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
+            return View(order);
         }
 
-        // GET: Product/Delete/5
+        // GET: Order/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,30 +131,31 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
+            var order = await _context.OrderCollection
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(m => m.OrderId == id);
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(order);
         }
 
-        // POST: Product/Delete/5
+        // POST: Order/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
+            var order = await _context.OrderCollection.FindAsync(id);
+            _context.OrderCollection.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(int id)
+        private bool OrderExists(int id)
         {
-            return _context.Products.Any(e => e.ProductId == id);
+            return _context.OrderCollection.Any(e => e.OrderId == id);
         }
     }
 }

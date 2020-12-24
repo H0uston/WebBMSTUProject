@@ -7,23 +7,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly IRole _roleRepository;
 
-        public RoleController(ShopichContext context)
+        public RoleController(IRole roleRepository)
         {
-            _context = context;
+            _roleRepository = roleRepository;
         }
 
         // GET: Role
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Roles.ToListAsync());
+            return View(await _roleRepository.GetAll());
         }
 
         // GET: Role/Details/5
@@ -34,8 +35,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(m => m.RoleId == id);
+            var role = await _roleRepository.GetById((int)id);
             if (role == null)
             {
                 return NotFound();
@@ -59,8 +59,8 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(role);
-                await _context.SaveChangesAsync();
+                _roleRepository.Create(role);
+                _roleRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(role);
@@ -74,7 +74,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var role = await _context.Roles.FindAsync(id);
+            var role = await _roleRepository.GetById((int)id);
             if (role == null)
             {
                 return NotFound();
@@ -98,8 +98,8 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(role);
-                    await _context.SaveChangesAsync();
+                    _roleRepository.Update(role);
+                    _roleRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,8 +125,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(m => m.RoleId == id);
+            var role = await _roleRepository.GetById((int)id);
             if (role == null)
             {
                 return NotFound();
@@ -140,15 +139,14 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var role = await _context.Roles.FindAsync(id);
-            _context.Roles.Remove(role);
-            await _context.SaveChangesAsync();
+            _roleRepository.Delete(id);
+            _roleRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool RoleExists(int id)
         {
-            return _context.Roles.Any(e => e.RoleId == id);
+            return _roleRepository.Exists(id);
         }
     }
 }

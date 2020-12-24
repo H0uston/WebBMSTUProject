@@ -7,23 +7,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class ReviewController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly IReview _reviewRepository;
+        private readonly IProduct _productRepository;
+        private readonly IUser _userRepository;
 
-        public ReviewController(ShopichContext context)
+        public ReviewController(IReview reviewRepository, IProduct productRepository, IUser userRepository)
         {
-            _context = context;
+            _reviewRepository = reviewRepository;
+            _productRepository = productRepository;
+            _userRepository = userRepository;
         }
 
         // GET: Review
         public async Task<IActionResult> Index()
         {
-            var shopichContext = _context.Reviews.Include(r => r.Product).Include(r => r.User);
+            var shopichContext = _reviewRepository.Include(r => r.Product).Include(r => r.User);
             return View(await shopichContext.ToListAsync());
         }
 
@@ -35,7 +40,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var review = await _context.Reviews
+            var review = await _reviewRepository
                 .Include(r => r.Product)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.ReviewId == id);
@@ -48,10 +53,10 @@ namespace Shopich.Controllers
         }
 
         // GET: Review/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName");
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail");
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName");
+            ViewData["UserId"] = new SelectList(await _userRepository.GetAll(), "UserId", "UserEmail");
             return View();
         }
 
@@ -64,12 +69,12 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(review);
-                await _context.SaveChangesAsync();
+                _reviewRepository.Create(review);
+                _reviewRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", review.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", review.UserId);
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", review.ProductId);
+            ViewData["UserId"] = new SelectList(await _userRepository.GetAll(), "UserId", "UserEmail", review.UserId);
             return View(review);
         }
 
@@ -81,13 +86,13 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var review = await _context.Reviews.FindAsync(id);
+            var review = await _reviewRepository.GetById((int)id);
             if (review == null)
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", review.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", review.UserId);
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", review.ProductId);
+            ViewData["UserId"] = new SelectList(await _userRepository.GetAll(), "UserId", "UserEmail", review.UserId);
             return View(review);
         }
 
@@ -107,8 +112,8 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(review);
-                    await _context.SaveChangesAsync();
+                    _reviewRepository.Update(review);
+                    _reviewRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,8 +128,8 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", review.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", review.UserId);
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", review.ProductId);
+            ViewData["UserId"] = new SelectList(await _userRepository.GetAll(), "UserId", "UserEmail", review.UserId);
             return View(review);
         }
 
@@ -136,7 +141,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var review = await _context.Reviews
+            var review = await _reviewRepository
                 .Include(r => r.Product)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.ReviewId == id);
@@ -153,15 +158,14 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
-            _context.Reviews.Remove(review);
-            await _context.SaveChangesAsync();
+            _reviewRepository.Delete(id);
+            _reviewRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ReviewExists(int id)
         {
-            return _context.Reviews.Any(e => e.ReviewId == id);
+            return _reviewRepository.Exists(id);
         }
     }
 }

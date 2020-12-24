@@ -10,20 +10,21 @@ using Shopich.Config;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shopich.ViewModels;
+using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
     [ApiController]
     public class AuthController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly IUser _userRepository;
 
-        public AuthController(ShopichContext context)
+        public AuthController(IUser userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
 
-        [HttpPost("api/v2/auth/login")]
+        [HttpPost("api/v1/auth/login")]
         public IActionResult Login(LoginModel user)
         {
             var identity = GetIdentity(user.Email, user.Password);
@@ -52,24 +53,24 @@ namespace Shopich.Controllers
             return Json(response);
         }
 
-        [HttpPost("api/v2/auth/register")]
+        [HttpPost("api/v1/auth/register")]
         public async Task<IActionResult> Register(RegisterModel user)
         {
-            var old_user = _context.Users.FirstOrDefault(u => u.UserEmail == user.email);
+            var old_user = _userRepository.GetByEmail(user.email);
             if (old_user != null)
             {
                 return BadRequest(new { errorText = "Email is already in use." });
             }
 
-            await _context.Users.AddAsync(new User(user));
-            await _context.SaveChangesAsync();
+            _userRepository.Create(new User(user));
+            _userRepository.Save();
 
             return CreatedAtAction("User", user);
         }
 
         private ClaimsIdentity GetIdentity(string email, string password)
         {
-            User person = _context.Users.Include(u => u.Role).FirstOrDefault(x => x.UserEmail == email && x.UserPassword == password);
+            User person = _userRepository.Include(u => u.Role).FirstOrDefault(x => x.UserEmail == email && x.UserPassword == password);
             if (person != null)
             {
                 var claims = new List<Claim>

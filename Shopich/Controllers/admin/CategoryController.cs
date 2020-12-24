@@ -7,23 +7,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly ICategory _categoryRepository;
 
-        public CategoryController(ShopichContext context)
+        public CategoryController(ICategory categoryRepository)
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
         }
 
         // GET: Category
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await _categoryRepository.GetAll());
         }
 
         // GET: Category/Details/5
@@ -34,8 +35,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var category = await _categoryRepository.GetById((int)id);
             if (category == null)
             {
                 return NotFound();
@@ -59,8 +59,8 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                _categoryRepository.Create(category);
+                _categoryRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -74,7 +74,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryRepository.GetById((int)id);
             if (category == null)
             {
                 return NotFound();
@@ -98,8 +98,8 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                    _categoryRepository.Update(category);
+                    _categoryRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,8 +125,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var category = await _categoryRepository.GetById((int)id);
             if (category == null)
             {
                 return NotFound();
@@ -140,15 +139,14 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            _categoryRepository.Delete(id);
+            _categoryRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.CategoryId == id);
+            return _categoryRepository.Exists(id);
         }
     }
 }

@@ -7,23 +7,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
 using Microsoft.AspNetCore.Authorization;
+using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly ICategories _categoriesRepository;
+        private readonly ICategory _categoryRepository;
+        private readonly IProduct _productRepository;
 
-        public CategoriesController(ShopichContext context)
+        public CategoriesController(ICategories categoriesRepository, ICategory categoryRepository, IProduct productRepository)
         {
-            _context = context;
+            _categoriesRepository = categoriesRepository;
+            _categoryRepository = categoryRepository;
+            _productRepository = productRepository;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var shopichContext = _context.CategoryCollection.Include(c => c.Category).Include(c => c.Product);
+            var shopichContext = _categoriesRepository.Include(c => c.Category).Include(c => c.Product);
             return View(await shopichContext.ToListAsync());
         }
 
@@ -35,7 +40,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var categories = await _context.CategoryCollection
+            var categories = await _categoriesRepository
                 .Include(c => c.Category)
                 .Include(c => c.Product)
                 .FirstOrDefaultAsync(m => m.CategoriesId == id);
@@ -48,10 +53,10 @@ namespace Shopich.Controllers
         }
 
         // GET: Categories/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName");
+            ViewData["CategoryId"] = new SelectList(await _categoryRepository.GetAll(), "CategoryId", "CategoryName");
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName");
             return View();
         }
 
@@ -64,12 +69,12 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(categories);
-                await _context.SaveChangesAsync();
+                _categoriesRepository.Create(categories);
+                _categoriesRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", categories.CategoryId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", categories.ProductId);
+            ViewData["CategoryId"] = new SelectList(await _categoryRepository.GetAll(), "CategoryId", "CategoryName", categories.CategoryId);
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", categories.ProductId);
             return View(categories);
         }
 
@@ -81,13 +86,13 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var categories = await _context.CategoryCollection.FindAsync(id);
+            var categories = await _categoriesRepository.GetById((int)id);
             if (categories == null)
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", categories.CategoryId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", categories.ProductId);
+            ViewData["CategoryId"] = new SelectList(await _categoryRepository.GetAll(), "CategoryId", "CategoryName", categories.CategoryId);
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", categories.ProductId);
             return View(categories);
         }
 
@@ -107,8 +112,8 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(categories);
-                    await _context.SaveChangesAsync();
+                    _categoriesRepository.Update(categories);
+                    _categoriesRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,8 +128,8 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", categories.CategoryId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", categories.ProductId);
+            ViewData["CategoryId"] = new SelectList(await _categoryRepository.GetAll(), "CategoryId", "CategoryName", categories.CategoryId);
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", categories.ProductId);
             return View(categories);
         }
 
@@ -136,7 +141,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var categories = await _context.CategoryCollection
+            var categories = await _categoriesRepository
                 .Include(c => c.Category)
                 .Include(c => c.Product)
                 .FirstOrDefaultAsync(m => m.CategoriesId == id);
@@ -153,15 +158,14 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var categories = await _context.CategoryCollection.FindAsync(id);
-            _context.CategoryCollection.Remove(categories);
-            await _context.SaveChangesAsync();
+            _categoriesRepository.Delete(id);
+            _categoriesRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoriesExists(int id)
         {
-            return _context.CategoryCollection.Any(e => e.CategoriesId == id);
+            return _categoriesRepository.Exists(id);
         }
     }
 }

@@ -7,23 +7,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class ProductController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly IProduct _productRepository;
 
-        public ProductController(ShopichContext context)
+        public ProductController(IProduct productRepository)
         {
-            _context = context;
+            _productRepository = productRepository;
         }
 
         // GET: Product
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            return View(await _productRepository.GetAll());
         }
 
         // GET: Product/Details/5
@@ -34,8 +35,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.ProductId == id);
+            var product = await _productRepository.GetById((int)id);
             if (product == null)
             {
                 return NotFound();
@@ -59,8 +59,8 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+                _productRepository.Create(product);
+                _productRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -74,7 +74,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _productRepository.GetById((int)id);
             if (product == null)
             {
                 return NotFound();
@@ -98,8 +98,8 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    _productRepository.Update(product);
+                    _productRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,8 +125,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.ProductId == id);
+            var product = await _productRepository.GetById((int)id);
             if (product == null)
             {
                 return NotFound();
@@ -140,15 +139,14 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            _productRepository.Delete(id);
+            _productRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.ProductId == id);
+            return _productRepository.Exists(id);
         }
     }
 }

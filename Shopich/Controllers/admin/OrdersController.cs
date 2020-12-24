@@ -7,23 +7,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class OrdersController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly IOrders _ordersRepository;
+        private readonly IOrder _orderRepository;
+        private readonly IProduct _productRepository;
 
-        public OrdersController(ShopichContext context)
+        public OrdersController(IOrders ordersRepository, IOrder orderRepository, IProduct productRepository)
         {
-            _context = context;
+            _ordersRepository = ordersRepository;
+            _orderRepository = orderRepository;
+            _productRepository = productRepository;
         }
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var shopichContext = _context.Orders.Include(o => o.OrderNavigation).Include(o => o.Product);
+            var shopichContext = _ordersRepository.Include(o => o.OrderNavigation).Include(o => o.Product);
             return View(await shopichContext.ToListAsync());
         }
 
@@ -35,7 +40,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var orders = await _context.Orders
+            var orders = await _ordersRepository
                 .Include(o => o.OrderNavigation)
                 .Include(o => o.Product)
                 .FirstOrDefaultAsync(m => m.OrdersId == id);
@@ -48,10 +53,10 @@ namespace Shopich.Controllers
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["OrderId"] = new SelectList(_context.OrderCollection, "OrderId", "OrderId");
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName");
+            ViewData["OrderId"] = new SelectList(await _orderRepository.GetAll(), "OrderId", "OrderId");
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName");
             return View();
         }
 
@@ -64,12 +69,12 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(orders);
-                await _context.SaveChangesAsync();
+                _ordersRepository.Create(orders);
+                _ordersRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.OrderCollection, "OrderId", "OrderId", orders.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", orders.ProductId);
+            ViewData["OrderId"] = new SelectList(await _orderRepository.GetAll(), "OrderId", "OrderId", orders.OrderId);
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", orders.ProductId);
             return View(orders);
         }
 
@@ -81,13 +86,13 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var orders = await _context.Orders.FindAsync(id);
+            var orders = await _ordersRepository.GetById((int)id);
             if (orders == null)
             {
                 return NotFound();
             }
-            ViewData["OrderId"] = new SelectList(_context.OrderCollection, "OrderId", "OrderId", orders.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", orders.ProductId);
+            ViewData["OrderId"] = new SelectList(await _orderRepository.GetAll(), "OrderId", "OrderId", orders.OrderId);
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", orders.ProductId);
             return View(orders);
         }
 
@@ -107,8 +112,8 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(orders);
-                    await _context.SaveChangesAsync();
+                    _ordersRepository.Update(orders);
+                    _ordersRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,8 +128,8 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.OrderCollection, "OrderId", "OrderId", orders.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName", orders.ProductId);
+            ViewData["OrderId"] = new SelectList(await _orderRepository.GetAll(), "OrderId", "OrderId", orders.OrderId);
+            ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", orders.ProductId);
             return View(orders);
         }
 
@@ -136,7 +141,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var orders = await _context.Orders
+            var orders = await _ordersRepository
                 .Include(o => o.OrderNavigation)
                 .Include(o => o.Product)
                 .FirstOrDefaultAsync(m => m.OrdersId == id);
@@ -153,15 +158,14 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var orders = await _context.Orders.FindAsync(id);
-            _context.Orders.Remove(orders);
-            await _context.SaveChangesAsync();
+            _ordersRepository.Delete(id);
+            _ordersRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool OrdersExists(int id)
         {
-            return _context.Orders.Any(e => e.OrdersId == id);
+            return _ordersRepository.Exists(id);
         }
     }
 }

@@ -7,24 +7,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class OrderController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly IOrder _orderRepository;
+        private readonly IUser _userRepository;
 
-        public OrderController(ShopichContext context)
+        public OrderController(IOrder orderRepository, IUser userRepository)
         {
-            _context = context;
+            _orderRepository = orderRepository;
+            _userRepository = userRepository;
         }
 
         // GET: Order
         public async Task<IActionResult> Index()
         {
-            var shopichContext = _context.OrderCollection.Include(o => o.User);
-            return View(await shopichContext.ToListAsync());
+            var orders = _orderRepository.Include(o => o.User);
+            return View(await orders.ToListAsync());
         }
 
         // GET: Order/Details/5
@@ -35,7 +38,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var order = await _context.OrderCollection
+            var order = await _orderRepository
                 .Include(o => o.User)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
@@ -47,9 +50,9 @@ namespace Shopich.Controllers
         }
 
         // GET: Order/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail");
+            ViewData["UserId"] = new SelectList(await _userRepository.GetAll(), "UserId", "UserEmail");
             return View();
         }
 
@@ -62,11 +65,11 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
+                _orderRepository.Create(order);
+                _orderRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
+            ViewData["UserId"] = new SelectList(await _userRepository.GetAll(), "UserId", "UserEmail", order.UserId);
             return View(order);
         }
 
@@ -78,12 +81,12 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var order = await _context.OrderCollection.FindAsync(id);
+            var order = await _orderRepository.GetById((int)id);
             if (order == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
+            ViewData["UserId"] = new SelectList(await _userRepository.GetAll(), "UserId", "UserEmail", order.UserId);
             return View(order);
         }
 
@@ -103,8 +106,8 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
+                    _orderRepository.Update(order);
+                    _orderRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -119,7 +122,7 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserEmail", order.UserId);
+            ViewData["UserId"] = new SelectList(await _userRepository.GetAll(), "UserId", "UserEmail", order.UserId);
             return View(order);
         }
 
@@ -131,7 +134,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var order = await _context.OrderCollection
+            var order = await _orderRepository
                 .Include(o => o.User)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
@@ -147,15 +150,14 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var order = await _context.OrderCollection.FindAsync(id);
-            _context.OrderCollection.Remove(order);
-            await _context.SaveChangesAsync();
+            _orderRepository.Delete(id);
+            _orderRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool OrderExists(int id)
         {
-            return _context.OrderCollection.Any(e => e.OrderId == id);
+            return _orderRepository.Exists(id);
         }
     }
 }

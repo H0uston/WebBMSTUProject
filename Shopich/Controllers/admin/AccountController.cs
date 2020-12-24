@@ -7,15 +7,16 @@ using Shopich.ViewModels; // пространство имен моделей Re
 using Shopich.Models; // пространство имен UserContext и класса User
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Shopich.Repositories.interfaces;
 
 namespace AuthApp.Controllers
 {
     public class AccountController : Controller
     {
-        private ShopichContext db;
-        public AccountController(ShopichContext context)
+        private IUser _userRepository;
+        public AccountController(IUser userRepository)
         {
-            db = context;
+            _userRepository = userRepository;
         }
         [HttpGet]
         public IActionResult Login()
@@ -28,8 +29,8 @@ namespace AuthApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await db.Users.FirstOrDefaultAsync(u => u.UserEmail == model.Email && u.UserPassword == model.Password);
-                if (user != null)
+                User user = await _userRepository.GetByEmail(model.Email);
+                if (user.UserPassword == model.Password)
                 {
                     await Authenticate(model.Email); // аутентификация
 
@@ -47,7 +48,7 @@ namespace AuthApp.Controllers
 
         private async Task Authenticate(string email)
         {
-            User user = await db.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserEmail == email);
+            User user = await _userRepository.GetByEmail(email);
             // создаем один claim
             var claims = new List<Claim>
             {

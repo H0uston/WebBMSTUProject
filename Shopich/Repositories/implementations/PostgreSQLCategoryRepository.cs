@@ -34,7 +34,7 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.Categories.FindAsync(id);
         }
 
-        public void Update(User entity)
+        public void Update(Category entity)
         {
             // _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.Update(entity);

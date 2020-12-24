@@ -50,7 +50,7 @@ namespace Shopich.Controllers.api
             oldReview.ReviewDate = DateTime.UtcNow;
             oldReview.ReviewText = newReview.ReviewText;
             oldReview.ReviewRating = newReview.ReviewRating;
-            _context.Reviews.Add(oldReview);
+            _context.Reviews.Update(oldReview);
             await _context.SaveChangesAsync();
 
             return oldReview;

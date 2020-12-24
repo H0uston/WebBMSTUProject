@@ -7,24 +7,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly IUser _userRepository;
+        private readonly IRole _roleRepository;
 
-        public UserController(ShopichContext context)
+        public UserController(IUser userRepository, IRole roleRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
         // GET: User
         public async Task<IActionResult> Index()
         {
-            var shopichContext = _context.Users.Include(u => u.Role);
-            return View(await shopichContext.ToListAsync());
+            var users = _userRepository.Include(u => u.Role);
+            return View(await users.ToListAsync());
         }
 
         // GET: User/Details/5
@@ -35,7 +38,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
+            var user = await _userRepository
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(m => m.UserId == id);
             if (user == null)
@@ -47,9 +50,9 @@ namespace Shopich.Controllers
         }
 
         // GET: User/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName");
+            ViewData["RoleId"] = new SelectList(await _roleRepository.GetAll(), "RoleId", "RoleName");
             return View();
         }
 
@@ -62,11 +65,11 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
+                _userRepository.Create(user);
+                _userRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", user.RoleId);
+            ViewData["RoleId"] = new SelectList(await _roleRepository.GetAll(), "RoleId", "RoleName", user.RoleId);
             return View(user);
         }
 
@@ -78,12 +81,12 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetById((int)id);
             if (user == null)
             {
                 return NotFound();
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", user.RoleId);
+            ViewData["RoleId"] = new SelectList(await _roleRepository.GetAll(), "RoleId", "RoleName", user.RoleId);
             return View(user);
         }
 
@@ -103,8 +106,8 @@ namespace Shopich.Controllers
             {
                 try
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
+                    _userRepository.Update(user);
+                    _userRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -119,7 +122,7 @@ namespace Shopich.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", user.RoleId);
+            ViewData["RoleId"] = new SelectList(await _roleRepository.GetAll(), "RoleId", "RoleName", user.RoleId);
             return View(user);
         }
 
@@ -131,7 +134,7 @@ namespace Shopich.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
+            var user = await _userRepository
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(m => m.UserId == id);
             if (user == null)
@@ -147,15 +150,14 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            _userRepository.Delete(id);
+            _userRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UserExists(int id)
         {
-            return _context.Users.Any(e => e.UserId == id);
+            return _userRepository.Exists(id);
         }
     }
 }

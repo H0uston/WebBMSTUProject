@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Shopich.Repositories.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,22 +12,31 @@ using System.Threading.Tasks;
 namespace Shopich.Controllers.api
 {
     [ApiController]
-    [Route("api/v2/user")]
+    [Route("api/v1/user")]
     public class UserController : Controller
     {
-        private readonly ShopichContext _context;
+        private readonly IUser _repository;
 
-        public UserController(ShopichContext context)
+        public UserController(IUser repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<User> Get()
         {
-            var users = await _context.Users.ToArrayAsync();
-            return users;
+            var user = await _repository.GetByEmail(User.Identity.Name);
+            return user;
+        }
+
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public User Edit(User user)
+        {
+            _repository.Update(user);
+            _repository.Save();
+            return user;
         }
     }
 }

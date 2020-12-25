@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shopich.Business_logic;
 using Shopich.Models;
 using Shopich.Repositories.interfaces;
 using System;
@@ -27,6 +28,7 @@ namespace Shopich.Controllers.api
         public async Task<IEnumerable<Order>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
         {
             var orders = await _orderRepository.GetAll();
+
             return orders.Skip((current - 1) * size).Take(size);
         }
 
@@ -34,6 +36,7 @@ namespace Shopich.Controllers.api
         public async Task<Order> GetOrder(int id)
         {
             var order = await _orderRepository.GetById(id);
+
             return order;
         }
 
@@ -42,7 +45,8 @@ namespace Shopich.Controllers.api
         {
             var order = await _orderRepository.GetById(id);
 
-            order.IsApproved = true;
+            order = OrderLogic.ApproveOrder(order);
+
             _orderRepository.Update(order);
             _orderRepository.Save();
 
@@ -54,6 +58,7 @@ namespace Shopich.Controllers.api
         {
             _orderRepository.Delete(id);
             _orderRepository.Save();
+
             return NoContent();
         }
     }

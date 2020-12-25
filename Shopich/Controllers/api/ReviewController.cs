@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shopich.Business_logic;
 using Shopich.Models;
 using Shopich.Repositories.interfaces;
 using System;
@@ -28,21 +29,26 @@ namespace Shopich.Controllers.api
         public async Task<IEnumerable<Review>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
         {
             var reviews = await _reviewRepository.GetAll();
+
             return reviews.Skip((current - 1) * size).Take(size);
         }
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<Review> Create(Review review)
+        public async Task<IActionResult> Create(Review review)
         {
-            // TODO
             var user = await _userRepository.GetByEmail(User.Identity.Name);
-            review.UserId = user.UserId;
-            review.ReviewDate = DateTime.UtcNow;
-            _reviewRepository.Create(review);
-            _reviewRepository.Save();
 
-            return review;
+            if (Convert.ToBoolean(review.ProductId) && Convert.ToBoolean(review.ReviewRating) && review.ReviewText != null)
+            {
+                var formedReview = ReviewLogic.CreateReview(review, user);
+                _reviewRepository.Create(review);
+                _reviewRepository.Save();
+
+                return Json(formedReview);
+            }
+
+            return BadRequest("Not all parameters are given");
         }
 
         [HttpPut]
@@ -50,9 +56,9 @@ namespace Shopich.Controllers.api
         public async Task<Review> Change(Review newReview)
         {
             var oldReview = await _reviewRepository.GetById(newReview.ReviewId);
-            oldReview.ReviewDate = DateTime.UtcNow;
-            oldReview.ReviewText = newReview.ReviewText;
-            oldReview.ReviewRating = newReview.ReviewRating;
+
+            ReviewLogic.UpdateReview(oldReview, newReview.ReviewText, newReview.ReviewRating);
+
             _reviewRepository.Update(oldReview);
             _reviewRepository.Save();
 

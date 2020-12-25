@@ -27,6 +27,7 @@ namespace Shopich.Controllers.api
         public async Task<User> Get()
         {
             var user = await _repository.GetByEmail(User.Identity.Name);
+
             return user;
         }
 
@@ -36,6 +37,7 @@ namespace Shopich.Controllers.api
         {
             _repository.Update(user);
             _repository.Save();
+
             return user;
         }
     }

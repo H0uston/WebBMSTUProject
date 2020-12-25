@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shopich.Business_logic;
 using Shopich.Models;
 using Shopich.Repositories.interfaces;
 using System;
@@ -19,12 +20,14 @@ namespace Shopich.Controllers.api
         private readonly IOrders _ordersRepository;
         private readonly IOrder _orderRepository;
         private readonly IUser _userRepository;
+        private readonly IProduct _productRepository;
 
-        public CardManagementController(IOrders ordersRepository, IOrder orderRepository, IUser userRepository)
+        public CardManagementController(IOrders ordersRepository, IOrder orderRepository, IUser userRepository, IProduct productRepository)
         {
             _ordersRepository = ordersRepository;
             _orderRepository = orderRepository;
             _userRepository = userRepository;
+            _productRepository = productRepository;
         }
 
         [HttpGet]
@@ -36,29 +39,29 @@ namespace Shopich.Controllers.api
         }
 
         [HttpPost]
-        public async Task<Order> AddProductToCart(int productId)
+        public async Task<IActionResult> AddProductToCart(int productId, int count)
         {
+            if (count < 0)
+            {
+                return BadRequest("Count must be positive");
+            }
+
             var order = await _orderRepository.GetUnacceptedOrder((await _userRepository.GetByEmail(User.Identity.Name)).UserId);
+            var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
 
             if (order == null)
             {
-                var now = DateTime.UtcNow;
-                var user = await _userRepository.GetByEmail(User.Identity.Name);
-                order = new Order();
-                order.UserId = user.UserId;
-                order.OrderDate = now;
-                order.IsApproved = false;
+                order = CartLogic.CreateUnacceptedOrder(currentUser);
                 _orderRepository.Create(order);
+                _ordersRepository.Save();
+                order = await _orderRepository.GetUnacceptedOrder(currentUser.UserId);
             }
-            // TODO
-            var orders = new Orders();
-            order = await _orderRepository.GetUnacceptedOrder((await _userRepository.GetByEmail(User.Identity.Name)).UserId);
-            orders.OrderId = order.OrderId;
-            orders.ProductId = productId;
+
+            var orders = CartLogic.AddProductToCart(order, await _productRepository.GetById(productId), count);
             _ordersRepository.Create(orders);
             _ordersRepository.Save();
 
-            return order;
+            return Json(orders);
         }
 
         [HttpPatch]

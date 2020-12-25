@@ -26,6 +26,7 @@ namespace Shopich.Controllers.api
         public async Task<IEnumerable<Product>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
         {
             var products = await _productRepository.GetAll();
+
             return products.Skip((current - 1) * size).Take(size);
         }
 
@@ -33,6 +34,7 @@ namespace Shopich.Controllers.api
         public async Task<Product> GetProduct(int id)
         {
             var product = await _productRepository.GetById(id);
+
             return product;
         }
     }

@@ -27,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.ProductDiscount)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductPhotoPath)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -48,6 +51,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ProductDiscount)
             </td>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductPhotoPath)
+            </th>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |

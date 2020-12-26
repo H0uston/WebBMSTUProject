@@ -13,6 +13,7 @@ namespace Shopich.Business_logic
             var formedReview = new Review();
 
             formedReview.UserId = user.UserId;
+            formedReview.ProductId = review.ProductId;
             formedReview.ReviewDate = DateTime.UtcNow;
             formedReview.ReviewRating = review.ReviewRating;
             formedReview.ReviewText = review.ReviewText;

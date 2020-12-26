@@ -55,7 +55,7 @@ namespace Shopich.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductPrice,ProductAvailability,ProductDiscount")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductPrice,ProductAvailability,ProductDiscount,ProductPhotoPath")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace Shopich.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductPrice,ProductAvailability,ProductDiscount")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductPrice,ProductAvailability,ProductDiscount,ProductPhotoPath")] Product product)
         {
             if (id != product.ProductId)
             {

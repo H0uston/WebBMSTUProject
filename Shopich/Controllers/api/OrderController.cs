@@ -112,7 +112,7 @@ namespace Shopich.Controllers.api
             }
             else
             {
-                _orderRepository.Delete(id);
+                await _orderRepository.Delete(id);
                 await _orderRepository.Save();
             }
 

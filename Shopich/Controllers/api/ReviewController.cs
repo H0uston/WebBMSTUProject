@@ -126,7 +126,11 @@ namespace Shopich.Controllers.api
             var user = await _userRepository.GetByEmail(User.Identity.Name);
             var review = await _reviewRepository.GetById(reviewId);
 
-            if (user.UserId != review.UserId)
+            if (review == null)
+            {
+                return BadRequest("Review does not exist");
+            }
+            else if (user.UserId != review.UserId)
             {
                 return BadRequest("Can't change another user's review");
             }

@@ -39,9 +39,15 @@ namespace Shopich.Controllers.api
         /// <returns>Products from cart</returns>
         /// <response code="200">Array of products</response>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IEnumerable<Orders>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
         {
             var order = await _orderRepository.GetUnacceptedOrder((await _userRepository.GetByEmail(User.Identity.Name)).UserId);
+            if (order == null)
+            {
+                IEnumerable<Orders> orders = null;
+                return orders;
+            }
             var productsInCart = await _ordersRepository.GetProductsInCart(order.OrderId);
 
             return productsInCart.Skip((current - 1) * size).Take(size);
@@ -63,6 +69,11 @@ namespace Shopich.Controllers.api
             if (count <= 0)
             {
                 return BadRequest("Count must be positive");
+            }
+
+            if (!_productRepository.Exists(productId))
+            {
+                return BadRequest("Product does not exist");
             }
 
             var order = await _orderRepository.GetUnacceptedOrder((await _userRepository.GetByEmail(User.Identity.Name)).UserId);

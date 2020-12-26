@@ -24,6 +24,11 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.OrderCollection.ToArrayAsync();
         }
 
+        public async Task<Order[]> GetAllAcceptedForUser(int userId)
+        {
+            return await _dbContext.OrderCollection.Where(o => o.UserId == userId && o.IsApproved == true).ToArrayAsync();
+        }
+
         public async Task Create(Order entity)
         {
             await _dbContext.OrderCollection.AddAsync(entity);
@@ -31,12 +36,12 @@ namespace Shopich.Repositories.implementations
 
         public async Task<Order> GetById(int id)
         {
-            return await _dbContext.OrderCollection.FindAsync(id);
+            return await _dbContext.OrderCollection.FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
         public async Task<Order> GetUnacceptedOrder(int userId)
         {
-            return await _dbContext.OrderCollection.Include(o => o.User).FirstAsync(o => o.User.UserId == userId && o.IsApproved == false);
+            return await _dbContext.OrderCollection.Include(o => o.User).FirstOrDefaultAsync(o => o.User.UserId == userId && o.IsApproved == false);
         }
 
         public void Update(Order entity)
@@ -44,7 +49,7 @@ namespace Shopich.Repositories.implementations
             _dbContext.Update(entity);
         }
 
-        public async void Delete(int id)
+        public async Task Delete(int id)
         {
             if (this.Exists(id))
             {

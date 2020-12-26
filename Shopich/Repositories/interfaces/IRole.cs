@@ -12,7 +12,7 @@ namespace Shopich.Repositories.interfaces
         public Task Create(Role entity);
         public Task<Role> GetById(int id);
         public void Update(Role entity);
-        public void Delete(int id);
+        public Task Delete(int id);
         public Task Save();
         public bool Exists(int id);
     }

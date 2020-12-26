@@ -31,7 +31,7 @@ namespace Shopich.Repositories.implementations
 
         public async Task<Category> GetById(int id)
         {
-            return await _dbContext.Categories.FindAsync(id);
+            return await _dbContext.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
         }
 
         public void Update(Category entity)
@@ -39,7 +39,7 @@ namespace Shopich.Repositories.implementations
             _dbContext.Update(entity);
         }
 
-        public async void Delete(int id)
+        public async Task Delete(int id)
         {
             if (this.Exists(id))
             {

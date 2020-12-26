@@ -14,7 +14,7 @@ namespace Shopich.Repositories.interfaces
         public Task<User> GetById(int id);
         public Task<User> GetByEmail(string email);
         public void Update(User entity);
-        public void Delete(int id);
+        public Task Delete(int id);
         public Task Save();
         public IQueryable<User> Include(params Expression<Func<User, object>>[] includeProperties);
         public bool Exists(int id);

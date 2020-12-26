@@ -28,13 +28,13 @@ namespace Shopich.Repositories.implementations
         }
         public async Task<Role> GetById(int id)
         {
-            return await _dbContext.Roles.FindAsync(id);
+            return await _dbContext.Roles.FirstOrDefaultAsync(r => r.RoleId == id);
         }
         public void Update(Role entity)
         {
             _dbContext.Update(entity);
         }
-        public async void Delete(int id)
+        public async Task Delete(int id)
         {
             if (this.Exists(id))
             {

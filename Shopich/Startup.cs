@@ -125,6 +125,7 @@ namespace Shopich
             services.AddScoped<ICategory, PostgreSQLCategoryRepository>();
             services.AddScoped<ICategories, PostgreSQLCategoriesRepository>();
             services.AddScoped<IOrder, PostgreSQLOrderRepository>();
+            services.AddScoped<IOrders, PostgreSQLOrdersRepository>();
             services.AddScoped<IProduct, PostgreSQLProductRepository>();
             services.AddScoped<IReview, PostgreSQLReviewRepository>();
             services.AddScoped<IRole, PostgreSQLRoleRepository>();

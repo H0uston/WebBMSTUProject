@@ -14,5 +14,12 @@ namespace Shopich.Business_logic
 
             return order;
         }
+
+        static public Orders UpdateCount(Orders orders, int count)
+        {
+            orders.Count = count;
+
+            return orders;
+        }
     }
 }

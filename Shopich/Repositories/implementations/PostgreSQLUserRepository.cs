@@ -31,7 +31,7 @@ namespace Shopich.Repositories.implementations
 
         public async Task<User> GetById(int id)
         {
-            return await _dbContext.Users.FindAsync(id);
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == id);
         }
 
         public async Task<User> GetByEmail(string email)
@@ -44,7 +44,7 @@ namespace Shopich.Repositories.implementations
             _dbContext.Update(entity);
         }
 
-        public async void Delete(int id)
+        public async Task Delete(int id)
         {
             if (this.Exists(id))
             {

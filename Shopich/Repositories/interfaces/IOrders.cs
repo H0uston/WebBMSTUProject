@@ -14,7 +14,7 @@ namespace Shopich.Repositories.interfaces
         public Task<Orders> GetById(int id);
         public Task<Orders[]> GetProductsInCart(int orderId);
         public void Update(Orders entity);
-        public void Delete(int id);
+        public Task Delete(int id);
         public Task Save();
         public IQueryable<Orders> Include(params Expression<Func<Orders, object>>[] includeProperties);
         public bool Exists(int id);

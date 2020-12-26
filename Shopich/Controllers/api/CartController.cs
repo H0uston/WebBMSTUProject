@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Business_logic;
@@ -55,6 +56,8 @@ namespace Shopich.Controllers.api
         /// <response code="200">Added product and its count</response>
         /// <response code="400">Invalid count of product</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddProductToCart(int productId, int count)
         {
             if (count <= 0)
@@ -88,6 +91,8 @@ namespace Shopich.Controllers.api
         /// <response code="200">Added product and its count</response>
         /// <response code="400">Invalid count of product</response>
         [HttpPatch]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ChangeCount(Orders orders)
         {
             if (orders.Count <= 0)
@@ -95,7 +100,8 @@ namespace Shopich.Controllers.api
                 return BadRequest("Count must be positive");
             }
             var newOrders = await _ordersRepository.GetById(orders.OrdersId);
-            newOrders.Count = orders.Count;
+            newOrders = OrderLogic.UpdateCount(newOrders, orders.Count);
+
             _ordersRepository.Update(newOrders);
             await _ordersRepository.Save();
 
@@ -105,14 +111,30 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Delete product from cart
         /// </summary>
-        /// <param name="orders"></param>
+        /// <param name="ordersId"></param>
         /// <returns>Status code</returns>
         /// <response code="204">Product was deleted</response>
         [HttpDelete]
-        public async Task<IActionResult> DeleteProduct(Orders orders)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteProduct(int ordersId)
         {
-            _ordersRepository.Delete(orders.OrdersId);
-            await _ordersRepository.Save();
+            var orders = await _ordersRepository.Include(o => o.OrderNavigation).FirstOrDefaultAsync(o => o.OrdersId == ordersId);
+            var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
+
+            if (orders == null)
+            {
+                return BadRequest("No such order");
+            }
+            else if (orders.OrderNavigation.UserId != currentUser.UserId)
+            {
+                return BadRequest("Try to delete another users product");
+            }
+            else
+            {
+                await _ordersRepository.Delete(ordersId);
+                await _ordersRepository.Save();
+            }
 
             return NoContent();
         }

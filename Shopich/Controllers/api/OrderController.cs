@@ -18,10 +18,14 @@ namespace Shopich.Controllers.api
     public class OrderController : Controller
     {
         private readonly IOrder _orderRepository;
+        private readonly IOrders _ordersRepository;
+        private readonly IUser _userRepository;
 
-        public OrderController(IOrder orderRepository)
+        public OrderController(IOrder orderRepository, IOrders ordersRepository, IUser userRepository)
         {
             _orderRepository = orderRepository;
+            _ordersRepository = ordersRepository;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -34,7 +38,8 @@ namespace Shopich.Controllers.api
         [HttpGet]
         public async Task<IEnumerable<Order>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
         {
-            var orders = await _orderRepository.GetAll();
+            var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
+            var orders = await _orderRepository.GetAllAcceptedForUser(currentUser.UserId);
 
             return orders.Skip((current - 1) * size).Take(size);
         }
@@ -46,23 +51,34 @@ namespace Shopich.Controllers.api
         /// <returns>Order object</returns>
         /// <response code="200"></response>
         [HttpGet("{id:int}")]
-        public async Task<Order> GetOrder(int id)
+        public async Task<IActionResult> GetOrder(int id)
         {
             var order = await _orderRepository.GetById(id);
+            var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
 
-            return order;
+            if (order == null)
+            {
+                return BadRequest("No such order");
+            }
+            else if (order.UserId != currentUser.UserId)
+            {
+                return BadRequest("Try to get another user's order");
+            }
+            else
+            {
+                return Json(order);
+            }
         }
 
         /// <summary>
         /// Create order
         /// </summary>
-        /// <param name="id"></param>
         /// <returns>Approved order</returns>
         /// <response code="201"></response>
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(int id)
+        public async Task<IActionResult> CreateOrder()
         {
-            var order = await _orderRepository.GetById(id);
+            var order = await _orderRepository.GetUnacceptedOrder((await _userRepository.GetByEmail(User.Identity.Name)).UserId);
 
             order = OrderLogic.ApproveOrder(order);
 
@@ -79,11 +95,26 @@ namespace Shopich.Controllers.api
         /// <param name="id"></param>
         /// <returns>Status code</returns>
         /// <response code="204"></response>
+        /// <response code="400"></response>
         [HttpDelete]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            _orderRepository.Delete(id);
-            await _orderRepository.Save();
+            var order = await _orderRepository.GetById(id);
+            var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
+
+            if (order == null)
+            {
+                return BadRequest("No such order");
+            }
+            else if (order.UserId != currentUser.UserId)
+            {
+                return BadRequest("Try to delete another user's order");
+            }
+            else
+            {
+                _orderRepository.Delete(id);
+                await _orderRepository.Save();
+            }
 
             return NoContent();
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shopich.Business_logic;
@@ -44,22 +45,32 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Create review for product
         /// </summary>
-        /// <param name="review"></param>
+        /// <param name="reviewText"></param>
+        /// <param name="reviewRating"></param>
+        /// <param name="productId"></param>
         /// <returns>Created review</returns>
-        /// <response code="201"></response>
+        /// <response code="201">Created At Action</response>
+        /// <response code="400">Bad Request</response>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> CreateReview(Review review)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateReview(string reviewText, int reviewRating, int productId)
         {
             var user = await _userRepository.GetByEmail(User.Identity.Name);
 
             if (_reviewRepository.ExistsByUserId(user.UserId))
             {
                 return BadRequest("Review already exist");
-            }
+            }   
 
-            var formedReview = ReviewLogic.CreateReview(review, user);
-            await _reviewRepository.Create(review);
+            var formedReview = ReviewLogic.CreateReview(reviewText, reviewRating, productId, user);
+
+            if (formedReview == null)
+            {
+                return BadRequest("ReviewRating must by 0 <= x <= 10");
+            }
+            await _reviewRepository.Create(formedReview);
             await _reviewRepository.Save();
 
             return CreatedAtAction("review", formedReview);
@@ -68,23 +79,31 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Change review for product
         /// </summary>
-        /// <param name="review"></param>
+        /// <param name="reviewText"></param>
+        /// <param name="reviewRating"></param>
         /// <returns>Changed review</returns>
         /// <response code="200"></response>
         /// <response code="400"></response>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> ChangeReview(Review review)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ChangeReview(string reviewText, int reviewRating)
         {
-            var oldReview = await _reviewRepository.GetById(review.ReviewId);
             var user = await _userRepository.GetByEmail(User.Identity.Name);
+            var oldReview = await _reviewRepository.GetByUserId(user.UserId);
 
-            if (user.UserId != review.UserId)
+            if (oldReview == null)
             {
-                return BadRequest("Can't change another user's review");
-            }    
+                return BadRequest("Review does not exist");
+            }
 
-            ReviewLogic.UpdateReview(oldReview, review.ReviewText, review.ReviewRating);
+            ReviewLogic.UpdateReview(oldReview, reviewText, reviewRating);
+
+            if (oldReview == null)
+            {
+                return BadRequest("ReviewRating must by 0 <= x <= 10");
+            }
 
             _reviewRepository.Update(oldReview);
             await _reviewRepository.Save();
@@ -100,6 +119,8 @@ namespace Shopich.Controllers.api
         /// <response code="204"></response>
         [HttpDelete]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteReview(int reviewId)
         {
             var user = await _userRepository.GetByEmail(User.Identity.Name);
@@ -110,7 +131,7 @@ namespace Shopich.Controllers.api
                 return BadRequest("Can't change another user's review");
             }
 
-            _reviewRepository.Delete(reviewId);
+            await _reviewRepository.Delete(reviewId);
             await _reviewRepository.Save();
 
             return NoContent();

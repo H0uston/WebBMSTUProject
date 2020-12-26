@@ -36,7 +36,12 @@ namespace Shopich.Repositories.implementations
 
         public async Task<Review> GetById(int id)
         {
-            return await _dbContext.Reviews.FindAsync(id);
+            return await _dbContext.Reviews.FirstOrDefaultAsync(r => r.ReviewId == id);
+        }
+
+        public async Task<Review> GetByUserId(int id)
+        {
+            return await _dbContext.Reviews.FirstOrDefaultAsync(r => r.UserId == id);
         }
 
         public void Update(Review entity)
@@ -44,7 +49,7 @@ namespace Shopich.Repositories.implementations
             _dbContext.Update(entity);
         }
 
-        public async void Delete(int id)
+        public async Task Delete(int id)
         {
             if (this.Exists(id))
             {

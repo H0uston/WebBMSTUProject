@@ -48,7 +48,7 @@ namespace AuthApp.Controllers
 
         private async Task Authenticate(string email)
         {
-            User user = await _userRepository.GetByEmail(email);
+            User user = await _userRepository.Include(u => u.Role).FirstAsync(u => u.UserEmail == email);
             // создаем один claim
             var claims = new List<Claim>
             {

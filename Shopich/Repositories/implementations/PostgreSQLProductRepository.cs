@@ -34,9 +34,13 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.Products.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Product>> GetByName(string name)
+        {
+            return await _dbContext.Products.Where(p => p.ProductName.ToLower() == name.ToLower()).ToArrayAsync();
+        }
+
         public void Update(Product entity)
         {
-            // _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.Update(entity);
         }
 

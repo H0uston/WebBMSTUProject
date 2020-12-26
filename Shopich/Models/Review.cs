@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 #nullable disable
@@ -19,8 +21,10 @@ namespace Shopich.Models
         public DateTime ReviewDate { get; set; }
         [Required]
         public int ReviewRating { get; set; }
+        [IgnoreDataMember]
         [JsonIgnore]
         public virtual Product Product { get; set; }
+        [IgnoreDataMember]
         [JsonIgnore]
         public virtual User User { get; set; }
     }

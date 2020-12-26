@@ -68,5 +68,10 @@ namespace Shopich.Repositories.implementations
         {
             return _dbContext.Reviews.Find(id) != null;
         }
+
+        public bool ExistsByUserId(int id)
+        {
+            return _dbContext.Reviews.FirstOrDefault(r => r.UserId == id) != null;
+        }
     }
 }

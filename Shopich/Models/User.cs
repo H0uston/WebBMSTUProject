@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 #nullable disable
@@ -42,13 +44,16 @@ namespace Shopich.Models
         public string UserFlat { get; set; }
         public int? UserIndex { get; set; }
         public DateTime? UserBirthday { get; set; }
+        [IgnoreDataMember]
         [JsonIgnore]
         public int RoleId { get; set; }
-
+        [IgnoreDataMember]
         [JsonIgnore]
         public virtual Role Role { get; set; }
+        [IgnoreDataMember]
         [JsonIgnore]
         public virtual ICollection<Order> OrderCollection { get; set; }
+        [IgnoreDataMember]
         [JsonIgnore]
         public virtual ICollection<Review> Reviews { get; set; }
     }

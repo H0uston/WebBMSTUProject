@@ -16,6 +16,12 @@ using System;
 using System.Reflection;
 using System.IO;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Shopich
 {
@@ -41,7 +47,7 @@ namespace Shopich
                 })
                 .AddJwtBearer(options =>
                 {
-                    options.RequireHttpsMetadata = false;  // TODO to true
+                    options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -56,12 +62,13 @@ namespace Shopich
                     };
                 });
 
-
-            services.AddControllersWithViews();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             scopeInterfaceRepository(services);
 
             services.AddSwaggerGen(c =>
@@ -78,6 +85,7 @@ namespace Shopich
                         Url = new Uri("https://t.me/mp4_thread"),
                     }
                 });
+
                 // Bearer token authentication
                 OpenApiSecurityScheme securityDefinition = new OpenApiSecurityScheme()
                 {
@@ -88,7 +96,7 @@ namespace Shopich
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                 };
-                c.AddSecurityDefinition("jwt_auth", securityDefinition);
+                c.AddSecurityDefinition("Bearer", securityDefinition);
 
                 // Make sure swagger UI requires a Bearer token specified
                 OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
@@ -103,7 +111,8 @@ namespace Shopich
                 {
                     {securityScheme, new string[] { }},
                 };
-                c.AddSecurityRequirement(securityRequirements);
+                //c.AddSecurityRequirement(securityRequirements);
+                c.OperationFilter<AuthResponsesOperationFilter>();
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -170,6 +179,40 @@ namespace Shopich
                     name: "default",
                     pattern: "/admin/{controller=Home}/{action=Index}/{id?}");
             });
+        }
+    }
+
+    public class AuthResponsesOperationFilter : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var authAttributes = context.MethodInfo.DeclaringType.GetCustomAttributes(true)
+                .Union(context.MethodInfo.GetCustomAttributes(true))
+                .OfType<AuthorizeAttribute>();
+
+            if (authAttributes.Any())
+            {
+                var securityRequirement = new OpenApiSecurityRequirement()
+            {
+                {
+                    // Put here you own security scheme, this one is an example
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                    },
+                    new List<string>()
+                }
+            };
+                operation.Security = new List<OpenApiSecurityRequirement> { securityRequirement };
+                operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
+            }
         }
     }
 }

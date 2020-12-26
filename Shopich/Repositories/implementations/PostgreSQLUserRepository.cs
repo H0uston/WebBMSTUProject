@@ -26,7 +26,7 @@ namespace Shopich.Repositories.implementations
 
         public async Task Create(User item)
         {
-            _dbContext.Users.Add(item);
+            await _dbContext.Users.AddAsync(item);
         }
 
         public async Task<User> GetById(int id)
@@ -36,7 +36,7 @@ namespace Shopich.Repositories.implementations
 
         public async Task<User> GetByEmail(string email)
         {
-            return await _dbContext.Users.FirstAsync(u => u.UserEmail == email);
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserEmail == email);
         }
 
         public void Update(User entity)

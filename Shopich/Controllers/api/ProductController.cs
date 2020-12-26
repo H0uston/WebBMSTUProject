@@ -25,15 +25,24 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Get list of products
         /// </summary>
+        /// <param name="productName">Name of product</param>
         /// <param name="current">Current page</param>
         /// <param name="size">Size of page</param>
         /// <returns>List of products</returns>
         /// <response code="200"></response>
         [HttpGet]
-        public async Task<IEnumerable<Product>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
+        public async Task<IEnumerable<Product>> GetAll([FromQuery] string productName, [FromQuery] int current = 1, [FromQuery] int size = 5)
         {
-            var products = await _productRepository.GetAll();
-
+            IEnumerable<Product> products = null;
+            if (productName != null)
+            {
+                products = await _productRepository.GetByName(productName);
+            }
+            else
+            {
+                products = await _productRepository.GetAll();
+            }
+            
             return products.Skip((current - 1) * size).Take(size);
         }
 

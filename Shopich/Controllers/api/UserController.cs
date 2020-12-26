@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shopich.Business_logic;
 using Shopich.Models;
 using Shopich.Repositories.interfaces;
 using System;
@@ -29,11 +30,11 @@ namespace Shopich.Controllers.api
         /// <response code="200"></response>
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<User> GetUser()
+        public async Task<IActionResult> GetUser()
         {
             var user = await _repository.GetByEmail(User.Identity.Name);
 
-            return user;
+            return Json(user);
         }
 
         /// <summary>
@@ -44,12 +45,13 @@ namespace Shopich.Controllers.api
         /// <response code="200"></response>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<User> EditUser(User user)
+        public async Task<IActionResult> EditUser(User user)
         {
-            _repository.Update(user);
+            var newUser = UserLogic.UpdateUser(await _repository.GetByEmail(User.Identity.Name), user);
+            _repository.Update(newUser);
             await _repository.Save();
 
-            return user;
+            return Json(newUser);
         }
     }
 }

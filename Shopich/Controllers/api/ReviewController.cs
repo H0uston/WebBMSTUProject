@@ -33,8 +33,8 @@ namespace Shopich.Controllers.api
         /// <param name="size">Size of page</param>
         /// <returns>List of reviews</returns>
         /// <response code="200"></response>
-        [HttpGet]
-        public async Task<IEnumerable<Review>> GetAll([FromRoute] int productId, [FromQuery] int current = 1, [FromQuery] int size = 5)
+        [HttpGet("{productId}")]
+        public async Task<IEnumerable<Review>> GetAll([FromRoute]int productId, [FromQuery] int current = 1, [FromQuery] int size = 5)
         {
             var reviews = await _reviewRepository.GetAllByProductId(productId);
 
@@ -53,6 +53,11 @@ namespace Shopich.Controllers.api
         {
             var user = await _userRepository.GetByEmail(User.Identity.Name);
 
+            if (_reviewRepository.ExistsByUserId(user.UserId))
+            {
+                return BadRequest("Review already exist");
+            }
+
             var formedReview = ReviewLogic.CreateReview(review, user);
             await _reviewRepository.Create(review);
             await _reviewRepository.Save();
@@ -66,18 +71,25 @@ namespace Shopich.Controllers.api
         /// <param name="review"></param>
         /// <returns>Changed review</returns>
         /// <response code="200"></response>
+        /// <response code="400"></response>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<Review> ChangeReview(Review review)
+        public async Task<IActionResult> ChangeReview(Review review)
         {
             var oldReview = await _reviewRepository.GetById(review.ReviewId);
+            var user = await _userRepository.GetByEmail(User.Identity.Name);
+
+            if (user.UserId != review.UserId)
+            {
+                return BadRequest("Can't change another user's review");
+            }    
 
             ReviewLogic.UpdateReview(oldReview, review.ReviewText, review.ReviewRating);
 
             _reviewRepository.Update(oldReview);
             await _reviewRepository.Save();
 
-            return oldReview;
+            return Json(oldReview);
         }
 
         /// <summary>
@@ -90,6 +102,14 @@ namespace Shopich.Controllers.api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> DeleteReview(int reviewId)
         {
+            var user = await _userRepository.GetByEmail(User.Identity.Name);
+            var review = await _reviewRepository.GetById(reviewId);
+
+            if (user.UserId != review.UserId)
+            {
+                return BadRequest("Can't change another user's review");
+            }
+
             _reviewRepository.Delete(reviewId);
             await _reviewRepository.Save();
 

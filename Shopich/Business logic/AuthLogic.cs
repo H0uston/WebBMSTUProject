@@ -22,7 +22,7 @@ namespace Shopich.Business_logic
                     audience: jwtOptions.AUDIENCE,
                     notBefore: now,
                     claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(jwtOptions.LIFETIME + (rememberMe ? 10 : 0))),
+                    expires: now.Add(TimeSpan.FromDays(jwtOptions.LIFETIME + (rememberMe ? 10 : 0))),
                     signingCredentials: new SigningCredentials(jwtOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 

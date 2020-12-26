@@ -22,18 +22,33 @@ namespace Shopich.Controllers.api
             _categoryRepository = categoryRepository;
         }
 
+        /// <summary>
+        /// Get list of categories
+        /// </summary>
+        /// <param name="current"></param>
+        /// <param name="size"></param>
+        /// <returns>List of categories</returns>
+        /// <response code="200"></response>
         [HttpGet]
-        public async Task<IEnumerable<Category>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
+        public async Task<Category[]> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
         {
             var categories = await _categoryRepository.GetAll();
-            return categories.Skip((current -  1) * size).Take(size);
+
+            return categories.Skip((current -  1) * size).Take(size).ToArray();
         }
 
-        [Route("{id:int}")]
-        public async Task<Category> GetCategory(int id)
+        /// <summary>
+        /// Get category by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Category object</returns>
+        /// <response code="200"></response>
+        [HttpGet("id:int")]
+        public async Task<IActionResult> Get(int id)
         {
             var category = await _categoryRepository.GetById(id);
-            return category;
+
+            return Json(category);
         }
     }
 }

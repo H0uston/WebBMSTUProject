@@ -10,6 +10,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Shopich.Config;
+using Shopich.Repositories.interfaces;
+using Shopich.Repositories.implementations;
+using System;
+using System.Reflection;
+using System.IO;
+using Microsoft.OpenApi.Models;
 
 namespace Shopich
 {
@@ -58,11 +64,62 @@ namespace Shopich
             );
             scopeInterfaceRepository(services);
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Shopich API",
+                    Description = "Official shopich ASP.NET Core Web API",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Official telegram channel",
+                        Email = string.Empty,
+                        Url = new Uri("https://t.me/mp4_thread"),
+                    }
+                });
+                // Bearer token authentication
+                OpenApiSecurityScheme securityDefinition = new OpenApiSecurityScheme()
+                {
+                    Name = "Bearer",
+                    BearerFormat = "JWT",
+                    Scheme = "bearer",
+                    Description = "Specify the authorization token.",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                };
+                c.AddSecurityDefinition("jwt_auth", securityDefinition);
+
+                // Make sure swagger UI requires a Bearer token specified
+                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                {
+                    Reference = new OpenApiReference()
+                    {
+                        Id = "jwt_auth",
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                OpenApiSecurityRequirement securityRequirements = new OpenApiSecurityRequirement()
+                {
+                    {securityScheme, new string[] { }},
+                };
+                c.AddSecurityRequirement(securityRequirements);
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
 
         public void scopeInterfaceRepository(IServiceCollection services)
         {
-            // services.AddScoped<ICategory, PostgreSQLCategoryRepository>();
+            services.AddScoped<ICategory, PostgreSQLCategoryRepository>();
+            services.AddScoped<ICategories, PostgreSQLCategoriesRepository>();
+            services.AddScoped<IOrder, PostgreSQLOrderRepository>();
+            services.AddScoped<IProduct, PostgreSQLProductRepository>();
+            services.AddScoped<IReview, PostgreSQLReviewRepository>();
+            services.AddScoped<IRole, PostgreSQLRoleRepository>();
+            services.AddScoped<IUser, PostgreSQLUserRepository>();
         }
 
         private void UpdateDatabase(IApplicationBuilder app)
@@ -92,6 +149,13 @@ namespace Shopich
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = "api/v1";
+            });
 
             app.UseRouting();
 

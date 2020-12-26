@@ -22,6 +22,13 @@ namespace Shopich.Controllers.api
             _productRepository = productRepository;
         }
 
+        /// <summary>
+        /// Get list of products
+        /// </summary>
+        /// <param name="current">Current page</param>
+        /// <param name="size">Size of page</param>
+        /// <returns>List of products</returns>
+        /// <response code="200"></response>
         [HttpGet]
         public async Task<IEnumerable<Product>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
         {
@@ -30,7 +37,13 @@ namespace Shopich.Controllers.api
             return products.Skip((current - 1) * size).Take(size);
         }
 
-        [Route("{id:int}")]
+        /// <summary>
+        /// Get product by id
+        /// </summary>
+        /// <param name="id">id of product</param>
+        /// <returns>Product object</returns>
+        /// <response code="200"></response>
+        [HttpGet("{id:int}")]
         public async Task<Product> GetProduct(int id)
         {
             var product = await _productRepository.GetById(id);

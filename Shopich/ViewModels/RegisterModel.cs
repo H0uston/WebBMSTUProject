@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -7,7 +8,9 @@ namespace Shopich.Models
 {
     public partial class RegisterModel
     {
+        [Required]
         public string email { get; set; }
+        [Required]
         public string password { get; set; }
         public string phone { get; set; }
         public string name { get; set; }

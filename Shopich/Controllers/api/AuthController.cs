@@ -12,9 +12,11 @@ using Microsoft.EntityFrameworkCore;
 using Shopich.ViewModels;
 using Shopich.Repositories.interfaces;
 using Shopich.Business_logic;
+using Microsoft.AspNetCore.Http;
 
 namespace Shopich.Controllers
 {
+    [Produces("application/json")]
     [ApiController]
     public class AuthController : Controller
     {
@@ -25,6 +27,13 @@ namespace Shopich.Controllers
             _userRepository = userRepository;
         }
 
+        /// <summary>
+        /// Login to get JWT token
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>JWT Token and email</returns>
+        /// <response code="200">Success login</response>
+        /// <response code="400">Wrong email or password</response>
         [HttpPost("api/v1/auth/login")]
         public IActionResult Login(LoginModel user)
         {
@@ -34,7 +43,7 @@ namespace Shopich.Controllers
                 var identity = AuthLogic.GetIdentity(person);
                 if (identity == null)
                 {
-                    return BadRequest(new { errorText = "Invalid username or password." });
+                    return BadRequest(new { errorText = "Invalid email or password." });
                 }
 
                 var response = new
@@ -46,9 +55,16 @@ namespace Shopich.Controllers
                 return Json(response);
             }
 
-            return BadRequest(new { errorText = "Invalid username or password." });
+            return BadRequest(new { errorText = "Invalid email or password." });
         }
 
+        /// <summary>
+        /// Register to shopich
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>User data</returns>
+        /// <response code="201">Success login</response>
+        /// <response code="400">Email is already in use</response>
         [HttpPost("api/v1/auth/register")]
         public IActionResult Register(RegisterModel user)
         {

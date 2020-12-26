@@ -24,6 +24,11 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.Reviews.ToArrayAsync();
         }
 
+        public async Task<Review[]> GetAllByProductId(int productId)
+        {
+            return await _dbContext.Reviews.Where(r => r.ProductId == productId).ToArrayAsync();
+        }
+
         public void Create(Review entity)
         {
             _dbContext.Reviews.Add(entity);

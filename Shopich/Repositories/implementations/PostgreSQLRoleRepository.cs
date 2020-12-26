@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shopich.Models;
+using Shopich.Repositories.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shopich.Repositories.implementations
 {
-    public class PostgreSQLRoleRepository
+    public class PostgreSQLRoleRepository : IRole
     {
         private ShopichContext _dbContext;
 

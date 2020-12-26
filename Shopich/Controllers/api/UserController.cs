@@ -22,6 +22,11 @@ namespace Shopich.Controllers.api
             _repository = repository;
         }
 
+        /// <summary>
+        /// Get info of current user
+        /// </summary>
+        /// <returns>User info</returns>
+        /// <response code="200"></response>
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<User> Get()
@@ -31,6 +36,12 @@ namespace Shopich.Controllers.api
             return user;
         }
 
+        /// <summary>
+        /// Edit info of current user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>Changed user</returns>
+        /// <response code="200"></response>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public User Edit(User user)

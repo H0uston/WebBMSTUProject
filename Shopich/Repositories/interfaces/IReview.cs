@@ -10,6 +10,7 @@ namespace Shopich.Repositories.interfaces
     public interface IReview
     {
         public Task<Review[]> GetAll();
+        public Task<Review[]> GetAllByProductId(int productId);
         public void Create(Review entity);
         public Task<Review> GetById(int id);
         public void Update(Review entity);

@@ -25,39 +25,54 @@ namespace Shopich.Controllers.api
             _userRepository = userRepository;
         }
 
+        /// <summary>
+        /// Get reviews for product page
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="current">Current page</param>
+        /// <param name="size">Size of page</param>
+        /// <returns>List of reviews</returns>
+        /// <response code="200"></response>
         [HttpGet]
-        public async Task<IEnumerable<Review>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
+        public async Task<IEnumerable<Review>> GetAll([FromRoute] int productId, [FromQuery] int current = 1, [FromQuery] int size = 5)
         {
-            var reviews = await _reviewRepository.GetAll();
+            var reviews = await _reviewRepository.GetAllByProductId(productId);
 
             return reviews.Skip((current - 1) * size).Take(size);
         }
 
+        /// <summary>
+        /// Create review for product
+        /// </summary>
+        /// <param name="review"></param>
+        /// <returns>Created review</returns>
+        /// <response code="201"></response>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Create(Review review)
         {
             var user = await _userRepository.GetByEmail(User.Identity.Name);
 
-            if (Convert.ToBoolean(review.ProductId) && Convert.ToBoolean(review.ReviewRating) && review.ReviewText != null)
-            {
-                var formedReview = ReviewLogic.CreateReview(review, user);
-                _reviewRepository.Create(review);
-                _reviewRepository.Save();
+            var formedReview = ReviewLogic.CreateReview(review, user);
+            _reviewRepository.Create(review);
+            _reviewRepository.Save();
 
-                return Json(formedReview);
-            }
-
-            return BadRequest("Not all parameters are given");
+            return CreatedAtAction("review", formedReview);
         }
 
+        /// <summary>
+        /// Change review for product
+        /// </summary>
+        /// <param name="review"></param>
+        /// <returns>Changed review</returns>
+        /// <response code="200"></response>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<Review> Change(Review newReview)
+        public async Task<Review> Change(Review review)
         {
-            var oldReview = await _reviewRepository.GetById(newReview.ReviewId);
+            var oldReview = await _reviewRepository.GetById(review.ReviewId);
 
-            ReviewLogic.UpdateReview(oldReview, newReview.ReviewText, newReview.ReviewRating);
+            ReviewLogic.UpdateReview(oldReview, review.ReviewText, review.ReviewRating);
 
             _reviewRepository.Update(oldReview);
             _reviewRepository.Save();
@@ -65,6 +80,12 @@ namespace Shopich.Controllers.api
             return oldReview;
         }
 
+        /// <summary>
+        /// Delete review
+        /// </summary>
+        /// <param name="reviewId">id of review</param>
+        /// <returns>Delete review</returns>
+        /// <response code="204"></response>
         [HttpDelete]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(int reviewId)

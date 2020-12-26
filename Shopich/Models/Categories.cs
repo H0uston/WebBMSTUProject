@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 #nullable disable
 
@@ -10,8 +11,9 @@ namespace Shopich.Models
         public int CategoriesId { get; set; }
         public int ProductId { get; set; }
         public int CategoryId { get; set; }
-
+        [JsonIgnore]
         public virtual Category Category { get; set; }
+        [JsonIgnore]
         public virtual Product Product { get; set; }
     }
 }

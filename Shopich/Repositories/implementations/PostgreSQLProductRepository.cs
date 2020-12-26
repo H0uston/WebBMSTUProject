@@ -24,9 +24,9 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.Products.ToArrayAsync();
         }
 
-        public void Create(Product entity)
+        public async Task Create(Product entity)
         {
-            _dbContext.Products.Add(entity);
+            await _dbContext.Products.AddAsync(entity);
         }
 
         public async Task<Product> GetById(int id)
@@ -48,7 +48,7 @@ namespace Shopich.Repositories.implementations
             }
         }
 
-        public async void Save()
+        public async Task Save()
         {
             await _dbContext.SaveChangesAsync();
         }

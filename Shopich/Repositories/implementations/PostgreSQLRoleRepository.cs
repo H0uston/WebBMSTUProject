@@ -22,9 +22,9 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.Roles.ToArrayAsync();
         }
 
-        public void Create(Role entity)
+        public async Task Create(Role entity)
         {
-            _dbContext.Roles.Add(entity);
+            await _dbContext.Roles.AddAsync(entity);
         }
         public async Task<Role> GetById(int id)
         {
@@ -41,7 +41,7 @@ namespace Shopich.Repositories.implementations
                 _dbContext.Roles.Remove(await this.GetById(id));
             }
         }
-        public async void Save()
+        public async Task Save()
         {
             await _dbContext.SaveChangesAsync();
         }

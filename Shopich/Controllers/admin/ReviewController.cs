@@ -69,8 +69,8 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _reviewRepository.Create(review);
-                _reviewRepository.Save();
+                await _reviewRepository.Create(review);
+                await _reviewRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ProductId"] = new SelectList(await _productRepository.GetAll(), "ProductId", "ProductName", review.ProductId);
@@ -113,7 +113,7 @@ namespace Shopich.Controllers
                 try
                 {
                     _reviewRepository.Update(review);
-                    _reviewRepository.Save();
+                    await _reviewRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -159,7 +159,7 @@ namespace Shopich.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             _reviewRepository.Delete(id);
-            _reviewRepository.Save();
+            await _reviewRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 

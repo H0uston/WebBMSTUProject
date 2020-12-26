@@ -44,7 +44,7 @@ namespace Shopich.Controllers.api
         /// <returns>Category object</returns>
         /// <response code="200"></response>
         [HttpGet("id:int")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetCategory(int id)
         {
             var category = await _categoryRepository.GetById(id);
 

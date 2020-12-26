@@ -59,8 +59,8 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepository.Create(category);
-                _categoryRepository.Save();
+                await _categoryRepository.Create(category);
+                await _categoryRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -99,7 +99,7 @@ namespace Shopich.Controllers
                 try
                 {
                     _categoryRepository.Update(category);
-                    _categoryRepository.Save();
+                    await _categoryRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -140,7 +140,7 @@ namespace Shopich.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             _categoryRepository.Delete(id);
-            _categoryRepository.Save();
+            await _categoryRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 

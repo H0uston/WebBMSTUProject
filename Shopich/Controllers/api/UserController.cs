@@ -29,7 +29,7 @@ namespace Shopich.Controllers.api
         /// <response code="200"></response>
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<User> Get()
+        public async Task<User> GetUser()
         {
             var user = await _repository.GetByEmail(User.Identity.Name);
 
@@ -44,10 +44,10 @@ namespace Shopich.Controllers.api
         /// <response code="200"></response>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public User Edit(User user)
+        public async Task<User> EditUser(User user)
         {
             _repository.Update(user);
-            _repository.Save();
+            await _repository.Save();
 
             return user;
         }

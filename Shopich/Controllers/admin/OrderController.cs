@@ -65,8 +65,8 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _orderRepository.Create(order);
-                _orderRepository.Save();
+                await _orderRepository.Create(order);
+                await _orderRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["UserId"] = new SelectList(await _userRepository.GetAll(), "UserId", "UserEmail", order.UserId);
@@ -107,7 +107,7 @@ namespace Shopich.Controllers
                 try
                 {
                     _orderRepository.Update(order);
-                    _orderRepository.Save();
+                    await _orderRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -151,7 +151,7 @@ namespace Shopich.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             _orderRepository.Delete(id);
-            _orderRepository.Save();
+            await _orderRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 

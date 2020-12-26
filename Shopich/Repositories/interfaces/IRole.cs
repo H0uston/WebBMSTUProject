@@ -9,11 +9,11 @@ namespace Shopich.Repositories.interfaces
     public interface IRole
     {
         public Task<Role[]> GetAll();
-        public void Create(Role entity);
+        public Task Create(Role entity);
         public Task<Role> GetById(int id);
         public void Update(Role entity);
         public void Delete(int id);
-        public void Save();
+        public Task Save();
         public bool Exists(int id);
     }
 }

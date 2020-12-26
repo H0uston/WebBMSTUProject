@@ -49,13 +49,13 @@ namespace Shopich.Controllers.api
         /// <response code="201"></response>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Create(Review review)
+        public async Task<IActionResult> CreateReview(Review review)
         {
             var user = await _userRepository.GetByEmail(User.Identity.Name);
 
             var formedReview = ReviewLogic.CreateReview(review, user);
-            _reviewRepository.Create(review);
-            _reviewRepository.Save();
+            await _reviewRepository.Create(review);
+            await _reviewRepository.Save();
 
             return CreatedAtAction("review", formedReview);
         }
@@ -68,14 +68,14 @@ namespace Shopich.Controllers.api
         /// <response code="200"></response>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<Review> Change(Review review)
+        public async Task<Review> ChangeReview(Review review)
         {
             var oldReview = await _reviewRepository.GetById(review.ReviewId);
 
             ReviewLogic.UpdateReview(oldReview, review.ReviewText, review.ReviewRating);
 
             _reviewRepository.Update(oldReview);
-            _reviewRepository.Save();
+            await _reviewRepository.Save();
 
             return oldReview;
         }
@@ -88,10 +88,10 @@ namespace Shopich.Controllers.api
         /// <response code="204"></response>
         [HttpDelete]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Delete(int reviewId)
+        public async Task<IActionResult> DeleteReview(int reviewId)
         {
             _reviewRepository.Delete(reviewId);
-            _reviewRepository.Save();
+            await _reviewRepository.Save();
 
             return NoContent();
         }

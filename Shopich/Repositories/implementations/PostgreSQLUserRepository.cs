@@ -24,7 +24,7 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.Users.ToArrayAsync();
         }
 
-        public void Create(User item)
+        public async Task Create(User item)
         {
             _dbContext.Users.Add(item);
         }
@@ -41,7 +41,6 @@ namespace Shopich.Repositories.implementations
 
         public void Update(User entity)
         {
-            // _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.Update(entity);
         }
 
@@ -53,7 +52,7 @@ namespace Shopich.Repositories.implementations
             }
         }
 
-        public async void Save()
+        public async Task Save()
         {
             await _dbContext.SaveChangesAsync();
         }

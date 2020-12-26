@@ -59,8 +59,8 @@ namespace Shopich.Controllers
         {
             if (ModelState.IsValid)
             {
-                _roleRepository.Create(role);
-                _roleRepository.Save();
+                await _roleRepository.Create(role);
+                await _roleRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(role);
@@ -99,7 +99,7 @@ namespace Shopich.Controllers
                 try
                 {
                     _roleRepository.Update(role);
-                    _roleRepository.Save();
+                    await _roleRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -140,7 +140,7 @@ namespace Shopich.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             _roleRepository.Delete(id);
-            _roleRepository.Save();
+            await _roleRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 

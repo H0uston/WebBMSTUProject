@@ -68,14 +68,14 @@ namespace Shopich.Controllers.api
             if (order == null)
             {
                 order = CartLogic.CreateUnacceptedOrder(currentUser);
-                _orderRepository.Create(order);
-                _ordersRepository.Save();
+                await _orderRepository.Create(order);
+                await _ordersRepository.Save();
                 order = await _orderRepository.GetUnacceptedOrder(currentUser.UserId);
             }
 
             var orders = CartLogic.AddProductToCart(order, await _productRepository.GetById(productId), count);
-            _ordersRepository.Create(orders);
-            _ordersRepository.Save();
+            await _ordersRepository.Create(orders);
+            await _ordersRepository.Save();
 
             return Json(orders);
         }
@@ -96,6 +96,8 @@ namespace Shopich.Controllers.api
             }
             var newOrders = await _ordersRepository.GetById(orders.OrdersId);
             newOrders.Count = orders.Count;
+            _ordersRepository.Update(newOrders);
+            await _ordersRepository.Save();
 
             return Ok();
         }
@@ -107,10 +109,10 @@ namespace Shopich.Controllers.api
         /// <returns>Status code</returns>
         /// <response code="204">Product was deleted</response>
         [HttpDelete]
-        public async Task<IActionResult> Delete(Orders orders)
+        public async Task<IActionResult> DeleteProduct(Orders orders)
         {
             _ordersRepository.Delete(orders.OrdersId);
-            _ordersRepository.Save();
+            await _ordersRepository.Save();
 
             return NoContent();
         }

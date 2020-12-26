@@ -11,11 +11,11 @@ namespace Shopich.Repositories.interfaces
     {
         public Task<Review[]> GetAll();
         public Task<Review[]> GetAllByProductId(int productId);
-        public void Create(Review entity);
+        public Task Create(Review entity);
         public Task<Review> GetById(int id);
         public void Update(Review entity);
         public void Delete(int id);
-        public void Save();
+        public Task Save();
         public IQueryable<Review> Include(params Expression<Func<Review, object>>[] includeProperties);
         public bool Exists(int id);
     }

@@ -29,9 +29,9 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.Reviews.Where(r => r.ProductId == productId).ToArrayAsync();
         }
 
-        public void Create(Review entity)
+        public async Task Create(Review entity)
         {
-            _dbContext.Reviews.Add(entity);
+            await _dbContext.Reviews.AddAsync(entity);
         }
 
         public async Task<Review> GetById(int id)
@@ -41,7 +41,6 @@ namespace Shopich.Repositories.implementations
 
         public void Update(Review entity)
         {
-            // _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.Update(entity);
         }
 
@@ -53,7 +52,7 @@ namespace Shopich.Repositories.implementations
             }
         }
 
-        public async void Save()
+        public async Task Save()
         {
             await _dbContext.SaveChangesAsync();
         }

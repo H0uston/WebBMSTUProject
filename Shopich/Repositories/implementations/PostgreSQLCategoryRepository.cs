@@ -24,9 +24,9 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.Categories.ToArrayAsync();
         }
 
-        public void Create(Category entity)
+        public async Task Create(Category entity)
         {
-            _dbContext.Categories.Add(entity);
+            await _dbContext.Categories.AddAsync(entity);
         }
 
         public async Task<Category> GetById(int id)
@@ -36,7 +36,6 @@ namespace Shopich.Repositories.implementations
 
         public void Update(Category entity)
         {
-            // _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.Update(entity);
         }
 
@@ -48,7 +47,7 @@ namespace Shopich.Repositories.implementations
             }
         }
 
-        public async void Save()
+        public async Task Save()
         {
             await _dbContext.SaveChangesAsync();
         }

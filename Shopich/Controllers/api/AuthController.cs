@@ -66,7 +66,7 @@ namespace Shopich.Controllers
         /// <response code="201">Success login</response>
         /// <response code="400">Email is already in use</response>
         [HttpPost("api/v1/auth/register")]
-        public IActionResult Register(RegisterModel user)
+        public async Task<IActionResult> Register(RegisterModel user)
         {
             var old_user = _userRepository.GetByEmail(user.email);
             if (old_user != null)
@@ -74,8 +74,8 @@ namespace Shopich.Controllers
                 return BadRequest(new { errorText = "Email is already in use." });
             }
 
-            _userRepository.Create(new User(user));
-            _userRepository.Save();
+            await _userRepository.Create(new User(user));
+            await _userRepository.Save();
 
             return CreatedAtAction("User", user);
         }

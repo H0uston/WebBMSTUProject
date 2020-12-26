@@ -67,7 +67,7 @@ namespace Shopich.Controllers.api
             order = OrderLogic.ApproveOrder(order);
 
             _orderRepository.Update(order);
-            _orderRepository.Save();
+            await _orderRepository.Save();
 
             return CreatedAtAction("order", order);
         }
@@ -83,7 +83,7 @@ namespace Shopich.Controllers.api
         public async Task<IActionResult> DeleteOrder(int id)
         {
             _orderRepository.Delete(id);
-            _orderRepository.Save();
+            await _orderRepository.Save();
 
             return NoContent();
         }

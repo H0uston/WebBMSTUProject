@@ -1,0 +1,11 @@
+.homeContainer {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 10px;
+}
+
+.slide {
+    display: flex !important;
+    flex-direction: row;
+    gap: 5px;
+}

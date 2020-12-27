@@ -1,0 +1,20 @@
+
+.footerComponent {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    padding-left: 50px;
+
+    height: 50px;
+    background-color: #C8E6C9;
+    font-size: 15px;
+    font-family: "Verdana", sans-serif;
+}
+
+.link {
+    text-decoration: none;
+    font-size: 15px;
+    font-family: "Verdana", sans-serif;
+    padding-left: 20px;
+}

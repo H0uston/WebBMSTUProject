@@ -11,7 +11,7 @@ using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public class OrdersController : Controller
     {
         private readonly IOrders _ordersRepository;

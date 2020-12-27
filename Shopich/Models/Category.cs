@@ -18,8 +18,6 @@ namespace Shopich.Models
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public string CategoryDescription { get; set; }
-        [IgnoreDataMember]
-        [JsonIgnore]
         public virtual ICollection<Categories> CategoryCollection { get; set; }
     }
 }

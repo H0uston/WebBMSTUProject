@@ -21,7 +21,7 @@ namespace Shopich.Repositories.implementations
 
         public async Task<Product[]> GetAll()
         {
-            return await _dbContext.Products.ToArrayAsync();
+            return await _dbContext.Products.Include(p => p.Reviews).Include(p => p.CategoryCollection).ToArrayAsync();
         }
 
         public async Task Create(Product entity)
@@ -31,12 +31,12 @@ namespace Shopich.Repositories.implementations
 
         public async Task<Product> GetById(int id)
         {
-            return await _dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+            return await _dbContext.Products.Include(p => p.Reviews).Include(p => p.CategoryCollection).FirstOrDefaultAsync(p => p.ProductId == id);
         }
 
         public async Task<IEnumerable<Product>> GetByName(string name)
         {
-            return await _dbContext.Products.Where(p => p.ProductName.ToLower() == name.ToLower()).ToArrayAsync();
+            return await _dbContext.Products.Include(p => p.Reviews).Include(p => p.CategoryCollection).Where(p => p.ProductName.ToLower().Contains(name.ToLower()) || name.ToLower().Contains(p.ProductName.ToLower())).ToArrayAsync();
         }
 
         public void Update(Product entity)

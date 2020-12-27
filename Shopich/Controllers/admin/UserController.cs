@@ -11,7 +11,7 @@ using Shopich.Repositories.interfaces;
 
 namespace Shopich.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly IUser _userRepository;

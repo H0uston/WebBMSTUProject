@@ -22,6 +22,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Shopich
 {
@@ -44,6 +45,9 @@ namespace Shopich
                 .AddCookie(options =>
                 {
                     options.LoginPath = new PathString("/Account/Login");
+                    options.Cookie.SameSite = SameSiteMode.Lax;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.IsEssential = true;
                 })
                 .AddJwtBearer(options =>
                 {
@@ -118,6 +122,11 @@ namespace Shopich
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
         }
 
         public void scopeInterfaceRepository(IServiceCollection services)
@@ -150,12 +159,14 @@ namespace Shopich
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseForwardedHeaders();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                app.UseForwardedHeaders();
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();

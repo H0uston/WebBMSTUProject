@@ -21,6 +21,7 @@ namespace Shopich.Controllers
 
         public IActionResult Index()
         {
+            return View();
             if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
             {
                 return View();

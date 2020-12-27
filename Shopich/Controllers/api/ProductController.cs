@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shopich.Business_logic;
 using Shopich.Models;
 using Shopich.Repositories.interfaces;
 using System;
@@ -42,6 +43,8 @@ namespace Shopich.Controllers.api
             {
                 products = await _productRepository.GetAll();
             }
+
+            products = ProductLogic.SetRating(products);
             
             return products.Skip((current - 1) * size).Take(size);
         }
@@ -56,6 +59,8 @@ namespace Shopich.Controllers.api
         public async Task<Product> GetProduct(int id)
         {
             var product = await _productRepository.GetById(id);
+
+            product.GetProductRating();
 
             return product;
         }

@@ -21,7 +21,7 @@ namespace Shopich.Repositories.implementations
 
         public async Task<Category[]> GetAll()
         {
-            return await _dbContext.Categories.ToArrayAsync();
+            return await _dbContext.Categories.Include(c => c.CategoryCollection).ToArrayAsync();
         }
 
         public async Task Create(Category entity)
@@ -31,7 +31,7 @@ namespace Shopich.Repositories.implementations
 
         public async Task<Category> GetById(int id)
         {
-            return await _dbContext.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
+            return await _dbContext.Categories.Include(c => c.CategoryCollection).FirstOrDefaultAsync(c => c.CategoryId == id);
         }
 
         public void Update(Category entity)

@@ -96,7 +96,7 @@ namespace Shopich.Controllers.api
         /// <returns>Status code</returns>
         /// <response code="204"></response>
         /// <response code="400"></response>
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var order = await _orderRepository.GetById(id);

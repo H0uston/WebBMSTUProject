@@ -117,7 +117,7 @@ namespace Shopich.Controllers.api
         /// <param name="reviewId">id of review</param>
         /// <returns>Delete review</returns>
         /// <response code="204"></response>
-        [HttpDelete]
+        [HttpDelete("{reviewId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -125,7 +125,7 @@ namespace Shopich.Controllers.api
         /// <param name="ordersId"></param>
         /// <returns>Status code</returns>
         /// <response code="204">Product was deleted</response>
-        [HttpDelete]
+        [HttpDelete("{ordersId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteProduct(int ordersId)

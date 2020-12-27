@@ -2,3 +2,19 @@
 .searchContent {
 
 }
+
+.input {
+    background-image: url("/src/assets/images/magnifier_logo.png");
+    background-repeat: no-repeat;
+    background-position: 4px;
+    outline: none;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 25px;
+    padding-left: 30px;
+    height: 30px;
+    font-size: 14px;
+    border: 2px solid #1D1D1D;
+    box-sizing: content-box;
+    background-size: 18px;
+}

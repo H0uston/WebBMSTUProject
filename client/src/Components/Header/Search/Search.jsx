@@ -4,7 +4,7 @@ import styles from "./Search.module.css";
 const Search = (props) => {
     return (
         <div className={styles.searchContent}>
-            <input />
+            <input className={styles.input} />
         </div>
     );
 };

@@ -11,7 +11,7 @@
     border: 2px solid #1D1D1D;
     border-radius: 25px;
     text-decoration: none;
-    color: black;
+    color: black !important;
 
     cursor: pointer;
 

@@ -4,36 +4,12 @@ import styles from "./Home.module.css";
 import {Carousel} from "antd";
 import "antd/dist/antd.css";
 import Card from "../common/card/Card";
+import CarouselComponent from "../common/cardSlider/CardSlider";
 
 const Home = (props) => {
     return (
         <div className={"homeContainer"}>
-            <Carousel autoplay>
-                <div className={styles.slide}>
-                    <Card name={"Cart 1"}/>
-                    <Card name={"Cart 2"}/>
-                    <Card name={"Cart 3"}/>
-                    <Card name={"Cart 4"}/>
-                </div>
-                <div className={styles.slide}>
-                    <Card name={"Cart 1"}/>
-                    <Card name={"Cart 2"}/>
-                    <Card name={"Cart 3"}/>
-                    <Card name={"Cart 4"}/>
-                </div>
-                <div className={styles.slide}>
-                    <Card name={"Cart 1"}/>
-                    <Card name={"Cart 2"}/>
-                    <Card name={"Cart 3"}/>
-                    <Card name={"Cart 4"}/>
-                </div>
-                <div className={styles.slide}>
-                    <Card name={"Cart 1"}/>
-                    <Card name={"Cart 2"}/>
-                    <Card name={"Cart 3"}/>
-                    <Card name={"Cart 4"}/>
-                </div>
-            </Carousel>
+            <CarouselComponent />
         </div>
     )
 };

@@ -32,7 +32,7 @@ export const productAPI = {
         return fetch(url);
     },
 
-    fetchCategory: (productId) => {
+    fetchProduct: (productId) => {
         return fetch(fetchData.baseURL + `product/${productId}`);
     }
 };

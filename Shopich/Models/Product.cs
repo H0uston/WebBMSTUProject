@@ -27,6 +27,8 @@ namespace Shopich.Models
         public int? ProductDiscount { get; set; }
         [NotMapped]
         public double? ProductRating { get; set; }
+        [NotMapped]
+        public double ProductPriceWithDiscount { get; set; }
         public virtual ICollection<Categories> CategoryCollection { get; set; }
         [IgnoreDataMember]
         [JsonIgnore]
@@ -35,11 +37,11 @@ namespace Shopich.Models
         [JsonIgnore]
         public virtual ICollection<Review> Reviews { get; set; }
 
-        public double GetPriceWithDiscount()
+        public void SetPriceWithDiscount()
         {
-            return this.ProductPrice - (this.ProductPrice * (double)(this.ProductDiscount != null ? Math.Round((decimal)ProductDiscount / 100, 2) : 1));
+            this.ProductPriceWithDiscount = this.ProductPrice - (this.ProductPrice * (double)(this.ProductDiscount != null ? Math.Round((decimal)ProductDiscount / 100, 2) : 1));
         }
-        public void GetProductRating()
+        public void SetProductRating()
         {
             double? rating = null;
             if (this.Reviews.Count != 0)

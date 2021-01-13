@@ -39,9 +39,9 @@ namespace Shopich.Repositories.implementations
             return await _dbContext.Reviews.FirstOrDefaultAsync(r => r.ReviewId == id);
         }
 
-        public async Task<Review> GetByUserId(int id)
+        public async Task<Review> GetByProductIdAndUserId(int productId, int userId)
         {
-            return await _dbContext.Reviews.FirstOrDefaultAsync(r => r.UserId == id);
+            return await _dbContext.Reviews.FirstOrDefaultAsync(r => r.UserId == userId && r.ProductId == productId);
         }
 
         public void Update(Review entity)

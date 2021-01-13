@@ -1,20 +1,23 @@
 
 .footerComponent {
     display: flex;
+    align-self: center;
+    justify-self: center;
+
     flex-direction: row;
     align-items: center;
 
-    padding-left: 50px;
-
-    height: 50px;
+    height: 70px;
+    width: 1440px;
     background-color: #C8E6C9;
-    font-size: 15px;
-    font-family: "Verdana", sans-serif;
+
+    border: 2px solid black;
+    border-bottom: 0;
+
+    box-sizing: border-box;
 }
 
 .link {
     text-decoration: none;
-    font-size: 15px;
-    font-family: "Verdana", sans-serif;
     padding-left: 20px;
 }

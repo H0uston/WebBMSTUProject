@@ -6,15 +6,17 @@
 .input {
     background-image: url("/src/assets/images/magnifier_logo.png");
     background-repeat: no-repeat;
-    background-position: 4px;
+    background-position: 10px;
     outline: none;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 25px;
-    padding-left: 30px;
-    height: 30px;
-    font-size: 14px;
+    padding-left: 35px;
+    height: 55px;
+    width: 570px;
     border: 2px solid #1D1D1D;
-    box-sizing: content-box;
+    box-sizing: border-box;
     background-size: 18px;
+    padding-bottom: 0;
+    padding-top: 0;
 }

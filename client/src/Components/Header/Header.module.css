@@ -1,7 +1,10 @@
 .headerComponent {
     flex: 1;
+    align-self: center;
+    justify-self: center;
 
-    max-height: 50px;
+    max-height: 70px;
+    min-height: 70px;
 
     background-color: #C8E6C9;
     box-shadow: 0 0 16px #cccccc;
@@ -10,16 +13,18 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    width: 1440px;
 
-    border-bottom: 2px solid #000000;
+    border: 2px solid #000000;
+    border-top: 0;
 
     padding: 0 10px 0 10px;
+    box-sizing: border-box;
 }
 
 .logo {
-    height: 30px;
-    width: 30px;
+    height: 70px;
+    width: 70px;
 }
 
 .logoAndTitle {
@@ -31,4 +36,11 @@
     margin-left: 10px;
 
     text-decoration: none;
+}
+
+.search {
+    display: flex;
+    flex-direction: row;
+
+    gap: 20px;
 }

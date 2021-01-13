@@ -29,18 +29,19 @@ const homeReducer = (state=initialState, action) => {
 export const getCategories = () => async (dispatch) => {
     dispatch(setIsFetching(true));
     let response = await categoryAPI.fetchAll(1, 16);
-    debugger;
     if (response.status === 200) {
         let categories = await response.json();
         let products = [];
 
-        for (let category of categories.categoryCollection) {
-            let resp = await productAPI.fetchProduct(category.productId);
-            if (resp.status === 200) {
-                let product = await resp.json();
-                products.push(product);
-            } else {
-                throw Error(response.statusText);
+        for (let category of categories) {
+            for (let categoryCollection of category.categoryCollection) {
+                let resp = await productAPI.fetchProduct(categoryCollection.productId);
+                if (resp.status === 200) {
+                    let product = await resp.json();
+                    products.push(product);
+                } else {
+                    throw Error(response.statusText);
+                }
             }
         }
         dispatch(setCategories(categories));

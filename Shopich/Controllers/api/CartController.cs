@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Shopich.Controllers.api
 {
     [ApiController]
-    [Route("api/v1/cart")]
+    [Route("api/v1/cart/products")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CartController : Controller
     {
@@ -122,15 +122,15 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Delete product from cart
         /// </summary>
-        /// <param name="ordersId"></param>
+        /// <param name="id"></param>
         /// <returns>Status code</returns>
         /// <response code="204">Product was deleted</response>
-        [HttpDelete("{ordersId}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteProduct(int ordersId)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-            var orders = await _ordersRepository.Include(o => o.OrderNavigation).FirstOrDefaultAsync(o => o.OrdersId == ordersId);
+            var orders = await _ordersRepository.Include(o => o.OrderNavigation).FirstOrDefaultAsync(o => o.OrdersId == id);
             var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
 
             if (orders == null)
@@ -143,7 +143,7 @@ namespace Shopich.Controllers.api
             }
             else
             {
-                await _ordersRepository.Delete(ordersId);
+                await _ordersRepository.Delete(id);
                 await _ordersRepository.Save();
             }
 

@@ -13,7 +13,7 @@ namespace Shopich.Repositories.interfaces
         public Task<Review[]> GetAllByProductId(int productId);
         public Task Create(Review entity);
         public Task<Review> GetById(int id);
-        public Task<Review> GetByUserId(int id);
+        public Task<Review> GetByProductIdAndUserId(int productId, int userId);
         public void Update(Review entity);
         public Task Delete(int id);
         public Task Save();

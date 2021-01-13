@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Header.module.css";
-import headerIcon from "../../assets/images/logo.jpg";
+import headerIcon from "../../assets/images/logo.png";
 import {NavLink} from "react-router-dom";
 import LinkButton from "../common/buttons/LinkButton";
 import Search from "./Search/Search";
@@ -13,8 +13,10 @@ const Header = (props) => {
                 <img className={styles.logo} src={headerIcon} alt={"logo"}/>
             </NavLink>
             <LinkButton text={"Категории"} to={"/category"} />
-            <Search />
-            <FunctionalButton text={"Найти"} />
+            <div className={styles.search}>
+                <Search />
+                <FunctionalButton text={"Найти"} />
+            </div>
             {props.isAuthenticated ?
                 <>
                     <LinkButton text={"Корзина"} />

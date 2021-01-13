@@ -13,7 +13,18 @@ namespace Shopich.Business_logic
             for (var i = 0; i < products.Count(); i++)
             {
                 Product p = products.Skip(i).Take(1).ToArray()[0];
-                p.GetProductRating();
+                p.SetProductRating();
+            }
+
+            return products;
+        }
+
+        static public IEnumerable<Product> SetDiscontPrice(IEnumerable<Product> products)
+        {
+            for (var i = 0; i < products.Count(); i++)
+            {
+                Product p = products.Skip(i).Take(1).ToArray()[0];
+                p.SetPriceWithDiscount();
             }
 
             return products;

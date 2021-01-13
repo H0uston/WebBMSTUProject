@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Shopich.Controllers.api
 {
     [ApiController]
-    [Route("api/v1/order")]
+    [Route("api/v1/orders")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrderController : Controller
     {

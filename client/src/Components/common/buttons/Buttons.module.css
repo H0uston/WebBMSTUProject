@@ -1,13 +1,10 @@
 .button {
-    width: 150px;
-    height: 30px;
+    height: 55px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 14px;
-    font-family: "Verdana", sans-serif;
     border: 2px solid #1D1D1D;
     border-radius: 25px;
     text-decoration: none;
@@ -17,9 +14,13 @@
 
     outline: none;
 
+    font-family: "Roboto", "serif";
+    font-size: 26px;
+
     background-color: #F0F0F0;
-    padding: 0;
-    box-sizing: content-box;
+    padding-left: 35px;
+    padding-right: 35px;
+    box-sizing: border-box;
 }
 
 .button:hover {

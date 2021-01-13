@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Shopich.Controllers.api
 {
     [ApiController]
-    [Route("api/v1/review")]
+    [Route("api/v1/products/{productId}/reviews")]
     public class ReviewController : Controller
     {
         private readonly IReview _reviewRepository;
@@ -34,7 +34,7 @@ namespace Shopich.Controllers.api
         /// <param name="size">Size of page</param>
         /// <returns>List of reviews</returns>
         /// <response code="200"></response>
-        [HttpGet("{productId}")]
+        [HttpGet]
         public async Task<IEnumerable<Review>> GetAll([FromRoute]int productId, [FromQuery] int current = 1, [FromQuery] int size = 5)
         {
             var reviews = await _reviewRepository.GetAllByProductId(productId);
@@ -55,7 +55,7 @@ namespace Shopich.Controllers.api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateReview(string reviewText, int reviewRating, int productId)
+        public async Task<IActionResult> CreateReview([FromRoute] int productId, string reviewText, int reviewRating)
         {
             var user = await _userRepository.GetByEmail(User.Identity.Name);
 
@@ -79,6 +79,7 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Change review for product
         /// </summary>
+        /// <param name="productId"></param>
         /// <param name="reviewText"></param>
         /// <param name="reviewRating"></param>
         /// <returns>Changed review</returns>
@@ -88,10 +89,10 @@ namespace Shopich.Controllers.api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ChangeReview(string reviewText, int reviewRating)
+        public async Task<IActionResult> ChangeReview([FromRoute] int productId, string reviewText, int reviewRating)
         {
             var user = await _userRepository.GetByEmail(User.Identity.Name);
-            var oldReview = await _reviewRepository.GetByUserId(user.UserId);
+            var oldReview = await _reviewRepository.GetByProductIdAndUserId(productId, user.UserId);
 
             if (oldReview == null)
             {
@@ -114,14 +115,15 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Delete review
         /// </summary>
+        /// <param name="productId"></param>
         /// <param name="reviewId">id of review</param>
         /// <returns>Delete review</returns>
         /// <response code="204"></response>
-        [HttpDelete("{reviewId}")]
+        [HttpDelete("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteReview(int reviewId)
+        public async Task<IActionResult> DeleteReview([FromRoute] int productId, int reviewId)
         {
             var user = await _userRepository.GetByEmail(User.Identity.Name);
             var review = await _reviewRepository.GetById(reviewId);

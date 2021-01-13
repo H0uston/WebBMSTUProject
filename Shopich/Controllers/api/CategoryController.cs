@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Shopich.Controllers.api
 {
     [ApiController]
-    [Route("api/v1/category")]
+    [Route("api/v1/categories")]
     public class CategoryController : Controller
     {
         private readonly ICategory _categoryRepository;

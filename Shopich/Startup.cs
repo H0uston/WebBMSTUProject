@@ -38,6 +38,13 @@ namespace Shopich
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             services.AddDbContext<ShopichContext>(option =>
                 option.UseNpgsql(Configuration.GetConnectionString("ShopichDB")));
 
@@ -170,6 +177,8 @@ namespace Shopich
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseCors("MyPolicy");
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

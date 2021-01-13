@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Shopich.Controllers.api
 {
     [ApiController]
-    [Route("api/v1/product")]
+    [Route("api/v1/products")]
     public class ProductController : Controller
     {
         private readonly IProduct _productRepository;
@@ -45,6 +45,7 @@ namespace Shopich.Controllers.api
             }
 
             products = ProductLogic.SetRating(products);
+            products = ProductLogic.SetDiscontPrice(products);
             
             return products.Skip((current - 1) * size).Take(size);
         }
@@ -60,7 +61,8 @@ namespace Shopich.Controllers.api
         {
             var product = await _productRepository.GetById(id);
 
-            product.GetProductRating();
+            product.SetProductRating();
+            product.SetPriceWithDiscount();
 
             return product;
         }

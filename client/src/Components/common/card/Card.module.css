@@ -1,6 +1,258 @@
-.cardContent {
-    background-color: #C8E6C9;
+* h1 {
+    font-size:44px;
+    margin: 0;
+}
 
-    width: 200px;
-    height: 400px;
+* h2 {
+    font-size:26px;
+    margin: 0;
+}
+
+* h3 {
+    font-size:16px;
+    margin: 0;
+}
+
+* h4 {
+    font-size:11px;
+    color:#6C6868;
+}
+
+.ProductCard {
+    margin-left:10px;
+    margin-top:40px;
+    width: 271px;
+    height: 406px;
+    background-color:#C8E6C9;
+    border:2px solid black;
+    border-radius:20px;
+}
+
+.ProductImgContainer {
+    position:relative;
+}
+
+.ProductImgContainer img{
+    width: 267px;
+    height:210px;
+    border-radius:20px 20px 0 0;
+    border-bottom:2px solid black;
+}
+
+.ProductRating {
+    display: flex;
+    flex-direction: row;
+    width:81px;
+    height:40px;
+    background-color: white;
+    border:2px solid black;
+    border-radius: 20px 0 20px 0;
+    position:absolute;
+    top:-2px;
+    left:-2px;
+}
+
+.ProductRating img{
+    margin-top:8px;
+    margin-left:8px;
+    border:none;
+    width: 26px;
+    height:26px;
+}
+
+.ProductDiscount {
+    display: flex;
+    flex-direction: row;
+    width:81px;
+    height:40px;
+    background-color: white;
+    border:2px solid black;
+    border-radius: 0 20px 0 20px;
+    position:absolute;
+    top:-2px;
+    right:-2px;
+}
+
+.ProductDiscount img{
+    margin-top:8px;
+    margin-left:8px;
+    border:none;
+    width: 26px;
+    height:26px;
+}
+
+.BottomGear {
+    margin-left:20px;
+}
+
+.BottomGear div {
+    margin: 0;
+    padding: 0;
+}
+
+.ProductWeight {
+}
+
+.ProductAmount button {
+    font-weight: bold;
+    border:1px solid black;
+    width:26px;
+    height:26px;
+    border-radius:100%;
+    background-color:#FF9600;
+    font-size:20px;
+}
+
+.ProductAmount button:hover {
+    transition: 0.3s;
+    background-color:#EE981D;
+}
+
+.ProductAmount img {
+    width:16px;
+    height:16px;
+    position: relative;
+    left: -1.5px;
+}
+
+.ProductAmount input {
+    font-weight: bold;
+    border:1px solid black;
+    width:95px;
+    height:26px;
+    border-radius:20px;
+    background-color:#FFFFFF;
+}
+
+.ProductAmount {
+    margin-top:5px;
+}
+
+.ToCartButton {
+    margin-top:5px;
+}
+
+.ToCartButton button {
+    font-size:18px;
+    font-weight: bold;
+    border:1px solid black;
+    width:115px;
+    height:38px;
+    border-radius:20px;
+    background-color:#FF9600;
+
+    margin-top: 4px;
+}
+
+.ToCartButton button:hover {
+    transition: 0.3s;
+    background-color:#EE981D;
+}
+
+.CartProduct {
+    display:flex;
+    flex-wrap:wrap;
+    margin-left:40px;
+    margin-top:40px;
+    width:1140px;
+    height: 109px;
+    background-color:#C8E6C9;
+    border:2px solid black;
+    border-radius:20px;
+    position:relative;
+}
+
+.CartProductImg img {
+    margin-left:40px;
+    width:138px;
+    height: 109px;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+}
+
+.CartProductNameContainer {
+    margin-top:10px;
+    margin-left:40px;
+    width:254px;
+    height: 109px;
+    display:inline-block;
+    top: 0;
+}
+
+.CartProductPriceContainer {
+    margin-top:25px;
+    margin-left:20px;
+    width:162px;
+    height: 109px;
+    display:inline-block;
+    top:0;
+}
+
+.CartProductAmountContainer {
+    margin-top:25px;
+    margin-left:10px;
+    width:162px;
+    height: 109px;
+    display:inline-block;
+    top:0;
+}
+
+.CartProductAmountContainer button {
+    font-weight: bold;
+    border:1px solid black;
+    width:26px;
+    height:26px;
+    border-radius:100%;
+    background-color:#FF9600;
+    font-size:20px;
+}
+
+.CartProductAmountContainer button:hover {
+    transition: 0.3s;
+    background-color:#EE981D;
+}
+
+.CartProductAmountContainer img {
+    width:16px;
+    height:16px;
+}
+
+.CartProductAmountContainer input {
+    font-weight: bold;
+    border:1px solid black;
+    width:95px;
+    height:26px;
+    border-radius:20px;
+    background-color:#FFFFFF;
+}
+
+.CartProductTotalAmountContainer {
+    margin-top:25px;
+    margin-left:20px;
+    width:162px;
+    height: 109px;
+    display:inline-block;
+    top:0%;
+}
+
+.CartProductCloseButton button{
+    font-weight: bold;
+    border:1px solid black;
+    width:26px;
+    height:26px;
+    border-radius:100%;
+    background-color:#FF9600;
+    font-size:20px;
+    position:absolute;
+    top:4px;
+    right:4px;
+}
+
+.CartProductCloseButton img{
+    width:16px;
+    height:16px;
+}
+
+.inlineTitle {
+    display: inline;
 }

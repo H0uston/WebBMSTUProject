@@ -139,7 +139,7 @@ namespace Shopich.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _productRepository.Delete(id);
+            await _productRepository.Delete(id);
             await _productRepository.Save();
             return RedirectToAction(nameof(Index));
         }

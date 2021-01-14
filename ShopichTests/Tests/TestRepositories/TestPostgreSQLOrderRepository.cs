@@ -12,72 +12,72 @@ using Xunit;
 
 namespace ShopichTests.Tests.TestRepositories
 {
-    public class TestPostgreSQLCategoryRepository
+    public class TestPostgreSQLOrderRepository
     {
-        private readonly Category[] categoryCollection;
-        private readonly ICategory repository;
+        private readonly Order[] orderCollection;
+        private readonly IOrder repository;
 
-        public TestPostgreSQLCategoryRepository()
+        public TestPostgreSQLOrderRepository()
         {
-            categoryCollection = TestRepositoryDataGenerator.GenerateTestCategories().Result;
+            orderCollection = TestRepositoryDataGenerator.GenerateTestOrders().Result;
 
-            repository = new PostgreSQLCategoryRepository(CreateInMemoryContext());
+            repository = new PostgreSQLOrderRepository(CreateInMemoryContext());
         }
+
         #region SuccessTests
         [Fact]
-        public async Task CategoryRepositoryReturnsCategories()
+        public async Task OrderRepositoryReturnsOrders()
         {
             // Arrange
-            var stub = new Mock<ICategory>();
-            stub.Setup(repo => repo.GetAll()).Returns(TestRepositoryDataGenerator.GenerateTestCategories());
-            var categoryRepository = stub.Object;
+            var stub = new Mock<IOrder>();
+            stub.Setup(repo => repo.GetAll()).Returns(TestRepositoryDataGenerator.GenerateTestOrders());
+            var orderRepository = stub.Object;
 
             // Act
-            var result = await categoryRepository.GetAll();
+            var result = await orderRepository.GetAll();
 
             // Assert
-            Assert.IsType<Category[]>(result);
-            Assert.Equal(7, result.Length);
+            Assert.IsType<Order[]>(result);
+            Assert.Equal(6, result.Length);
         }
 
         [Fact]
-        public async Task CategoryRepositoryReturnsCategoryById()
+        public async Task OrderRepositoryReturnsCategoryById()
         {
             // Arrange
-            var stub = new Mock<ICategory>();
-            stub.Setup(repo => repo.GetById(3)).Returns(TestRepositoryDataGenerator.GenerateTestCategory());
-            var categoryRepository = stub.Object;
+            var stub = new Mock<IOrder>();
+            stub.Setup(repo => repo.GetById(3)).Returns(TestRepositoryDataGenerator.GenerateTestOrder());
+            var orderRepository = stub.Object;
 
             // Act
-            var result = await categoryRepository.GetById(3);
+            var result = await orderRepository.GetById(3);
 
             // Assert
-            Assert.IsType<Category>(result);
-            Assert.Equal("Fruits", result.CategoryName);
+            Assert.IsType<Order>(result);
+            Assert.Equal(false, result.IsApproved);
         }
-
         [Fact]
-        public async Task CategoryRepositoryCreateCategory()
+        public async Task OrderRepositoryCreateOrder()
         {
             // Arrange
 
             // Act
-            await repository.Create(new CategoryBuilder().WithId(10).WithName("Sport").Build());
+            await repository.Create(new OrderBuilder().WithId(10).WithDate("2021-01-14").WithIsApproved(true).Build());
             await repository.Save();
 
             var result = await repository.GetAll();
 
             // Assert
-            Assert.IsType<Category[]>(result);
-            Assert.Equal(8, result.Length);
+            Assert.IsType<Order[]>(result);
+            Assert.Equal(7, result.Length);
         }
 
         [Fact]
-        public async Task CategoryRepositoryUpdateCategory()
+        public async Task OrderRepositoryUpdateOrder()
         {
             // Arrange
             var oldValue = await repository.GetById(1);
-            oldValue.CategoryName = "Farm";
+            oldValue.IsApproved = true;
 
             // Act
             repository.Update(oldValue);
@@ -86,20 +86,20 @@ namespace ShopichTests.Tests.TestRepositories
             var result = await repository.GetById(1);
 
             // Assert
-            Assert.IsType<Category>(result);
-            Assert.Equal("Farm", result.CategoryName);
+            Assert.IsType<Order>(result);
+            Assert.Equal(true, result.IsApproved);
         }
 
         [Fact]
-        public async Task CategoryRepositoryDeleteCategory()
+        public async Task OrderRepositoryDeleteOrder()
         {
             // Arrange
 
             // Act
-            await repository.Delete(1);
+            await repository.Delete(7);
             await repository.Save();
 
-            var result = await repository.GetById(1);
+            var result = await repository.GetById(7);
 
             // Assert
             Assert.Null(result);
@@ -108,7 +108,7 @@ namespace ShopichTests.Tests.TestRepositories
 
         #region FailedTests
         [Fact]
-        public async Task CategoryRepositoryReturnsNull()
+        public async Task OrderRepositoryReturnsNull()
         {
             // Arrange
 
@@ -130,7 +130,7 @@ namespace ShopichTests.Tests.TestRepositories
 
             var context = new ShopichContext(options);
 
-            context.AddRangeAsync(categoryCollection);
+            context.AddRangeAsync(orderCollection);
             context.SaveChanges();
 
             return context;

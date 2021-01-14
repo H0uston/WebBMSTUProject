@@ -12,72 +12,73 @@ using Xunit;
 
 namespace ShopichTests.Tests.TestRepositories
 {
-    public class TestPostgreSQLCategoryRepository
+    public class TestPostgreSQLReviewRepository
     {
-        private readonly Category[] categoryCollection;
-        private readonly ICategory repository;
+        private readonly Review[] reviewCollection;
+        private readonly IReview repository;
 
-        public TestPostgreSQLCategoryRepository()
+        public TestPostgreSQLReviewRepository()
         {
-            categoryCollection = TestRepositoryDataGenerator.GenerateTestCategories().Result;
+            reviewCollection = TestRepositoryDataGenerator.GenerateTestReviews().Result;
 
-            repository = new PostgreSQLCategoryRepository(CreateInMemoryContext());
+            repository = new PostgreSQLReviewRepository(CreateInMemoryContext());
         }
+
         #region SuccessTests
         [Fact]
-        public async Task CategoryRepositoryReturnsCategories()
+        public async Task ReviewRepositoryReturnsReviews()
         {
             // Arrange
-            var stub = new Mock<ICategory>();
-            stub.Setup(repo => repo.GetAll()).Returns(TestRepositoryDataGenerator.GenerateTestCategories());
-            var categoryRepository = stub.Object;
+            var stub = new Mock<IReview>();
+            stub.Setup(repo => repo.GetAll()).Returns(TestRepositoryDataGenerator.GenerateTestReviews());
+            var reviewRepository = stub.Object;
 
             // Act
-            var result = await categoryRepository.GetAll();
+            var result = await reviewRepository.GetAll();
 
             // Assert
-            Assert.IsType<Category[]>(result);
-            Assert.Equal(7, result.Length);
+            Assert.IsType<Review[]>(result);
+            Assert.Equal(6, result.Length);
         }
 
         [Fact]
-        public async Task CategoryRepositoryReturnsCategoryById()
+        public async Task ReviewRepositoryReturnsReviewById()
         {
             // Arrange
-            var stub = new Mock<ICategory>();
-            stub.Setup(repo => repo.GetById(3)).Returns(TestRepositoryDataGenerator.GenerateTestCategory());
-            var categoryRepository = stub.Object;
+            var stub = new Mock<IReview>();
+            stub.Setup(repo => repo.GetById(3)).Returns(TestRepositoryDataGenerator.GenerateTestReview());
+            var reviewRepository = stub.Object;
 
             // Act
-            var result = await categoryRepository.GetById(3);
+            var result = await reviewRepository.GetById(3);
 
             // Assert
-            Assert.IsType<Category>(result);
-            Assert.Equal("Fruits", result.CategoryName);
+            Assert.IsType<Review>(result);
+            Assert.Equal("Good", result.ReviewText);
         }
 
         [Fact]
-        public async Task CategoryRepositoryCreateCategory()
+        public async Task ReviewRepositoryCreateReview()
         {
             // Arrange
 
             // Act
-            await repository.Create(new CategoryBuilder().WithId(10).WithName("Sport").Build());
+            await repository.Create(new ReviewBuilder().WithId(10).WithText("WOW").Build());
             await repository.Save();
 
             var result = await repository.GetAll();
 
             // Assert
-            Assert.IsType<Category[]>(result);
-            Assert.Equal(8, result.Length);
+            Assert.IsType<Review[]>(result);
+            Assert.Equal(7, result.Length);
         }
 
         [Fact]
-        public async Task CategoryRepositoryUpdateCategory()
+        public async Task ReviewRepositoryUpdateReview()
         {
             // Arrange
             var oldValue = await repository.GetById(1);
-            oldValue.CategoryName = "Farm";
+            oldValue.ReviewText = "Bad";
 
             // Act
             repository.Update(oldValue);
@@ -86,20 +87,20 @@ namespace ShopichTests.Tests.TestRepositories
             var result = await repository.GetById(1);
 
             // Assert
-            Assert.IsType<Category>(result);
-            Assert.Equal("Farm", result.CategoryName);
+            Assert.IsType<Review>(result);
+            Assert.Equal("Bad", result.ReviewText);
         }
 
         [Fact]
-        public async Task CategoryRepositoryDeleteCategory()
+        public async Task ReviewRepositoryDeleteReview()
         {
             // Arrange
 
             // Act
-            await repository.Delete(1);
+            await repository.Delete(7);
             await repository.Save();
 
-            var result = await repository.GetById(1);
+            var result = await repository.GetById(7);
 
             // Assert
             Assert.Null(result);
@@ -108,7 +109,7 @@ namespace ShopichTests.Tests.TestRepositories
 
         #region FailedTests
         [Fact]
-        public async Task CategoryRepositoryReturnsNull()
+        public async Task ReviewRepositoryReturnsNull()
         {
             // Arrange
 
@@ -120,6 +121,7 @@ namespace ShopichTests.Tests.TestRepositories
         }
         #endregion
 
+
         #region Initialization
         private ShopichContext CreateInMemoryContext()
         {
@@ -130,7 +132,7 @@ namespace ShopichTests.Tests.TestRepositories
 
             var context = new ShopichContext(options);
 
-            context.AddRangeAsync(categoryCollection);
+            context.AddRangeAsync(reviewCollection);
             context.SaveChanges();
 
             return context;

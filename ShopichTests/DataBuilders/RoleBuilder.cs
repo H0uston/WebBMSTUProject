@@ -41,7 +41,7 @@ namespace ShopichTests.DataBuilders
 
 		public Role Build()
 		{
-			return new Role {RoleId = this._id, RoleName = this._name, RoleDescription = this._description);
+			return new Role { RoleId = this._id, RoleName = this._name, RoleDescription = this._description};
 		}
 	}
 }

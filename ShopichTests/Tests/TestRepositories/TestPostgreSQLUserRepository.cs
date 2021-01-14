@@ -14,18 +14,60 @@ namespace ShopichTests.Tests.TestRepositories
 {
     public class TestPostgreSQLUserRepository
     {
+        private readonly User[] userCollection;
+        private readonly IUser repository;
+
+        public TestPostgreSQLUserRepository()
+        {
+            userCollection = TestRepositoryDataGenerator.GenerateTestUsers().Result;
+
+            repository = new PostgreSQLUserRepository(CreateInMemoryContext());
+        }
 
         #region SuccessTests
         [Fact]
-        public async Task CategoryRepositoryReturnsUsers()
+        public async Task UserRepositoryReturnsUsers()
         {
             // Arrange
-            var mock = new Mock<IUser>();
-            mock.Setup(repo => repo.GetAll()).Returns(GenerateTestUsers());
-            var userRepository = mock.Object;
+            var stub = new Mock<IUser>();
+            stub.Setup(repo => repo.GetAll()).Returns(TestRepositoryDataGenerator.GenerateTestUsers());
+            var userRepository = stub.Object;
 
             // Act
             var result = await userRepository.GetAll();
+
+            // Assert
+            Assert.IsType<User[]>(result);
+            Assert.Equal(6, result.Length);
+        }
+
+        [Fact]
+        public async Task UserRepositoryReturnsUserById()
+        {
+            // Arrange
+            var stub = new Mock<IUser>();
+            stub.Setup(repo => repo.GetById(3)).Returns(TestRepositoryDataGenerator.GenerateTestUser());
+            var userRepository = stub.Object;
+
+            // Act
+            var result = await userRepository.GetById(3);
+
+            // Assert
+            Assert.IsType<User>(result);
+            Assert.Equal("Peter", result.UserName);
+            Assert.Equal(3, result.RoleId);
+        }
+
+        [Fact]
+        public async Task UserRepositoryCreateUser()
+        {
+            // Arrange
+
+            // Act
+            await repository.Create(new UserBuilder().WithId(10).WithEmail("main@mail.ru").WithPassword("1245").Build());
+            await repository.Save();
+
+            var result = await repository.GetAll();
 
             // Assert
             Assert.IsType<User[]>(result);
@@ -33,55 +75,67 @@ namespace ShopichTests.Tests.TestRepositories
         }
 
         [Fact]
-        public async Task UserRepositoryReturnsUserById()
+        public async Task UserRepositoryUpdateUser()
         {
             // Arrange
-            var mock = new Mock<IUser>();
-            mock.Setup(repo => repo.GetById(3)).Returns(GenerateTestUser());
-            var userRepository = mock.Object;
+            var oldValue = await repository.GetById(1);
+            oldValue.UserName = "Ivan";
 
             // Act
-            var result = await userRepository.GetById(3);
+            repository.Update(oldValue);
+            await repository.Save();
+
+            var result = await repository.GetById(1);
 
             // Assert
-            Assert.IsType<Category>(result);
-            Assert.Equal("Fruits", result.UserName);
+            Assert.IsType<User>(result);
+            Assert.Equal("Ivan", result.UserName);
+        }
+
+        [Fact]
+        public async Task UserRepositoryDeleteUser()
+        {
+            // Arrange
+
+            // Act
+            await repository.Delete(7);
+            await repository.Save();
+
+            var result = await repository.GetById(7);
+
+            // Assert
+            Assert.Null(result);
         }
         #endregion
 
         #region FailedTests
         [Fact]
-        public async Task UserRepositoryReturnsWrongCountOfUsers()
+        public async Task UserRepositoryReturnsNull()
         {
             // Arrange
-            var mock = new Mock<IUser>();
-            mock.Setup(repo => repo.GetAll()).Returns(GenerateTestUsers());
-            var userRepository = mock.Object;
 
             // Act
-            var result = await userRepository.GetAll();
+            var result = await repository.GetById(Int32.MaxValue);
 
             // Assert
-            Assert.IsType<User[]>(result);
-            Assert.NotEqual(6, result.Length);
-            Assert.NotEqual(8, result.Length);
+            Assert.Null(result);
         }
         #endregion
 
         #region Initialization
-        private async Task<User[]> GenerateTestUsers()
+        private ShopichContext CreateInMemoryContext()
         {
-            var userCollection = new User[]
-            {
-            };
-            return userCollection;
-        }
+            // Database' Name have to be unique in memory to prevent collisions
+            var options = new DbContextOptionsBuilder<ShopichContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
 
-        private async Task<User> GenerateTestUser()
-        {
-            var user = new UserBuilder().Build();
+            var context = new ShopichContext(options);
 
-            return user;
+            context.AddRangeAsync(userCollection);
+            context.SaveChanges();
+
+            return context;
         }
         #endregion
     }

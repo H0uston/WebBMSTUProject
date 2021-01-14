@@ -87,7 +87,7 @@ namespace ShopichTests.DataBuilders
 			return this;
 		}
 
-		public UserBuilder WithStreer(string newStreet)
+		public UserBuilder WithStreet(string newStreet)
 		{
 			this._street = newStreet;
 

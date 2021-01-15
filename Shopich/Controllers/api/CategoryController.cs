@@ -44,11 +44,11 @@ namespace Shopich.Controllers.api
         /// <returns>Category object</returns>
         /// <response code="200"></response>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategory(int id)
+        public async Task<Category> GetCategory(int id)
         {
             var category = await _categoryRepository.GetById(id);
 
-            return Json(category);
+            return category;
         }
     }
 }

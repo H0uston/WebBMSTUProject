@@ -145,5 +145,49 @@ namespace ShopichTests.Tests.TestRepositories
 
             return user;
         }
+
+        public static async Task<Orders[]> GenerateTestOrdersCollection()
+        {
+            var ordersCollection = new Orders[]
+            {
+            new OrdersBuilder().WithId(1).WithOrderId(1).WithProductId(1).WithCount(10).Build(),
+            new OrdersBuilder().WithId(2).WithOrderId(1).WithProductId(2).WithCount(20).Build(),
+            new OrdersBuilder().WithId(3).WithOrderId(2).WithProductId(3).WithCount(30).Build(),
+            new OrdersBuilder().WithId(4).WithOrderId(3).WithProductId(4).WithCount(40).Build(),
+            new OrdersBuilder().WithId(5).WithOrderId(3).WithProductId(6).WithCount(50).Build(),
+            new OrdersBuilder().WithId(6).WithOrderId(3).WithProductId(6).WithCount(60).Build(),
+            };
+
+            return ordersCollection;
+        }
+
+        public static async Task<Orders> GenerateTestOrdersSingle()
+        {
+            var orders = new OrdersBuilder().WithId(1).WithOrderId(1).WithProductId(1).WithCount(10).Build();
+
+            return orders;
+        }
+
+        public static async Task<Categories[]> GenerateTestCategoriesCollection()
+        {
+            var categoriesCollection = new Categories[]
+            {
+                new CategoriesBuilder().WithId(1).WithCategoryId(1).WithProductId(1).Build(),
+                new CategoriesBuilder().WithId(2).WithCategoryId(1).WithProductId(2).Build(),
+                new CategoriesBuilder().WithId(3).WithCategoryId(1).WithProductId(3).Build(),
+                new CategoriesBuilder().WithId(4).WithCategoryId(2).WithProductId(4).Build(),
+                new CategoriesBuilder().WithId(5).WithCategoryId(3).WithProductId(5).Build(),
+                new CategoriesBuilder().WithId(6).WithCategoryId(3).WithProductId(6).Build(),
+            };
+
+            return categoriesCollection;
+        }
+
+        public static async Task<Categories> GenerateTestCategoriesSingle()
+        {
+            var categories = new CategoriesBuilder().WithId(1).WithCategoryId(1).WithProductId(3).Build();
+
+            return categories;
+        }
     }
 }

@@ -32,7 +32,7 @@ namespace Shopich.Controllers.api
         /// <returns>List of products</returns>
         /// <response code="200"></response>
         [HttpGet]
-        public async Task<IEnumerable<Product>> GetAll([FromQuery] string productName, [FromQuery] int current = 1, [FromQuery] int size = 5)
+        public async Task<IEnumerable<Product>> GetAll([FromQuery] string productName = null, [FromQuery] int current = 1, [FromQuery] int size = 5)
         {
             IEnumerable<Product> products = null;
             if (productName != null)
@@ -61,9 +61,12 @@ namespace Shopich.Controllers.api
         {
             var product = await _productRepository.GetById(id);
 
-            product.SetProductRating();
-            product.SetPriceWithDiscount();
-
+            if (product != null)
+            {
+                product.SetProductRating();
+                product.SetPriceWithDiscount();
+            }
+            
             return product;
         }
     }

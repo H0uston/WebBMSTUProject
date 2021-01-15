@@ -44,12 +44,16 @@ namespace Shopich.Repositories.implementations
             _dbContext.Update(entity);
         }
 
-        public async Task Delete(int id)
+        public async Task<int?> Delete(int id)
         {
             if (this.Exists(id))
             {
                 _dbContext.Users.Remove(await this.GetById(id));
+
+                return id;
             }
+
+            return null;
         }
 
         public async Task Save()

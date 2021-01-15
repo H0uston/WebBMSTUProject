@@ -15,7 +15,7 @@ namespace Shopich.Repositories.interfaces
         public Task<Review> GetById(int id);
         public Task<Review> GetByProductIdAndUserId(int productId, int userId);
         public void Update(Review entity);
-        public Task Delete(int id);
+        public Task<int?> Delete(int id);
         public Task Save();
         public IQueryable<Review> Include(params Expression<Func<Review, object>>[] includeProperties);
         public bool Exists(int id);

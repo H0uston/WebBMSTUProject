@@ -13,7 +13,7 @@ namespace Shopich.Repositories.interfaces
         public Task Create(Category entity);
         public Task<Category> GetById(int id);
         public void Update(Category entity);
-        public Task Delete(int id);
+        public Task<int?> Delete(int id);
         public Task Save();
         public IQueryable<Category> Include(params Expression<Func<Category, object>>[] includeProperties);
         public bool Exists(int id);

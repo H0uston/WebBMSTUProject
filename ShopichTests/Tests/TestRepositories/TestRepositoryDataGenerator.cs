@@ -26,7 +26,7 @@ namespace ShopichTests.Tests.TestRepositories
 
         public static async Task<Category> GenerateTestCategory()
         {
-            var category = new CategoryBuilder().WithId(3).WithName("Fruits").Build();
+            var category = new CategoryBuilder().WithId(1).WithName("Fruits").Build();
 
             return category;
         }
@@ -70,7 +70,7 @@ namespace ShopichTests.Tests.TestRepositories
 
         public static async Task<Product> GenerateTestProduct()
         {
-            var product = new ProductBuilder().WithId(3).WithName("Potato").WithPrice(11).WithDiscount(1).WithAvailability(true).Build();
+            var product = new ProductBuilder().WithId(1).WithName("Potato").WithPrice(11).WithDiscount(1).WithAvailability(true).Build();
 
             return product;
         }
@@ -110,7 +110,7 @@ namespace ShopichTests.Tests.TestRepositories
 
         public static async Task<Role> GenerateTestRole()
         {
-            var role = new RoleBuilder().WithId(3).WithName("User").Build();
+            var role = new RoleBuilder().WithId(1).WithName("User").Build();
 
             return role;
         }

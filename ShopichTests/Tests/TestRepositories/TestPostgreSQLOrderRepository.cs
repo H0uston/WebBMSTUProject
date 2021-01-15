@@ -14,14 +14,22 @@ namespace ShopichTests.Tests.TestRepositories
 {
     public class TestPostgreSQLOrderRepository
     {
-        private readonly Order[] orderCollection;
-        private readonly IOrder repository;
-
-        public TestPostgreSQLOrderRepository()
+        public IOrder GenerateRepositoryWithOrders()
         {
-            orderCollection = TestRepositoryDataGenerator.GenerateTestOrders().Result;
+            var orderCollection = TestRepositoryDataGenerator.GenerateTestOrders().Result;
 
-            repository = new PostgreSQLOrderRepository(CreateInMemoryContext());
+            var repository = new PostgreSQLOrderRepository(CreateInMemoryContext(orderCollection));
+
+            return repository;
+        }
+
+        public IOrder GenerateRepositoryWithOrder()
+        {
+            var orderCollection = TestRepositoryDataGenerator.GenerateTestOrder().Result;
+
+            var repository = new PostgreSQLOrderRepository(CreateInMemoryContext(orderCollection));
+
+            return repository;
         }
 
         #region SuccessTests
@@ -60,6 +68,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task OrderRepositoryCreateOrder()
         {
             // Arrange
+            var repository = GenerateRepositoryWithOrders();
 
             // Act
             await repository.Create(new OrderBuilder().WithId(10).WithDate("2021-01-14").WithIsApproved(true).Build());
@@ -76,6 +85,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task OrderRepositoryUpdateOrder()
         {
             // Arrange
+            var repository = GenerateRepositoryWithOrders();
             var oldValue = await repository.GetById(1);
             oldValue.IsApproved = true;
 
@@ -94,15 +104,18 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task OrderRepositoryDeleteOrder()
         {
             // Arrange
+            var repository = GenerateRepositoryWithOrder();
 
             // Act
-            await repository.Delete(7);
+            var oldCategories = await repository.GetAll();
+            var result = await repository.Delete(1);
             await repository.Save();
-
-            var result = await repository.GetById(7);
+            var newCategories = await repository.GetAll();
 
             // Assert
-            Assert.Null(result);
+            Assert.Single(oldCategories);
+            Assert.Empty(newCategories);
+            Assert.Equal(1, result);
         }
         #endregion
 
@@ -111,6 +124,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task OrderRepositoryReturnsNull()
         {
             // Arrange
+            var repository = GenerateRepositoryWithOrders();
 
             // Act
             var result = await repository.GetById(Int32.MaxValue);
@@ -121,7 +135,22 @@ namespace ShopichTests.Tests.TestRepositories
         #endregion
 
         #region Initialization
-        private ShopichContext CreateInMemoryContext()
+        private ShopichContext CreateInMemoryContext(Order[] orderCollection)
+        {
+            // Database' Name have to be unique in memory to prevent collisions
+            var options = new DbContextOptionsBuilder<ShopichContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+
+            var context = new ShopichContext(options);
+
+            context.AddRangeAsync(orderCollection);
+            context.SaveChanges();
+
+            return context;
+        }
+
+        private ShopichContext CreateInMemoryContext(Order orderCollection)
         {
             // Database' Name have to be unique in memory to prevent collisions
             var options = new DbContextOptionsBuilder<ShopichContext>()

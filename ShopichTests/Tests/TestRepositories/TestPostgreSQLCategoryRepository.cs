@@ -14,14 +14,21 @@ namespace ShopichTests.Tests.TestRepositories
 {
     public class TestPostgreSQLCategoryRepository
     {
-        private readonly Category[] categoryCollection;
-        private readonly ICategory repository;
 
-        public TestPostgreSQLCategoryRepository()
+        public ICategory GenerateRepositoryWithCategories()
         {
-            categoryCollection = TestRepositoryDataGenerator.GenerateTestCategories().Result;
+            var categoryCollection = TestRepositoryDataGenerator.GenerateTestCategories().Result;
 
-            repository = new PostgreSQLCategoryRepository(CreateInMemoryContext());
+            var repository = new PostgreSQLCategoryRepository(CreateInMemoryContext(categoryCollection));
+            return repository;
+        }
+
+        public ICategory GenerateRepositoryWithCategory()
+        {
+            var categoryCollection = TestRepositoryDataGenerator.GenerateTestCategory().Result;
+
+            var repository = new PostgreSQLCategoryRepository(CreateInMemoryContext(categoryCollection));
+            return repository;
         }
         #region SuccessTests
         [Fact]
@@ -60,6 +67,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task CategoryRepositoryCreateCategory()
         {
             // Arrange
+            var repository = GenerateRepositoryWithCategories();
 
             // Act
             await repository.Create(new CategoryBuilder().WithId(10).WithName("Sport").Build());
@@ -76,6 +84,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task CategoryRepositoryUpdateCategory()
         {
             // Arrange
+            var repository = GenerateRepositoryWithCategories();
             var oldValue = await repository.GetById(1);
             oldValue.CategoryName = "Farm";
 
@@ -94,15 +103,18 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task CategoryRepositoryDeleteCategory()
         {
             // Arrange
+            var repository = GenerateRepositoryWithCategory();
 
             // Act
-            await repository.Delete(1);
+            var oldCategories = await repository.GetAll();
+            var result = await repository.Delete(1);
             await repository.Save();
-
-            var result = await repository.GetById(1);
+            var newCategories = await repository.GetAll();
 
             // Assert
-            Assert.Null(result);
+            Assert.Single(oldCategories);
+            Assert.Empty(newCategories);
+            Assert.Equal(1, result);
         }
         #endregion
 
@@ -111,6 +123,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task CategoryRepositoryReturnsNull()
         {
             // Arrange
+            var repository = GenerateRepositoryWithCategories();
 
             // Act
             var result = await repository.GetById(Int32.MaxValue);
@@ -121,7 +134,22 @@ namespace ShopichTests.Tests.TestRepositories
         #endregion
 
         #region Initialization
-        private ShopichContext CreateInMemoryContext()
+        private ShopichContext CreateInMemoryContext(Category[] categoryCollection)
+        {
+            // Database' Name have to be unique in memory to prevent collisions
+            var options = new DbContextOptionsBuilder<ShopichContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+
+            var context = new ShopichContext(options);
+
+            context.AddRangeAsync(categoryCollection);
+            context.SaveChanges();
+
+            return context;
+        }
+
+        private ShopichContext CreateInMemoryContext(Category categoryCollection)
         {
             // Database' Name have to be unique in memory to prevent collisions
             var options = new DbContextOptionsBuilder<ShopichContext>()

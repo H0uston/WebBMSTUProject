@@ -107,14 +107,14 @@ namespace ShopichTests.Tests.TestRepositories
             var repository = GenerateRepositoryWithOrder();
 
             // Act
-            var oldCategories = await repository.GetAll();
+            var oldOrders = await repository.GetAll();
             var result = await repository.Delete(1);
             await repository.Save();
-            var newCategories = await repository.GetAll();
+            var newOrders = await repository.GetAll();
 
             // Assert
-            Assert.Single(oldCategories);
-            Assert.Empty(newCategories);
+            Assert.Single(oldOrders);
+            Assert.Empty(newOrders);
             Assert.Equal(1, result);
         }
         #endregion

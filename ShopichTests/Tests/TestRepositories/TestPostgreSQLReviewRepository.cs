@@ -14,14 +14,22 @@ namespace ShopichTests.Tests.TestRepositories
 {
     public class TestPostgreSQLReviewRepository
     {
-        private readonly Review[] reviewCollection;
-        private readonly IReview repository;
-
-        public TestPostgreSQLReviewRepository()
+        public IReview GenerateRepositoryWithReviews()
         {
-            reviewCollection = TestRepositoryDataGenerator.GenerateTestReviews().Result;
+            var reviewCollection = TestRepositoryDataGenerator.GenerateTestReviews().Result;
 
-            repository = new PostgreSQLReviewRepository(CreateInMemoryContext());
+            var repository = new PostgreSQLReviewRepository(CreateInMemoryContext(reviewCollection));
+
+            return repository;
+        }
+
+        public IReview GenerateRepositoryWithReview()
+        {
+            var reviewCollection = TestRepositoryDataGenerator.GenerateTestReview().Result;
+
+            var repository = new PostgreSQLReviewRepository(CreateInMemoryContext(reviewCollection));
+
+            return repository;
         }
 
         #region SuccessTests
@@ -61,6 +69,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task ReviewRepositoryCreateReview()
         {
             // Arrange
+            var repository = GenerateRepositoryWithReviews();
 
             // Act
             await repository.Create(new ReviewBuilder().WithId(10).WithText("WOW").Build());
@@ -77,6 +86,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task ReviewRepositoryUpdateReview()
         {
             // Arrange
+            var repository = GenerateRepositoryWithReviews();
             var oldValue = await repository.GetById(1);
             oldValue.ReviewText = "Bad";
 
@@ -95,15 +105,18 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task ReviewRepositoryDeleteReview()
         {
             // Arrange
+            var repository = GenerateRepositoryWithReview();
 
             // Act
-            await repository.Delete(7);
+            var oldReviews = await repository.GetAll();
+            var result = await repository.Delete(1);
             await repository.Save();
-
-            var result = await repository.GetById(7);
+            var newReviews = await repository.GetAll();
 
             // Assert
-            Assert.Null(result);
+            Assert.Single(oldReviews);
+            Assert.Empty(newReviews);
+            Assert.Equal(1, result);
         }
         #endregion
 
@@ -112,6 +125,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task ReviewRepositoryReturnsNull()
         {
             // Arrange
+            var repository = GenerateRepositoryWithReviews();
 
             // Act
             var result = await repository.GetById(Int32.MaxValue);
@@ -123,7 +137,22 @@ namespace ShopichTests.Tests.TestRepositories
 
 
         #region Initialization
-        private ShopichContext CreateInMemoryContext()
+        private ShopichContext CreateInMemoryContext(Review[] reviewCollection)
+        {
+            // Database' Name have to be unique in memory to prevent collisions
+            var options = new DbContextOptionsBuilder<ShopichContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+
+            var context = new ShopichContext(options);
+
+            context.AddRangeAsync(reviewCollection);
+            context.SaveChanges();
+
+            return context;
+        }
+
+        private ShopichContext CreateInMemoryContext(Review reviewCollection)
         {
             // Database' Name have to be unique in memory to prevent collisions
             var options = new DbContextOptionsBuilder<ShopichContext>()

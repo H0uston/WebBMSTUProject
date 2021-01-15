@@ -51,7 +51,7 @@ namespace Shopich.Repositories.implementations
         }
         public bool Exists(int id)
         {
-            return _dbContext.Users.Find(id) != null;
+            return _dbContext.Roles.Find(id) != null;
         }
     }
 }

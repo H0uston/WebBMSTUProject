@@ -14,14 +14,22 @@ namespace ShopichTests.Tests.TestRepositories
 {
     public class TestPostgreSQLRoleRepository
     {
-        private readonly Role[] roleCollection;
-        private readonly IRole repository;
-
-        public TestPostgreSQLRoleRepository()
+        public IRole GenerateRepositoryWithRoles()
         {
-            roleCollection = TestRepositoryDataGenerator.GenerateTestRoles().Result;
+            var roleCollection = TestRepositoryDataGenerator.GenerateTestRoles().Result;
 
-            repository = new PostgreSQLRoleRepository(CreateInMemoryContext());
+            var repository = new PostgreSQLRoleRepository(CreateInMemoryContext(roleCollection));
+
+            return repository;
+        }
+
+        public IRole GenerateRepositoryWithRole()
+        {
+            var roleCollection = TestRepositoryDataGenerator.GenerateTestRole().Result;
+
+            var repository = new PostgreSQLRoleRepository(CreateInMemoryContext(roleCollection));
+
+            return repository;
         }
 
         #region SuccessTests
@@ -61,6 +69,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task RoleRepositoryCreateRole()
         {
             // Arrange
+            var repository = GenerateRepositoryWithRoles();
 
             // Act
             await repository.Create(new RoleBuilder().WithId(4).WithName("Anonim").Build());
@@ -77,6 +86,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task RoleRepositoryUpdateRole()
         {
             // Arrange
+            var repository = GenerateRepositoryWithRoles();
             var oldValue = await repository.GetById(3);
             oldValue.RoleName = "Observer";
 
@@ -95,15 +105,18 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task RoleRepositoryDeleteRole()
         {
             // Arrange
+            var repository = GenerateRepositoryWithRole();
 
             // Act
-            await repository.Delete(4);
+            var oldRoles = await repository.GetAll();
+            var result = await repository.Delete(1);
             await repository.Save();
-
-            var result = await repository.GetById(4);
+            var newRoles = await repository.GetAll();
 
             // Assert
-            Assert.Null(result);
+            Assert.Single(oldRoles);
+            Assert.Empty(newRoles);
+            Assert.Equal(1, result);
         }
         #endregion
 
@@ -112,6 +125,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task RoleRepositoryReturnsNull()
         {
             // Arrange
+            var repository = GenerateRepositoryWithRoles();
 
             // Act
             var result = await repository.GetById(Int32.MaxValue);
@@ -122,7 +136,22 @@ namespace ShopichTests.Tests.TestRepositories
         #endregion
 
         #region Initialization
-        private ShopichContext CreateInMemoryContext()
+        private ShopichContext CreateInMemoryContext(Role[] roleCollection)
+        {
+            // Database' Name have to be unique in memory to prevent collisions
+            var options = new DbContextOptionsBuilder<ShopichContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+
+            var context = new ShopichContext(options);
+
+            context.AddRangeAsync(roleCollection);
+            context.SaveChanges();
+
+            return context;
+        }
+
+        private ShopichContext CreateInMemoryContext(Role roleCollection)
         {
             // Database' Name have to be unique in memory to prevent collisions
             var options = new DbContextOptionsBuilder<ShopichContext>()

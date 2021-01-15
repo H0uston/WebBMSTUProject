@@ -14,14 +14,22 @@ namespace ShopichTests.Tests.TestRepositories
 {
     public class TestPostgreSQLUserRepository
     {
-        private readonly User[] userCollection;
-        private readonly IUser repository;
-
-        public TestPostgreSQLUserRepository()
+        public IUser GenerateRepositoryWithUsers()
         {
-            userCollection = TestRepositoryDataGenerator.GenerateTestUsers().Result;
+            var userCollection = TestRepositoryDataGenerator.GenerateTestUsers().Result;
 
-            repository = new PostgreSQLUserRepository(CreateInMemoryContext());
+            var repository = new PostgreSQLUserRepository(CreateInMemoryContext(userCollection));
+
+            return repository;
+        }
+
+        public IUser GenerateRepositoryWithUser()
+        {
+            var userCollection = TestRepositoryDataGenerator.GenerateTestUser().Result;
+
+            var repository = new PostgreSQLUserRepository(CreateInMemoryContext(userCollection));
+
+            return repository;
         }
 
         #region SuccessTests
@@ -62,6 +70,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task UserRepositoryCreateUser()
         {
             // Arrange
+            var repository = GenerateRepositoryWithUsers();
 
             // Act
             await repository.Create(new UserBuilder().WithId(10).WithEmail("main@mail.ru").WithPassword("1245").Build());
@@ -78,6 +87,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task UserRepositoryUpdateUser()
         {
             // Arrange
+            var repository = GenerateRepositoryWithUsers();
             var oldValue = await repository.GetById(1);
             oldValue.UserName = "Ivan";
 
@@ -96,15 +106,18 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task UserRepositoryDeleteUser()
         {
             // Arrange
+            var repository = GenerateRepositoryWithUser();
 
             // Act
-            await repository.Delete(7);
+            var oldUsers = await repository.GetAll();
+            var result = await repository.Delete(1);
             await repository.Save();
-
-            var result = await repository.GetById(7);
+            var newUsers = await repository.GetAll();
 
             // Assert
-            Assert.Null(result);
+            Assert.Single(oldUsers);
+            Assert.Empty(newUsers);
+            Assert.Equal(1, result);
         }
         #endregion
 
@@ -113,6 +126,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task UserRepositoryReturnsNull()
         {
             // Arrange
+            var repository = GenerateRepositoryWithUsers();
 
             // Act
             var result = await repository.GetById(Int32.MaxValue);
@@ -123,7 +137,22 @@ namespace ShopichTests.Tests.TestRepositories
         #endregion
 
         #region Initialization
-        private ShopichContext CreateInMemoryContext()
+        private ShopichContext CreateInMemoryContext(User[] userCollection)
+        {
+            // Database' Name have to be unique in memory to prevent collisions
+            var options = new DbContextOptionsBuilder<ShopichContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+
+            var context = new ShopichContext(options);
+
+            context.AddRangeAsync(userCollection);
+            context.SaveChanges();
+
+            return context;
+        }
+
+        private ShopichContext CreateInMemoryContext(User userCollection)
         {
             // Database' Name have to be unique in memory to prevent collisions
             var options = new DbContextOptionsBuilder<ShopichContext>()

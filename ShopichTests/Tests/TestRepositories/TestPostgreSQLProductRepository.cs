@@ -14,14 +14,22 @@ namespace ShopichTests.Tests.TestRepositories
 {
     public class TestPostgreSQLProductRepository
     {
-        private readonly Product[] productCollection;
-        private readonly IProduct repository;
-
-        public TestPostgreSQLProductRepository()
+        public IProduct GenerateRepositoryWithProducts()
         {
-            productCollection = TestRepositoryDataGenerator.GenerateTestProducts().Result;
+            var productCollection = TestRepositoryDataGenerator.GenerateTestProducts().Result;
 
-            repository = new PostgreSQLProductRepository(CreateInMemoryContext());
+            var repository = new PostgreSQLProductRepository(CreateInMemoryContext(productCollection));
+
+            return repository;
+        }
+
+        public IProduct GenerateRepositoryWithProduct()
+        {
+            var productCollection = TestRepositoryDataGenerator.GenerateTestProduct().Result;
+
+            var repository = new PostgreSQLProductRepository(CreateInMemoryContext(productCollection));
+
+            return repository;
         }
 
         #region SuccessTests
@@ -61,6 +69,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task ProductRepositoryCreateProduct()
         {
             // Arrange
+            var repository = GenerateRepositoryWithProducts();
 
             // Act
             await repository.Create(new ProductBuilder().WithId(10).WithName("Kuban Tomato").Build());
@@ -77,6 +86,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task ProductRepositoryUpdateProduct()
         {
             // Arrange
+            var repository = GenerateRepositoryWithProducts();
             var oldValue = await repository.GetById(1);
             oldValue.ProductName = "Cucumber";
 
@@ -95,16 +105,18 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task ProductRepositoryDeleteProduct()
         {
             // Arrange
-
+            var repository = GenerateRepositoryWithProduct();
 
             // Act
-            await repository.Delete(7);
+            var oldProducts = await repository.GetAll();
+            var result = await repository.Delete(1);
             await repository.Save();
-
-            var result = await repository.GetById(7);
+            var newProducts = await repository.GetAll();
 
             // Assert
-            Assert.Null(result);
+            Assert.Single(oldProducts);
+            Assert.Empty(newProducts);
+            Assert.Equal(1, result);
         }
         #endregion
 
@@ -113,6 +125,7 @@ namespace ShopichTests.Tests.TestRepositories
         public async Task ProductRepositoryReturnsNull()
         {
             // Arrange
+            var repository = GenerateRepositoryWithProducts();
 
             // Act
             var result = await repository.GetById(Int32.MaxValue);
@@ -123,7 +136,22 @@ namespace ShopichTests.Tests.TestRepositories
         #endregion
 
         #region Initialization
-        private ShopichContext CreateInMemoryContext()
+        private ShopichContext CreateInMemoryContext(Product[] productCollection)
+        {
+            // Database' Name have to be unique in memory to prevent collisions
+            var options = new DbContextOptionsBuilder<ShopichContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+
+            var context = new ShopichContext(options);
+
+            context.AddRangeAsync(productCollection);
+            context.SaveChanges();
+
+            return context;
+        }
+
+        private ShopichContext CreateInMemoryContext(Product productCollection)
         {
             // Database' Name have to be unique in memory to prevent collisions
             var options = new DbContextOptionsBuilder<ShopichContext>()

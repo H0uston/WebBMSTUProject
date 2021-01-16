@@ -1,11 +1,14 @@
 import React, {useEffect} from "react";
 import Home from "./Home";
 import {compose} from "redux";
-import {getCategoriesSelector, getProductsSelector} from "../../selectors/homePageSelectors";
+import {getCategoriesSelector, getCountOfCategories, getProductsSelector} from "../../selectors/homePageSelectors";
 import {connect} from "react-redux";
 import {getCategories} from "../../state/homeReducer/homeReducer";
 import Preloader from "../common/preloader/Preloader";
 import {getIsFetchingSelector} from "../../selectors/isFetchingSelectors";
+import Card from "../common/card/Card";
+import styles from "./Home.module.css";
+import Carousel from "../common/carousel/Carousel";
 
 
 const HomeContainer = (props) => {
@@ -24,43 +27,33 @@ const HomeContainer = (props) => {
 
     let sortedCategories = props.categories.sort((a,b) => b.categoryCollection.length - a.categoryCollection.length);
 
-    let cardSlides = [];
-    let i = 0; // TODO
-    for (let sortedCategory of sortedCategories) {
-        if (i >= 3) {
-            break;
+    let cards = [];
+    for (let i = 0; i < props.countOfCategories; i++) {
+        cards.push([]);
+        let productIds = sortedCategories[i].categoryCollection;
+
+        for (let productId of productIds) {
+            let product = props.products.find(p => p.productId === productId.productId);
+            cards[i].push(<Card key={productId} {...product} />)
         }
-
-        let j = 0;
-        cardSlides.push([]);
-
-        let productsInCategory = [];
-        for (let category of sortedCategory.categoryCollection) {
-            if (j >= 8) {
-                break;
-            }
-
-            let [product] = props.products.filter(p => p.productId === category.productId);
-            productsInCategory.push(product);
-
-            j += 1;
-        }
-
-        for (let k = 0; k < productsInCategory.length; k += 4) {
-            cardSlides[i].push(productsInCategory.slice(k, k + 4));
-        }
-
-        i += 1;
     }
 
+    let topCategories = cards.map((c, index) =>
+        (<div key={c.ProductId} className={styles.block}>
+            <div className={styles.categoryTitle}>{sortedCategories[index].categoryName}</div>
+            <Carousel cards={c}/>
+        </div>)
+    );
+
     return (
-        <Home topCategories={sortedCategories} cardSlides={cardSlides}/>
+        <Home topCategories={topCategories}/>
     )
 };
 
 const mapStateToProps = (state) => ({
     categories: getCategoriesSelector(state),
     products: getProductsSelector(state),
+    countOfCategories: getCountOfCategories(state),
     isFetching: getIsFetchingSelector(state)
 });
 

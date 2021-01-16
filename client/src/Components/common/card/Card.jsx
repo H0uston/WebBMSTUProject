@@ -9,6 +9,7 @@ import plusIcon from "../../../assets/images/plus.svg";
 
 const Card = (props) => {
     // TODO изменить роут
+
     debugger;
     return (
         <div className={styles.ProductCard}>
@@ -17,14 +18,14 @@ const Card = (props) => {
                 {props.productRating ?
                     <div className={styles.ProductRating}>
                         <img src={starIcon} alt={""}/>
-                        <h2>{props.productRating ? props.productRating : "n/a"}</h2>
+                        <div className={styles.productRatingTitle}>{props.productRating ? props.productRating : "n/a"}</div>
                     </div>
                     : ""
                 }
                 { props.productDiscount ?
                     <div className={styles.ProductDiscount}>
                         <img src={percentIcon} alt={""}/>
-                        <h2>{props.productDiscount}</h2>
+                        <div className={styles.productDiscountTitle}>{props.productDiscount}</div>
                     </div>
                     :
                     ""
@@ -32,10 +33,18 @@ const Card = (props) => {
             </div>
             <div className={styles.BottomGear}>
                 <div className={styles.ProductTitle}>
-                    <h3>{props.productName}</h3>
+                    <div className={styles.productName}>{props.productName}</div>
                 </div>
-                <div className={styles.ProductPrice}>
-                    <h2>{props.productPrice}руб</h2>
+                <div>
+                    {
+                        props.productDiscount ?
+                            <div className={styles.productNameWithDiscount}>
+                                <div className={styles.productNameOldPrice}>{props.productPrice} руб.</div>
+                                <div className={styles.productNameNewPrice}>{props.productPriceWithDiscount} руб.</div>
+                            </div>
+                            :
+                            <div className={styles.productPrice}>{props.productPrice} руб.</div>
+                    }
                 </div>
                 <div className={styles.ProductAmount}>
                     <button>

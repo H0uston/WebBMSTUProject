@@ -4,6 +4,9 @@
     align-self: center;
     justify-self: center;
 
+    align-content: end;
+    justify-content: flex-end;
+
     flex-direction: row;
     align-items: center;
 
@@ -15,9 +18,21 @@
     border-bottom: 0;
 
     box-sizing: border-box;
+    padding-right: 20px;
 }
 
 .link {
     text-decoration: none;
-    padding-left: 20px;
+    margin-left: 20px;
+}
+
+.logo
+{
+    margin-left: 20px;
+}
+
+.logo > img
+{
+    width: 45px;
+    height: 45px;
 }

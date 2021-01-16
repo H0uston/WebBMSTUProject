@@ -5,3 +5,7 @@ export const getCategoriesSelector = (state) => {
 export const getProductsSelector = (state) => {
     return state.homePage.products;
 };
+
+export const getCountOfCategories = (state) => {
+    return state.homePage.countOfCategories;
+};

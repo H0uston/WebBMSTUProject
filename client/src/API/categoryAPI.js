@@ -2,7 +2,7 @@ import fetchData from "./fetchData";
 
 export const categoryAPI = {
     fetchAll: (current, size) => {
-        let url = fetchData.baseURL + "category";
+        let url = fetchData.baseURL + "categories";
 
         if (current != null && size != null) {
             url += `?current=${current}&size=${size}`;
@@ -16,6 +16,6 @@ export const categoryAPI = {
     },
 
     fetchCategory: (categoryId) => {
-        return fetch(fetchData.baseURL + `category/${categoryId}`);
+        return fetch(fetchData.baseURL + `categories/${categoryId}`);
     }
 };

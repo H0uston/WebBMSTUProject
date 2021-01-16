@@ -6,6 +6,7 @@ import {setIsFetching} from "../fetchingReducer/fetchingAction";
 let initialState = {
     categories: null,
     products: null,
+    countOfCategories: 3,
 };
 
 
@@ -29,6 +30,7 @@ const homeReducer = (state=initialState, action) => {
 export const getCategories = () => async (dispatch) => {
     dispatch(setIsFetching(true));
     let response = await categoryAPI.fetchAll(1, 16);
+
     if (response.status === 200) {
         let categories = await response.json();
         let products = [];
@@ -36,6 +38,7 @@ export const getCategories = () => async (dispatch) => {
         for (let category of categories) {
             for (let categoryCollection of category.categoryCollection) {
                 let resp = await productAPI.fetchProduct(categoryCollection.productId);
+
                 if (resp.status === 200) {
                     let product = await resp.json();
                     products.push(product);

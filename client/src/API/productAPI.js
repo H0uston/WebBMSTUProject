@@ -2,7 +2,7 @@ import fetchData from "./fetchData";
 
 export const productAPI = {
     fetchAll: (productName, current, size) => {
-        let url = fetchData.baseURL + "product";
+        let url = fetchData.baseURL + "products";
         let isMoreThanOne = false;
 
         if (productName != null && current != null && size != null) {
@@ -33,6 +33,6 @@ export const productAPI = {
     },
 
     fetchProduct: (productId) => {
-        return fetch(fetchData.baseURL + `product/${productId}`);
+        return fetch(fetchData.baseURL + `products/${productId}`);
     }
 };

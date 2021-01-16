@@ -1,0 +1,48 @@
+
+.block
+{
+    height: 420px;
+    padding: 5px;
+
+    border-top: 3px solid #000000;
+    border-bottom: 3px solid #000000;
+}
+
+.button
+{
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+
+    width: 55px;
+    height: 55px;
+
+    background-repeat: no-repeat;
+    background-size: 55px !important;
+
+
+    border: 1px solid #000000;
+    border-radius: 100%;
+
+    background-color: #C8E6C9 !important;
+
+    padding: 5px;
+
+    cursor: pointer;
+}
+
+.left
+{
+    background-image: url("../../../assets/images/leftArrow.png") !important;
+    background-position: left;
+
+    left: -75px;
+}
+
+.right
+{
+    background-image: url("../../../assets/images/rightArrow.png") !important;
+    background-position: right;
+
+    right: -84px;
+}

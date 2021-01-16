@@ -3,7 +3,9 @@ import styles from "./Home.module.css";
 
 const Home = (props) => {
     return (
-        <div></div>
+        <div className={styles.center}>
+            {props.topCategories}
+        </div>
     )
 };
 

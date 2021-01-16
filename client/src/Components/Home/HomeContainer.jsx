@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import Home from "./Home";
 import {compose} from "redux";
-import {getCategoriesSelector, getCountOfCategories, getProductsSelector} from "../../selectors/homePageSelectors";
+import {getCategoriesSelector, getCountOfCategoriesSelector, getProductsSelector} from "../../selectors/homePageSelectors";
 import {connect} from "react-redux";
 import {getCategories} from "../../state/homeReducer/homeReducer";
 import Preloader from "../common/preloader/Preloader";
@@ -53,7 +53,7 @@ const HomeContainer = (props) => {
 const mapStateToProps = (state) => ({
     categories: getCategoriesSelector(state),
     products: getProductsSelector(state),
-    countOfCategories: getCountOfCategories(state),
+    countOfCategories: getCountOfCategoriesSelector(state),
     isFetching: getIsFetchingSelector(state)
 });
 

@@ -33,7 +33,7 @@ namespace Shopich.Controllers
         /// <param name="user"></param>
         /// <returns>JWT Token and email</returns>
         /// <response code="200">Success login</response>
-        /// <response code="400">Wrong email or password</response>
+        /// <response code="403">Wrong email or password</response>
         [HttpPost("api/v1/auth/login")]
         public IActionResult Login(LoginModel user)
         {
@@ -54,8 +54,8 @@ namespace Shopich.Controllers
 
                 return Json(response);
             }
-
-            return BadRequest(new { errorText = "Invalid email or password." });
+            
+            return StatusCode(403, "Wrong email or password");
         }
 
         /// <summary>
@@ -63,14 +63,14 @@ namespace Shopich.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns>User data</returns>
-        /// <response code="400">Email is already in use</response>
+        /// <response code="403">Email is already in use</response>
         [HttpPost("api/v1/auth/register")]
         public async Task<IActionResult> Register(RegisterModel user)
         {
             var old_user = await _userRepository.GetByEmail(user.email);
             if (old_user != null)
             {
-                return BadRequest(new { errorText = "Email is already in use." });
+                return StatusCode(403);
             }
 
             await _userRepository.Create(new User(user));

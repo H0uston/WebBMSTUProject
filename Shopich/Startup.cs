@@ -154,7 +154,7 @@ namespace Shopich
             {
                 using (var context = serviceScope.ServiceProvider.GetService<ShopichContext>()) // TODO
                 {
-                    context.Database.Migrate();
+                    // context.Database.Migrate();
                 }
             }
         }

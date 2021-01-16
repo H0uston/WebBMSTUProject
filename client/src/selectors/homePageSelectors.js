@@ -6,6 +6,6 @@ export const getProductsSelector = (state) => {
     return state.homePage.products;
 };
 
-export const getCountOfCategories = (state) => {
+export const getCountOfCategoriesSelector = (state) => {
     return state.homePage.countOfCategories;
 };

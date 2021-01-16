@@ -1,0 +1,60 @@
+.center {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 30px;
+}
+
+.authContent {
+    display: grid;
+    grid-template-areas:
+            "login register"
+            "form form";
+    grid-template-rows: 76px auto;
+    grid-template-columns: 1fr 1fr;
+    width: 946px;
+    height: 576px;
+    background-color: #C8E6C9;
+
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+.login {
+    grid-area: login;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #ffffff;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    border-top-left-radius: 20px;
+}
+
+.register {
+    grid-area: register;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #ffffff;
+    border-bottom: 1px solid black;
+    border-top-right-radius: 20px;
+}
+
+.authTab {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    height: 30px;
+    cursor: pointer;
+}
+
+.formField {
+    grid-area: form;
+    display: flex;
+    justify-content:center;
+}

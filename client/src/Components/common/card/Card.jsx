@@ -10,7 +10,6 @@ import plusIcon from "../../../assets/images/plus.svg";
 const Card = (props) => {
     // TODO изменить роут
 
-    debugger;
     return (
         <div className={styles.ProductCard}>
             <div className={styles.ProductImgContainer}>

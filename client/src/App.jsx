@@ -1,17 +1,17 @@
 import styles from './App.module.css';
 import React from "react";
-import Header from "./Components/Header/Header";
 import Content from "./Components/Content/Content";
 import Footer from "./Components/Footer/Footer";
+import HeaderContainer from "./Components/Header/HeaderContainer";
 
-function App() { // TODO
+const App = (props) => {
     return (
         <div className={styles.wrapper}>
-            <Header/>
+            <HeaderContainer />
             <Content/>
             <Footer/>
         </div>
     );
-}
+};
 
 export default App;

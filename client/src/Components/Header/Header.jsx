@@ -5,8 +5,10 @@ import {NavLink} from "react-router-dom";
 import LinkButton from "../common/buttons/LinkButton";
 import Search from "./Search/Search";
 import FunctionalButton from "../common/buttons/FunctionalButton";
+import AccountLogo from "../../assets/images/accountIcon.svg";
 
 const Header = (props) => {
+
     return (
         <header className={styles.headerComponent}>
             <NavLink to={"/"} className={styles.logoAndTitle}>
@@ -19,13 +21,13 @@ const Header = (props) => {
             </div>
             {props.isAuthenticated ?
                 <>
-                    <LinkButton text={"Корзина"} />
-                    <NavLink to={"/account"}>
-                        Аккаунт
+                    <LinkButton to={"/cart"} text={"Корзина"} />
+                    <NavLink className={styles.toAccountLink} to={"/account"}>
+                        <img className={styles.accountLogo} src={AccountLogo} alt={""} />
                     </NavLink>
                 </>
                 :
-                <LinkButton text={"Вход/Регистрация"} to={"/auth"} />
+                <LinkButton to={"/auth"} text={"Вход/Регистрация"} />
             }
         </header>
     )

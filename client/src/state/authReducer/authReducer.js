@@ -1,9 +1,17 @@
 import {
     SET_IS_AUTHENTICATED,
     SET_TOKEN,
+    SET_USER_ID,
+    UPDATE_EMAIL,
+    UPDATE_IS_REGISTER_TAB,
+    UPDATE_IS_REMEMBER_ME,
+    UPDATE_PASSWORD,
     setIsAuthenticatedAction,
-    setTokenAction, UPDATE_EMAIL, UPDATE_IS_REGISTER_TAB, UPDATE_IS_REMEMBER_ME, UPDATE_PASSWORD,
-    updateEmailAction, updateIsRegisterTabAction, updateIsRememberMeAction,
+    setTokenAction,
+    setUserIdAction,
+    updateEmailAction,
+    updateIsRegisterTabAction,
+    updateIsRememberMeAction,
     updatePasswordAction
 } from "./authAction";
 import {setIsFetching} from "../fetchingReducer/fetchingAction";
@@ -14,6 +22,7 @@ let initialState = {
     isAuthenticated: false,
     token: null,
     email: "",
+    userId: "",
     password: "",
     isRememberMe: false,
     isRegisterTab: false
@@ -26,6 +35,9 @@ const authReducer = (state=initialState, action) => {
     switch (action.type) {
         case (SET_TOKEN):
             stateCopy.token = action.token;
+            break;
+        case (SET_USER_ID):
+            stateCopy.userId = action.userId;
             break;
         case (SET_IS_AUTHENTICATED):
             stateCopy.isAuthenticated = true;
@@ -50,10 +62,11 @@ const authReducer = (state=initialState, action) => {
 };
 
 export const login = (data) => async (dispatch) => {
-    debugger;
+    dispatch(setIsFetching(true));
     let response = await authAPI.fetchLogin(data);
     if (response.status === 200) {
         let result = await response.json();
+        dispatch(setUserIdAction(result.userId));
         dispatch(setTokenAction(result.access_token));
         dispatch(setIsAuthenticatedAction(true));
         dispatch(setIsFetching(false));

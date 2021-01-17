@@ -6,8 +6,6 @@ import Login from "./Login/Login";
 
 const Auth = (props) => {
 
-    debugger;
-
     if (props.isAuthenticated) {
         return <Redirect to={"/"}/>
     }

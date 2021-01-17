@@ -135,3 +135,10 @@ obj/
 
 # migrations
 Migrations/
+client/.idea/vcs.xml
+client/.idea/client.iml
+client/.idea/inspectionProfiles/Project_Default.xml
+client/.idea/misc.xml
+client/.idea/modules.xml
+client/.idea/workspace.xml
+client/.eslintcache

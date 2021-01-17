@@ -1,3 +1,11 @@
+export const getTokenSelector = (state) => {
+    return state.authInfo.token;
+};
+
+export const getUserIdSelector = (state) => {
+    return state.authInfo.userId;
+};
+
 export const getIsAuthenticatedSelector = (state) => {
     return state.authInfo.isAuthenticated;
 };

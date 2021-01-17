@@ -2,7 +2,7 @@ import fetchData from "./fetchData";
 
 export const orderAPI = {
     fetchAll: (current, size, token) => {
-        let url = fetchData.baseURL + "order";
+        let url = fetchData.baseURL + "orders";
 
         if (current != null && size != null) {
             url += `?current=${current}&size=${size}`;
@@ -23,13 +23,10 @@ export const orderAPI = {
     },
 
     createOrder: (data, token) => {
-        return fetch(fetchData.baseURL + "order",{
+        return fetch(fetchData.baseURL + "orders",{
             method: "POST",
-            mode: "CORS",
-            credentials: "same-origin",
-            withCredentials: true,
             headers: {
-                "Authorization": "Bearer" + token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": 'application/json'
             },
             body: JSON.stringify(data)
@@ -37,7 +34,7 @@ export const orderAPI = {
     },
 
     deleteOrder: (orderId, token) => {
-        return fetch(fetchData.baseURL + `order/${orderId}`,{
+        return fetch(fetchData.baseURL + `orders/${orderId}`,{
             method: "DELETE",
             mode: "CORS",
             credentials: "same-origin",
@@ -50,7 +47,7 @@ export const orderAPI = {
     },
 
     getOrder: (orderId, token) => {
-        return fetch(fetchData.baseURL + `order/${orderId}`,{
+        return fetch(fetchData.baseURL + `orders/${orderId}`,{
             method: "GET",
             mode: "CORS",
             credentials: "same-origin",

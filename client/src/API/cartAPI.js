@@ -1,35 +1,23 @@
 import fetchData from "./fetchData";
 
 export const cartAPI = {
-    fetchAll: (current, size, token) => {
-        let url = fetchData.baseURL + "cart";
-
-        if (current != null && size != null) {
-            url += `?current=${current}&size=${size}`;
-        } else if (current != null) {
-            url += `?current=${current}`;
-        } else if (size != null) {
-            url += `?size=${size}`;
-        }
+    fetchAll: (token) => {
+        let url = fetchData.baseURL + "cart/products";
 
         return fetch(url, {
             method: "GET",
-            withCredentials: true,
             headers: {
-                "Authorization": "Bearer" + token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": 'application/json'
             }
         });
     },
 
     addProductToCart: (data, token) => {
-        return fetch(fetchData.baseURL + "cart",{
+        return fetch(fetchData.baseURL + "cart/products",{
             method: "POST",
-            mode: "CORS",
-            credentials: "same-origin",
-            withCredentials: true,
             headers: {
-                "Authorization": "Bearer" + token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": 'application/json'
             },
             body: JSON.stringify(data)
@@ -37,27 +25,21 @@ export const cartAPI = {
     },
 
     changeCount: (data, token) => {
-        return fetch(fetchData.baseURL + "cart",{
+        return fetch(fetchData.baseURL + "cart/products",{
             method: "PATCH",
-            mode: "CORS",
-            credentials: "same-origin",
-            withCredentials: true,
             headers: {
-                "Authorization": "Bearer" + token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": 'application/json'
             },
             body: JSON.stringify(data)
         });
     },
 
-    deleteProduct: (ordersId, token) => {
-        return fetch(fetchData.baseURL + `cart/${ordersId}`,{
+    deleteProduct: (productId, token) => {
+        return fetch(fetchData.baseURL + `cart/products/${productId}`,{
             method: "DELETE",
-            mode: "CORS",
-            credentials: "same-origin",
-            withCredentials: true,
             headers: {
-                "Authorization": "Bearer" + token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": 'application/json'
             },
         });

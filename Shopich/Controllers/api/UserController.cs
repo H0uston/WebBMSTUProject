@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Shopich.Controllers.api
 {
     [ApiController]
-    [Route("api/v1/users/{id}")]
+    [Route("api/v1/users/{userId}")]
     public class UserController : Controller
     {
         private readonly IUser _repository;
@@ -37,7 +37,7 @@ namespace Shopich.Controllers.api
 
             if (user.UserId != userId)
             {
-                return Forbid("Wrong user id");
+                return Unauthorized("Wrong user id");
             }
 
             return Json(user);
@@ -47,19 +47,20 @@ namespace Shopich.Controllers.api
         /// Edit info of current user
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="user"></param>
+        /// <param name="newUserInfo"></param>
         /// <returns>Changed user</returns>
         /// <response code="200"></response>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> EditUser(int userId, User user)
+        public async Task<IActionResult> EditUser(int userId, User newUserInfo)
         {
+            var user = await _repository.GetByEmail(User.Identity.Name);
             if (user.UserId != userId)
             {
-                return Forbid("Wrong user id");
+                return Unauthorized("Wrong user id");
             }
 
-            var newUser = UserLogic.UpdateUser(await _repository.GetByEmail(User.Identity.Name), user);
+            var newUser = UserLogic.UpdateUser(await _repository.GetByEmail(User.Identity.Name), newUserInfo);
             _repository.Update(newUser);
             await _repository.Save();
 

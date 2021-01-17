@@ -31,7 +31,7 @@ namespace Shopich.Controllers
         /// Login to get JWT token
         /// </summary>
         /// <param name="user"></param>
-        /// <returns>JWT Token and email</returns>
+        /// <returns>JWT Token, email and id</returns>
         /// <response code="200">Success login</response>
         /// <response code="403">Wrong email or password</response>
         [HttpPost("api/v1/auth/login")]
@@ -49,7 +49,8 @@ namespace Shopich.Controllers
                 var response = new
                 {
                     access_token = AuthLogic.GenerateToken(identity, user.RememberMe),
-                    email = identity.Name
+                    email = identity.Name,
+                    userId = person.UserId
                 };
 
                 return Json(response);

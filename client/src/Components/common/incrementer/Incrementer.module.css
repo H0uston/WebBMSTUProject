@@ -1,0 +1,63 @@
+.CartProductAmountContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width:162px;
+    height: 75px;
+    top:0;
+}
+
+.title {
+    padding-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.incremeneter {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.CartProductAmountContainer button {
+    border:1px solid black;
+    width:26px;
+    height:26px;
+    border-radius:100%;
+    background-color:#FF9600;
+    font-size:20px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.CartProductAmountContainer button:hover {
+    transition: 0.3s;
+    background-color:#EE981D;
+    cursor: pointer;
+}
+
+.CartProductAmountContainer img {
+    width:16px;
+    height:16px;
+}
+
+.decrement {
+    background-image: url("https://www.flaticon.com/svg/static/icons/svg/860/860821.svg");
+}
+
+.increment {
+    background-image: url("https://www.flaticon.com/svg/static/icons/svg/1828/1828925.svg");
+}
+
+.CartProductAmountContainer input {
+    border:1px solid black;
+    width:95px;
+    height:26px;
+    border-radius:20px;
+    background-color:#FFFFFF;
+
+    text-align: center;
+}

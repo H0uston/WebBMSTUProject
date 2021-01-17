@@ -34,44 +34,41 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Get products form cart
         /// </summary>
-        /// <param name="current">Current page</param>
-        /// <param name="size">Size of page</param>
         /// <returns>Products from cart</returns>
         /// <response code="200">Array of products</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IEnumerable<Orders>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
+        public async Task<IEnumerable<Orders>> GetAll()
         {
             var order = await _orderRepository.GetUnacceptedOrder((await _userRepository.GetByEmail(User.Identity.Name)).UserId);
             if (order == null)
             {
-                IEnumerable<Orders> orders = null;
+                IEnumerable<Orders> orders = Enumerable.Empty<Orders>();
                 return orders;
             }
             var productsInCart = await _ordersRepository.GetProductsInCart(order.OrderId);
 
-            return productsInCart.Skip((current - 1) * size).Take(size);
+            return productsInCart;
         }
 
         /// <summary>
         /// Add product to cart
         /// </summary>
-        /// <param name="productId">id of product</param>
-        /// <param name="count">count of product</param>
+        /// <param name="orders">product in cart</param>
         /// <returns>Added product and its count</returns>
         /// <response code="200">Added product and its count</response>
         /// <response code="400">Invalid count of product</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddProductToCart(int productId, int count)
+        public async Task<IActionResult> AddProductToCart(Orders orders)
         {
-            if (count <= 0)
+            if (orders.Count <= 0)
             {
                 return BadRequest("Count must be positive");
             }
 
-            if (!_productRepository.Exists(productId))
+            if (!_productRepository.Exists(orders.ProductId))
             {
                 return BadRequest("Product does not exist");
             }
@@ -87,11 +84,11 @@ namespace Shopich.Controllers.api
                 order = await _orderRepository.GetUnacceptedOrder(currentUser.UserId);
             }
 
-            var orders = CartLogic.AddProductToCart(order, await _productRepository.GetById(productId), count);
-            await _ordersRepository.Create(orders);
+            var newOrders = CartLogic.AddProductToCart(order, await _productRepository.GetById(orders.ProductId), orders.Count);
+            await _ordersRepository.Create(newOrders);
             await _ordersRepository.Save();
 
-            return Json(orders);
+            return Json(newOrders);
         }
 
         /// <summary>
@@ -99,7 +96,7 @@ namespace Shopich.Controllers.api
         /// </summary>
         /// <param name="orders"></param>
         /// <returns>Status code</returns>
-        /// <response code="200">Added product and its count</response>
+        /// <response code="204">Added product and its count</response>
         /// <response code="400">Invalid count of product</response>
         [HttpPatch]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -116,34 +113,36 @@ namespace Shopich.Controllers.api
             _ordersRepository.Update(newOrders);
             await _ordersRepository.Save();
 
-            return Ok();
+            return NoContent();
         }
 
         /// <summary>
         /// Delete product from cart
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="productInCartId"></param>
         /// <returns>Status code</returns>
         /// <response code="204">Product was deleted</response>
-        [HttpDelete("{id}")]
+        /// <response code="403">Access denied</response>
+        /// <response code="406">No such id</response>
+        [HttpDelete("{productInCartId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProduct(int productInCartId)
         {
-            var orders = await _ordersRepository.Include(o => o.OrderNavigation).FirstOrDefaultAsync(o => o.OrdersId == id);
             var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
+            var orders = await _ordersRepository.Include(o => o.OrderNavigation).FirstOrDefaultAsync(o => o.OrdersId == productInCartId);
 
             if (orders == null)
             {
-                return BadRequest("No such order");
+                return StatusCode(406);
             }
             else if (orders.OrderNavigation.UserId != currentUser.UserId)
             {
-                return BadRequest("Try to delete another users product");
+                return StatusCode(403);
             }
             else
             {
-                await _ordersRepository.Delete(id);
+                await _ordersRepository.Delete(orders.OrdersId);
                 await _ordersRepository.Save();
             }
 

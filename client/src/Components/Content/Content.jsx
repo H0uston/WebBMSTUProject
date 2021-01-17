@@ -5,6 +5,7 @@ import styles from "./Content.module.css";
 import HomeContainer from "../Home/HomeContainer";
 import AuthContainer from "../Auth/AuthContainer";
 import AccountContainer from "../Account/AccountContainer";
+import CartContainer from "../Cart/CartContainer";
 
 const Content = (props) => {
     return (
@@ -18,6 +19,9 @@ const Content = (props) => {
                 </Route>
                 <Route exact path={"/account"}>
                     <AccountContainer />
+                </Route>
+                <Route exact path={"/cart"}>
+                    <CartContainer />
                 </Route>
                 <Route path={"*"}>
                     <NoMatch />

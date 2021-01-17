@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import styles from "./Card.module.css";
 
 import noPhoto from "../../../assets/images/no_product_photo.png";
@@ -6,10 +6,19 @@ import starIcon from "../../../assets/images/star.svg";
 import percentIcon from "../../../assets/images/percent.svg";
 import minusIcon from "../../../assets/images/minus.svg";
 import plusIcon from "../../../assets/images/plus.svg";
+import Incrementer from "../incrementer/Incrementer";
+import { useHistory } from "react-router-dom";
 
 const Card = (props) => {
-    // TODO изменить роут
+    let [currentCount, saveCurrentCount] = useState(props.defaultCountOfProducts);
+    const history = useHistory();
 
+    let addToCart = async () => {
+        await props.addProductToCart(props.productId, currentCount, props.token);
+        history.push("/cart");
+    };
+
+    // TODO изменить роут
     return (
         <div className={styles.ProductCard}>
             <div className={styles.ProductImgContainer}>
@@ -45,17 +54,9 @@ const Card = (props) => {
                             <div className={styles.productPrice}>{props.productPrice} руб.</div>
                     }
                 </div>
-                <div className={styles.ProductAmount}>
-                    <button>
-                        <img src={minusIcon} alt={""}/>
-                    </button>
-                    <input />
-                    <button>
-                        <img src={plusIcon} alt={""} />
-                    </button>
-                </div>
+                <Incrementer count={props.defaultCountOfProducts} saveCount={saveCurrentCount}/>
                 <div className={styles.ToCartButton}>
-                    <button>В корзину</button>
+                    <button disabled={!props.token} onClick={() => addToCart()}>В корзину</button>
                 </div>
             </div>
         </div>

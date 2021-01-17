@@ -4,12 +4,14 @@ import homeReducer from "./homeReducer/homeReducer";
 import authReducer from "./authReducer/authReducer";
 import fetchingReducer from "./fetchingReducer/fetchingReducer";
 import accountReducer from "./accountReducer/accountReducer";
+import cartReducer from "./cartReducer/cartReducer";
 
 let reducers = combineReducers({
     homePage: homeReducer,
     authInfo: authReducer,
     fetchingInfo: fetchingReducer,
     accountPage: accountReducer,
+    cartPage: cartReducer,
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

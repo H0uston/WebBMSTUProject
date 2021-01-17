@@ -181,6 +181,7 @@
     background-color:#FF9600;
 
     margin-top: 4px;
+    outline: none;
 }
 
 .ToCartButton button:hover {

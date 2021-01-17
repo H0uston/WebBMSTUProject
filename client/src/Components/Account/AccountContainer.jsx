@@ -26,9 +26,7 @@ class AccountContainer extends Component {
 
     componentDidMount() {
         let fetchData = async (userId, token) => {
-            debugger;
             await this.props.fetchAccountInfo(userId, token);
-            debugger;
         };
 
         if (!this.props.isDataFetched) {

@@ -295,3 +295,7 @@
 .inlineTitle {
     display: inline;
 }
+
+.photo:hover {
+    opacity: 0.75;
+}

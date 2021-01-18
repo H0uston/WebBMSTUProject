@@ -5,6 +5,7 @@ import authReducer from "./authReducer/authReducer";
 import fetchingReducer from "./fetchingReducer/fetchingReducer";
 import accountReducer from "./accountReducer/accountReducer";
 import cartReducer from "./cartReducer/cartReducer";
+import productReducer from "./productReducer/productReducer";
 
 let reducers = combineReducers({
     homePage: homeReducer,
@@ -12,6 +13,7 @@ let reducers = combineReducers({
     fetchingInfo: fetchingReducer,
     accountPage: accountReducer,
     cartPage: cartReducer,
+    productPage: productReducer,
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

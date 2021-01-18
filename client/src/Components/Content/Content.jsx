@@ -6,6 +6,7 @@ import HomeContainer from "../Home/HomeContainer";
 import AuthContainer from "../Auth/AuthContainer";
 import AccountContainer from "../Account/AccountContainer";
 import CartContainer from "../Cart/CartContainer";
+import ProductContainer from "../Product/ProductContainer";
 
 const Content = (props) => {
     return (
@@ -22,6 +23,9 @@ const Content = (props) => {
                 </Route>
                 <Route exact path={"/cart"}>
                     <CartContainer />
+                </Route>
+                <Route exact path={"/product/:productId(\\d+)"}>
+                    <ProductContainer />
                 </Route>
                 <Route path={"*"}>
                     <NoMatch />

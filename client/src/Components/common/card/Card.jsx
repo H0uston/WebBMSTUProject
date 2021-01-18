@@ -7,7 +7,7 @@ import percentIcon from "../../../assets/images/percent.svg";
 import minusIcon from "../../../assets/images/minus.svg";
 import plusIcon from "../../../assets/images/plus.svg";
 import Incrementer from "../incrementer/Incrementer";
-import { useHistory } from "react-router-dom";
+import {NavLink, useHistory} from "react-router-dom";
 
 const Card = (props) => {
     let [currentCount, saveCurrentCount] = useState(props.defaultCountOfProducts);
@@ -22,7 +22,9 @@ const Card = (props) => {
     return (
         <div className={styles.ProductCard}>
             <div className={styles.ProductImgContainer}>
-                <img src={props.productPhotoPath ? "http://localhost:443/" + props.productPhotoPath : noPhoto} alt={""}/>
+                <NavLink to={`/product/${props.productId}`}>
+                    <img className={styles.photo} src={props.productPhotoPath ? "http://localhost:443/" + props.productPhotoPath : noPhoto} alt={""}/>
+                </NavLink>
                 {props.productRating ?
                     <div className={styles.ProductRating}>
                         <img src={starIcon} alt={""}/>

@@ -53,13 +53,13 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Get product by id
         /// </summary>
-        /// <param name="id">id of product</param>
+        /// <param name="productId">id of product</param>
         /// <returns>Product object</returns>
         /// <response code="200"></response>
-        [HttpGet("{id:int}")]
-        public async Task<Product> GetProduct(int id)
+        [HttpGet("{productId:int}")]
+        public async Task<Product> GetProduct(int productId)
         {
-            var product = await _productRepository.GetById(id);
+            var product = await _productRepository.GetById(productId);
 
             if (product != null)
             {

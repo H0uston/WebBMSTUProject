@@ -20,12 +20,6 @@ jobs:
   
     - name: Build
       run: dotnet build "Shopich/Shopich.csproj"
-     
-  unit-test:
-    
-    runs-on: ubuntu-latest
-    steps:
-    
     - name: Unit-tests
       run: dotnet test "ShopichTests/ShopichTests.csproj"
-    
+  

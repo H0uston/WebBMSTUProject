@@ -29,7 +29,7 @@ namespace Shopich.Business_logic
 
         static public Review UpdateReview(Review review, string reviewText, int reviewRating)
         {
-            if (reviewRating < 0 || reviewRating > 10)
+            if (reviewRating < 1 || reviewRating > 5)
             {
                 return null;
             }

@@ -24,7 +24,6 @@ namespace Shopich.Models
         [IgnoreDataMember]
         [JsonIgnore]
         public virtual Product Product { get; set; }
-        [IgnoreDataMember]
         [JsonIgnore]
         public virtual User User { get; set; }
     }

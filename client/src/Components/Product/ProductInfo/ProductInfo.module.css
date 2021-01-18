@@ -27,6 +27,9 @@
 .imageContainer img {
     width: 250px;
     height: 250px;
+    border: 2px solid black;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
 .ratingContainer {
@@ -52,6 +55,10 @@
 }
 
 .onePrice {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    align-items: center;
     font-size: 46px;
     font-weight: bold;
 }

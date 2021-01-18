@@ -82,6 +82,7 @@
     height:210px;
     border-radius:20px 20px 0 0;
     border-bottom:2px solid black;
+    object-fit: cover;
 }
 
 .ProductRating {

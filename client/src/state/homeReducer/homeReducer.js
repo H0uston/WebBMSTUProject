@@ -7,7 +7,6 @@ let initialState = {
     categories: null,
     products: null,
     countOfCategories: 3,
-    defaultCountOfProducts: 1,
 };
 
 

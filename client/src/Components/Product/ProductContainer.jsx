@@ -1,13 +1,13 @@
 import {getIsFetchingSelector} from "../../selectors/isFetchingSelectors";
-import {getIsAuthenticatedSelector} from "../../selectors/authSelectors";
+import {getIsAuthenticatedSelector, getTokenSelector} from "../../selectors/authSelectors";
 import {addProductToCart} from "../../state/cartReducer/cartReducer";
 import {compose} from "redux";
 import {connect} from "react-redux";
-import {getProductSelector} from "../../selectors/productSelector";
+import {getDefaultCountOfProductsSelector, getProductSelector} from "../../selectors/productSelector";
 import React, {Component} from "react";
 import {withRouter} from "react-router-dom";
 import Product from "./Product";
-import {fetchProduct} from "../../state/productReducer/productReducer";
+import {fetchProduct, setProduct} from "../../state/productReducer/productReducer";
 import Preloader from "../common/preloader/Preloader";
 
 class ProductContainer extends Component {
@@ -23,8 +23,12 @@ class ProductContainer extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.props.setProduct(null);
+    }
+
     render() {
-        if (this.props.isFetching || this.props.product === null) {
+        if (this.props.product === null) {
             return <Preloader />
         }
 
@@ -38,11 +42,14 @@ let mapStateToProps = (state) => ({
     isFetching: getIsFetchingSelector(state),
     isAuthenticated: getIsAuthenticatedSelector(state),
     product: getProductSelector(state),
+    token: getTokenSelector(state),
+    defaultCountOfProducts: getDefaultCountOfProductsSelector(state),
 });
 
 export default compose(
     connect(mapStateToProps, {
         addProductToCart,
-        fetchProduct
+        fetchProduct,
+        setProduct
     }),
     withRouter)(ProductContainer);

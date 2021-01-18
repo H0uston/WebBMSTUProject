@@ -9,7 +9,3 @@ export const getProductsSelector = (state) => {
 export const getCountOfCategoriesSelector = (state) => {
     return state.homePage.countOfCategories;
 };
-
-export const getDefaultCountOfProductsSelector = (state) => {
-    return state.homePage.defaultCountOfProducts;
-};

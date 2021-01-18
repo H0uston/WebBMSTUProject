@@ -31,12 +31,15 @@
     font-size:20px;
     cursor: pointer;
     margin: 0 5px;
+
+    outline: none;
 }
 
 .CartProductAmountContainer button:hover {
     transition: 0.3s;
     background-color:#EE981D;
     cursor: pointer;
+
 }
 
 .CartProductAmountContainer img {

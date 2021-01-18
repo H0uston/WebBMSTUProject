@@ -1,0 +1,53 @@
+.title {
+    font-size: 41px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.userReviewContainer {
+    width: 1140px;
+
+    background-color: #C8E6C9;
+    border: 1px solid black;
+    border-radius: 10px;
+
+    margin-bottom: 13px;
+}
+
+.reviewContent {
+    margin: 0 28px;
+}
+
+.reviewTextArea {
+    width: 1084px;
+    height: 167px;
+    resize: none;
+
+    border: 1px solid black;
+    border-radius: 10px;
+
+    padding: 13px 14px 20px 12px;
+    box-sizing: border-box;
+
+    outline: none;
+    cursor: inherit;
+
+    margin-top: 15px;
+}
+
+.miniTitle {
+    font-size: 16px;
+}
+
+.reviewFooter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.editReview {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}

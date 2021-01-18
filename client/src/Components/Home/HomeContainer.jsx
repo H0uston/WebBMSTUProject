@@ -4,7 +4,6 @@ import {compose} from "redux";
 import {
     getCategoriesSelector,
     getCountOfCategoriesSelector,
-    getDefaultCountOfProductsSelector,
     getProductsSelector
 } from "../../selectors/homePageSelectors";
 import {connect} from "react-redux";
@@ -16,6 +15,7 @@ import styles from "./Home.module.css";
 import Carousel from "../common/carousel/Carousel";
 import {getTokenSelector} from "../../selectors/authSelectors";
 import {addProductToCart} from "../../state/cartReducer/cartReducer";
+import {getDefaultCountOfProductsSelector} from "../../selectors/productSelector";
 
 
 const HomeContainer = (props) => {

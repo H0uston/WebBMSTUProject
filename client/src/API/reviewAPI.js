@@ -1,62 +1,44 @@
 import fetchData from "./fetchData";
 
 export const reviewAPI = {
-    fetchAllReviewsForProduct: (productId, current, size, token) => {
-        let url = fetchData.baseURL + `review/${productId}`;
-
-        if (current != null && size != null) {
-            url += `?current=${current}&size=${size}`;
-        } else if (current != null) {
-            url += `?current=${current}`;
-        } else if (size != null) {
-            url += `?size=${size}`;
-        }
+    fetchAllReviewsForProduct: (productId) => {
+        let url = fetchData.baseURL + `products/${productId}/reviews`;
 
         return fetch(url, {
             method: "GET",
-            withCredentials: true,
             headers: {
                 "Content-Type": 'application/json'
             }
         });
     },
 
-    createReview: (data, token) => {
-        return fetch(fetchData.baseURL + "review",{
+    createReview: (data, productId, token) => {
+        return fetch(fetchData.baseURL + `products/${productId}/reviews`,{
             method: "POST",
-            mode: "CORS",
-            credentials: "same-origin",
-            withCredentials: true,
             headers: {
-                "Authorization": "Bearer" + token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": 'application/json'
             },
             body: JSON.stringify(data)
         });
     },
 
-    changeReview: (data, token) => {
-        return fetch(fetchData.baseURL + "review",{
+    changeReview: (data, productId, token) => {
+        return fetch(fetchData.baseURL + `products/${productId}/reviews`,{
             method: "PUT",
-            mode: "CORS",
-            credentials: "same-origin",
-            withCredentials: true,
             headers: {
-                "Authorization": "Bearer" + token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": 'application/json'
             },
             body: JSON.stringify(data)
         });
     },
 
-    deleteReview: (reviewId, token) => {
-        return fetch(fetchData.baseURL + `review/${reviewId}`,{
+    deleteReview: (reviewId, productId, token) => {
+        return fetch(fetchData.baseURL + `products/${productId}/reviews/${reviewId}`,{
             method: "DELETE",
-            mode: "CORS",
-            credentials: "same-origin",
-            withCredentials: true,
             headers: {
-                "Authorization": "Bearer" + token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": 'application/json'
             },
         });

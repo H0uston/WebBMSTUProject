@@ -48,6 +48,7 @@
     height: 109px;
     border-right: 1px solid black;
     border-left: 1px solid black;
+    object-fit: cover;
 }
 
 .CartProductNameContainer {
@@ -72,7 +73,6 @@
 }
 
 .CartProductCloseButton button{
-    font:bold;
     border:1px solid black;
     width:26px;
     height:26px;

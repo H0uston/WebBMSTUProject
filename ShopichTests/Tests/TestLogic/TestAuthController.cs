@@ -45,7 +45,7 @@ namespace ShopichTests.Tests.TestLogic
             var action = sut.Login(new LoginModel { Email = "Sanginov", Password = "qwerty", RememberMe = false } );
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(action);
+            Assert.IsType<ObjectResult>(action);
             mock.Verify(
                 x => x.Include(u => u.Role),
                 Times.Once

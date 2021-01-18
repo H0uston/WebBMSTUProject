@@ -18,5 +18,9 @@ jobs:
       with:
         dotnet-version: 5.0.x
   
-    - name: Build with dotnet
+    - name: Build
       run: dotnet build "Shopich/Shopich.csproj"
+  
+    - name: Unit-tests
+      run: dotnet build "ShopichTests/ShopichTests.csproj"
+    

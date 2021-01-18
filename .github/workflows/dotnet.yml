@@ -22,4 +22,8 @@ jobs:
       run: dotnet build "Shopich/Shopich.csproj"
     - name: Unit-tests
       run: dotnet test "ShopichTests/ShopichTests.csproj"
+    - name: Integration tests
+      run: dotnet test "ShopichIntegrationTests/ShopichIntegrationTests.csproj"
+    - name: E2E tests
+      run: dotnet test "ShopichE2ETests/ShopichE2ETests.csproj"
   

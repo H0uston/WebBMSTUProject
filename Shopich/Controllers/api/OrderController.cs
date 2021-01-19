@@ -31,29 +31,27 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Get list of orders
         /// </summary>
-        /// <param name="current"></param>
-        /// <param name="size"></param>
         /// <returns>List of orders</returns>
         /// <response code="200"></response>
         [HttpGet]
-        public async Task<IEnumerable<Order>> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
+        public async Task<IEnumerable<Order>> GetAll()
         {
             var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
             var orders = await _orderRepository.GetAllAcceptedForUser(currentUser.UserId);
 
-            return orders.Skip((current - 1) * size).Take(size);
+            return orders;
         }
 
         /// <summary>
         /// Get order by id
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="orderId"></param>
         /// <returns>Order object</returns>
         /// <response code="200"></response>
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetOrder(int id)
+        [HttpGet("{orderId:int}")]
+        public async Task<IActionResult> GetOrder(int orderId)
         {
-            var order = await _orderRepository.GetById(id);
+            var order = await _orderRepository.GetById(orderId);
             var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
 
             if (order == null)
@@ -92,14 +90,14 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Delete order
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="orderId"></param>
         /// <returns>Status code</returns>
         /// <response code="204"></response>
         /// <response code="400"></response>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
+        [HttpDelete("{orderId}")]
+        public async Task<IActionResult> DeleteOrder(int orderId)
         {
-            var order = await _orderRepository.GetById(id);
+            var order = await _orderRepository.GetById(orderId);
             var currentUser = await _userRepository.GetByEmail(User.Identity.Name);
 
             if (order == null)
@@ -112,7 +110,7 @@ namespace Shopich.Controllers.api
             }
             else
             {
-                await _orderRepository.Delete(id);
+                await _orderRepository.Delete(orderId);
                 await _orderRepository.Save();
             }
 

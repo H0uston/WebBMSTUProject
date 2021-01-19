@@ -25,28 +25,26 @@ namespace Shopich.Controllers.api
         /// <summary>
         /// Get list of categories
         /// </summary>
-        /// <param name="current"></param>
-        /// <param name="size"></param>
         /// <returns>List of categories</returns>
         /// <response code="200"></response>
         [HttpGet]
-        public async Task<Category[]> GetAll([FromQuery] int current = 1, [FromQuery] int size = 5)
+        public async Task<Category[]> GetAll()
         {
             var categories = await _categoryRepository.GetAll();
 
-            return categories.Skip((current -  1) * size).Take(size).ToArray();
+            return categories;
         }
 
         /// <summary>
         /// Get category by id
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="categoryId"></param>
         /// <returns>Category object</returns>
         /// <response code="200"></response>
-        [HttpGet("{id}")]
-        public async Task<Category> GetCategory(int id)
+        [HttpGet("{categoryId}")]
+        public async Task<Category> GetCategory(int categoryId)
         {
-            var category = await _categoryRepository.GetById(id);
+            var category = await _categoryRepository.GetById(categoryId);
 
             return category;
         }

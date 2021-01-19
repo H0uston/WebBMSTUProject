@@ -14,7 +14,7 @@ using Shopich.Repositories.interfaces;
 using Shopich.Business_logic;
 using Microsoft.AspNetCore.Http;
 
-namespace Shopich.Controllers
+namespace Shopich.Controllers.api
 {
     [Produces("application/json")]
     [ApiController]
@@ -38,6 +38,7 @@ namespace Shopich.Controllers
         public IActionResult Login(LoginModel user)
         {
             User person = _userRepository.Include(u => u.Role).FirstOrDefault(x => x.UserEmail == user.Email && x.UserPassword == user.Password);
+
             if (person != null)
             {
                 var identity = AuthLogic.GetIdentity(person);
@@ -77,7 +78,9 @@ namespace Shopich.Controllers
             await _userRepository.Create(new User(user));
             await _userRepository.Save();
 
-            return CreatedAtAction("User", user);
+            var new_user = await _userRepository.GetByEmail(user.email);
+
+            return CreatedAtAction("User", new_user);
         }
     }
 }

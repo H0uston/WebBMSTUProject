@@ -2,6 +2,7 @@
 using Moq;
 using Shopich.Business_logic;
 using Shopich.Controllers;
+using Shopich.Controllers.api;
 using Shopich.Models;
 using Shopich.Repositories.interfaces;
 using Shopich.ViewModels;
@@ -30,7 +31,7 @@ namespace ShopichTests.Tests.TestLogic
             Assert.IsType<CreatedAtActionResult>(action);
             mock.Verify(
                 x => x.GetByEmail("123@mail.ru"),
-                Times.Once
+                Times.Exactly(2)
             );
         }
 

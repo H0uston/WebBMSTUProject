@@ -1,0 +1,15 @@
+.searchPageContainer {
+    width: 1140px;
+    margin: 20px auto;
+}
+
+.title {
+    font-size: 46px;
+    margin-bottom: 20px;
+}
+
+.searchPageCards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    row-gap: 10px;
+}

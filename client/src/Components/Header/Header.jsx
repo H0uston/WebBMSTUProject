@@ -3,8 +3,7 @@ import styles from "./Header.module.css";
 import headerIcon from "../../assets/images/logo.png";
 import {NavLink} from "react-router-dom";
 import LinkButton from "../common/buttons/LinkButton";
-import Search from "./Search/Search";
-import FunctionalButton from "../common/buttons/FunctionalButton";
+import SearchArea from "./SearchArea/SearchArea";
 import AccountLogo from "../../assets/images/accountIcon.svg";
 
 const Header = (props) => {
@@ -16,8 +15,11 @@ const Header = (props) => {
             </NavLink>
             <LinkButton text={"Категории"} to={"/category"} />
             <div className={styles.search}>
-                <Search />
-                <FunctionalButton text={"Найти"} />
+                <SearchArea searchString={props.searchString} updateSearchString={props.updateSearchString} />
+                <div onClick={() => props.setCurrentSearchString(props.searchString)}>
+                    <LinkButton text={"Найти"}
+                                to={`/search?productName=${encodeURIComponent(props.searchString)}`}/>
+                </div>
             </div>
             {props.isAuthenticated ?
                 <>

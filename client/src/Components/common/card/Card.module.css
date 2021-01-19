@@ -46,6 +46,10 @@
     font-size: 30px;
 
     margin-top: 6px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .productRatingTitle
@@ -67,7 +71,7 @@
 .ProductCard {
     margin-left:10px;
     width: 271px;
-    height: 406px;
+    height: 420px;
     background-color:#C8E6C9;
     border:2px solid black;
     border-radius:20px;

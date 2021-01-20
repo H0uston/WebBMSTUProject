@@ -8,6 +8,7 @@ import AccountContainer from "../Account/AccountContainer";
 import CartContainer from "../Cart/CartContainer";
 import ProductContainer from "../Product/ProductContainer";
 import SearchContainer from "../Search/SearchContainer";
+import CategoriesContainer from "../Categories/CategoriesContainer";
 
 const Content = (props) => {
     return (
@@ -30,6 +31,9 @@ const Content = (props) => {
                 </Route>
                 <Route path={"/search"}>
                     <SearchContainer />
+                </Route>
+                <Route path={"/categories"}>
+                    <CategoriesContainer />
                 </Route>
                 <Route path={"*"}>
                     <NoMatch />

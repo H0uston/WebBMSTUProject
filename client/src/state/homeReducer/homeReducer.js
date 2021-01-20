@@ -49,10 +49,10 @@ export const getCategories = () => async (dispatch) => {
         }
         dispatch(setCategories(categories));
         dispatch(setProducts(products));
+        dispatch(setIsFetching(false));
     } else {
         throw Error(response.statusText);
     }
-    dispatch(setIsFetching(false));
 };
 
 export default homeReducer;

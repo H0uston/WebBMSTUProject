@@ -1,0 +1,14 @@
+.productsInfoContainer {
+    margin-top: 20px;
+}
+
+.title {
+    font-size: 46px;
+    margin-bottom: 10px;
+}
+
+.productSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    row-gap: 10px;
+}

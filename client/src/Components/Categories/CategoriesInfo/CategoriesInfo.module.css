@@ -1,0 +1,14 @@
+.categoriesContainer {
+
+}
+
+.title {
+    font-size: 46px;
+}
+
+.categoriesSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+    row-gap: 10px;
+}

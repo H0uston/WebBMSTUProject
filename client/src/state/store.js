@@ -8,6 +8,7 @@ import cartReducer from "./cartReducer/cartReducer";
 import productReducer from "./productReducer/productReducer";
 import reviewReducer from "./reviewReducer/reviewReducer";
 import searchReducer from "./searchReducer/searchReducer";
+import categoriesReducer from "./categoriesReducer/categoriesReducer";
 
 let reducers = combineReducers({
     homePage: homeReducer,
@@ -18,6 +19,7 @@ let reducers = combineReducers({
     productPage: productReducer,
     reviewInfo: reviewReducer,
     searchPage: searchReducer,
+    categoriesPage: categoriesReducer,
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

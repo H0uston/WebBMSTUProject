@@ -13,7 +13,7 @@ const Header = (props) => {
             <NavLink to={"/"} className={styles.logoAndTitle}>
                 <img className={styles.logo} src={headerIcon} alt={"logo"}/>
             </NavLink>
-            <LinkButton text={"Категории"} to={"/category"} />
+            <LinkButton text={"Категории"} to={"/categories"} />
             <div className={styles.search}>
                 <SearchArea searchString={props.searchString} updateSearchString={props.updateSearchString} />
                 <div onClick={() => props.setCurrentSearchString(props.searchString)}>

@@ -32,7 +32,7 @@ namespace Shopich.Controllers.api
         /// <returns>List of products</returns>
         /// <response code="200"></response>
         [HttpGet]
-        public async Task<IEnumerable<Product>> GetAll([FromQuery] string productName = null, [FromQuery] int current = 1, [FromQuery] int size = 5)
+        public async Task<IEnumerable<Product>> GetAll([FromQuery] string productName = null, [FromQuery] int current = 1, [FromQuery] int size = 16)
         {
             IEnumerable<Product> products = null;
             if (productName != null)

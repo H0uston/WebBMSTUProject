@@ -57,12 +57,12 @@ namespace ShopichIntegrationTests
         {
             var productCollection = new Product[]
             {
-                new ProductBuilder().WithId(1).WithName("Potato").WithPrice(11).WithDiscount(1).WithAvailability(true).Build(),
-                new ProductBuilder().WithId(2).WithName("Bread").WithPrice(22).WithDiscount(0).WithAvailability(true).Build(),
-                new ProductBuilder().WithId(3).WithName("Beans").WithPrice(33).WithDiscount(0).WithAvailability(false).Build(),
-                new ProductBuilder().WithId(4).WithName("Eggs").WithPrice(44).WithDiscount(7).WithAvailability(true).Build(),
-                new ProductBuilder().WithId(5).WithName("Milk").WithPrice(55).WithDiscount(0).WithAvailability(false).Build(),
-                new ProductBuilder().WithId(6).WithName("Juice").WithPrice(66).WithDiscount(0).WithAvailability(true).Build(),
+                new ProductBuilder().WithName("Potato").WithPrice(11).WithDiscount(1).WithAvailability(true).Build(),
+                new ProductBuilder().WithName("Bread").WithPrice(22).WithDiscount(0).WithAvailability(true).Build(),
+                new ProductBuilder().WithName("Beans").WithPrice(33).WithDiscount(0).WithAvailability(false).Build(),
+                new ProductBuilder().WithName("Eggs").WithPrice(44).WithDiscount(7).WithAvailability(true).Build(),
+                new ProductBuilder().WithName("Milk").WithPrice(55).WithDiscount(0).WithAvailability(false).Build(),
+                new ProductBuilder().WithName("Juice").WithPrice(66).WithDiscount(0).WithAvailability(true).Build(),
             };
 
             return productCollection;
@@ -82,7 +82,7 @@ namespace ShopichIntegrationTests
                 new ReviewBuilder().WithId(1).WithUserid(1).WithProductId(1).WithText("Good").WithDate("2020-01-01").WithRating(3).Build(),
                 new ReviewBuilder().WithId(2).WithUserid(1).WithProductId(2).WithText("I like it").WithDate("2020-01-02").WithRating(4).Build(),
                 new ReviewBuilder().WithId(3).WithUserid(1).WithProductId(3).WithText("Awesome").WithDate("2020-01-03").WithRating(5).Build(),
-                new ReviewBuilder().WithId(4).WithUserid(2).WithProductId(4).WithText("Bad").WithDate("2020-01-03").WithRating(2).Build(),
+                new ReviewBuilder().WithId(4).WithUserid(2).WithProductId(1).WithText("Bad").WithDate("2020-01-03").WithRating(2).Build(),
                 new ReviewBuilder().WithId(5).WithUserid(3).WithProductId(5).WithText("Very bad").WithDate("2020-01-04").WithRating(1).Build(),
                 new ReviewBuilder().WithId(6).WithUserid(4).WithProductId(6).WithText("Great").WithDate("2020-01-05").WithRating(5).Build(),
             };

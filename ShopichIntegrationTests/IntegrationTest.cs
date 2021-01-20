@@ -15,6 +15,7 @@ using Shopich.ViewModels;
 using Nancy.Json;
 using Newtonsoft.Json;
 using System.Linq;
+using ShopichTests.DataBuilders;
 
 namespace ShopichIntegrationTests
 {
@@ -22,10 +23,11 @@ namespace ShopichIntegrationTests
     public class IntegrationTest
     {
         protected readonly HttpClient TestClient;
+        protected readonly WebApplicationFactory<Startup> appFactory;
 
         protected IntegrationTest()
         {
-            var appFactory = new WebApplicationFactory<Startup>()
+            appFactory = new WebApplicationFactory<Startup>()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureServices(services => {
@@ -59,11 +61,9 @@ namespace ShopichIntegrationTests
 
         private async Task<string> GetJwtAsync()
         {
-            var loginResponse = await TestClient.PostAsJsonAsync("api/v1/auth/login", new LoginModel
-            {
-                Email = "test@integration.com",
-                Password = "SomePass1234!"
-            });
+            var loginResponse = await TestClient.PostAsJsonAsync("api/v1/auth/login", new LoginBuilder()
+                .WithEmail("test@integration.com")
+                .WithPassword("SomePass1234!").Build());
 
             var loginResult = await loginResponse.Content.ReadAsStringAsync();
 

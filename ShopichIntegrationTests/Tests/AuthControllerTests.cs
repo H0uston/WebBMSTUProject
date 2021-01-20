@@ -2,6 +2,7 @@
 using Nancy.Json;
 using Newtonsoft.Json;
 using Shopich.Models;
+using ShopichTests.DataBuilders;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -33,7 +34,7 @@ namespace ShopichIntegrationTests.Tests.WithMocks
         public async Task RegisterTestsResponse()
         {
             // Arrange
-            var user = new RegisterModel { email = "test@test.ru", password = "12345" };
+            var user = new RegisterBuilder().WithEmail("test@test.ru").WithPassword("12345").Build();
             var stringContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
 
             // Act

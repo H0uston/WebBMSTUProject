@@ -72,7 +72,7 @@ export const login = (data) => async (dispatch) => {
         dispatch(setIsFetching(false));
     } else if (response.status === 403) {
         dispatch(setIsFetching(false));
-        return "Wrong email or password";
+        return "Неправильная почта или пароль";
     } else {
         console.error("Internal error in login!");
     }
@@ -85,7 +85,7 @@ export const register = (data) => async (dispatch) => {
         dispatch(setIsFetching(false));
     } else if (response.status === 403) {
         dispatch(setIsFetching(false));
-        return "Email is already in use";
+        return "Почта уже используется";
     } else {
         console.error("Internal error in login!");
     }

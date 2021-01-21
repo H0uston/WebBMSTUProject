@@ -63,7 +63,7 @@ namespace Shopich.Controllers.api
         {
             var user = await _userRepository.GetByEmail(User.Identity.Name);
 
-            if (_reviewRepository.ExistsByUserId(user.UserId))
+            if (_reviewRepository.ExistsByProductIdAndUserId(productId, user.UserId))
             {
                 return BadRequest("Review already exist");
             }   

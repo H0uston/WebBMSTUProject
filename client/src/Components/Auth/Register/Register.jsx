@@ -1,11 +1,24 @@
 import React from "react";
-import {Field, Form} from "react-final-form";
+import {Form} from "react-final-form";
 import styles from "./Register.module.css"
 import {FORM_ERROR} from "final-form";
+import {validateEmail} from "../../../utils/regEx";
+import FormField from "../../common/FormField/FormField";
 
 const required = (value) => {
     return value ? undefined : 'Обязательное поле'
 };
+
+const checkEmail = (value) => {
+    return validateEmail(value) ? undefined : "Некорректная почта"
+};
+
+const checkPassword = (value) => {
+    return value.length >= 8 ? undefined : "Длина пароля должна быть 8 и более символов";
+};
+
+const composeValidators = (...validators) => value =>
+    validators.reduce((error, validator) => error || validator(value), undefined);
 
 const RegisterForm = (props) => {
     let submit = async (data) => {
@@ -28,39 +41,18 @@ const RegisterForm = (props) => {
             }}
             render={({handleSubmit, form, submitting, pristine, values, submitError, submitSucceeded}) => (
                 <form className={styles.form} onSubmit={handleSubmit}>
-                    <Field name={"email"} validate={required}>
-                        {({input, meta}) => (
-                            <div className={styles.formField}>
-                                <label>Электронная почта</label>
-                                <input {...input} type={"text"}
-                                       className={styles.field}
-                                       placeholder={"Введите электронную почту"}/>
-                                {meta.error && meta.touched && <div className={styles.error}>{meta.error}</div>}
-                            </div>
-                        )}
-                    </Field>
-                    <Field name={"password"} validate={required}>
-                        {({input, meta}) => (
-                            <div className={styles.formField}>
-                                <label>Пароль</label>
-                                <input {...input} type={"password"}
-                                       className={styles.field}
-                                       placeholder={"Введите пароль"}/>
-                                {meta.error && meta.touched && <div className={styles.error}>{meta.error}</div>}
-                            </div>
-                        )}
-                    </Field>
-                    <Field name={"check_password"} validate={required}>
-                        {({input, meta}) => (
-                            <div className={styles.formField}>
-                                <label>Повторите пароль</label>
-                                <input {...input} type={"password"}
-                                       className={styles.field}
-                                       placeholder={"Повторите пароль"}/>
-                                {meta.error && meta.touched && <div className={styles.error}>{meta.error}</div>}
-                            </div>
-                        )}
-                    </Field>
+                    <FormField name={"email"} validate={composeValidators(required, checkEmail)}
+                               formFieldStyle={styles.formField} placeholder={"Введите электронную почту"}
+                               inputStyle={styles.field} errorStyle={styles.error} labelText={"Электронная почта"}
+                               inputType={"text"}/>
+                    <FormField name={"password"} validate={composeValidators(required, checkPassword)}
+                               formFieldStyle={styles.formField} placeholder={"Введите пароль"}
+                               inputStyle={styles.field} errorStyle={styles.error} labelText={"Пароль"}
+                               inputType={"text"}/>
+                    <FormField name={"check_password"} validate={required}
+                               formFieldStyle={styles.formField} placeholder={"Повторите пароль"}
+                               inputStyle={styles.field} errorStyle={styles.error} labelText={"Повторите пароль"}
+                               inputType={"text"}/>
                     {submitError &&  <div className={styles.error}>{submitError}</div>}
                     {submitSucceeded &&  <div className={styles.success}>{"Успешная регистрация"}</div>}
                     <div className={styles.formButton}>

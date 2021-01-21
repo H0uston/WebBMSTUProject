@@ -36,7 +36,9 @@ class ProductReviewContainer extends React.Component {
         this.props.setReviews(null);
 
         if (this.props.isReviewExist) {
+            this.props.updateReviewText("");
             this.props.setIsReviewExist(false);
+            this.props.updateReviewRating(1);
         }
     }
 

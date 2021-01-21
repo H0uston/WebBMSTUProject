@@ -20,5 +20,7 @@ namespace Shopich.Repositories.interfaces
         public IQueryable<Review> Include(params Expression<Func<Review, object>>[] includeProperties);
         public bool Exists(int id);
         public bool ExistsByUserId(int id);
+
+        public bool ExistsByProductIdAndUserId(int productId, int userId);
     }
 }

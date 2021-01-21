@@ -17,6 +17,31 @@ import {getTokenSelector} from "../../selectors/authSelectors";
 import {addProductToCart} from "../../state/cartReducer/cartReducer";
 import {getDefaultCountOfProductsSelector} from "../../selectors/productSelector";
 
+const formCardElements = (categories, products, addProductToCart, token,
+                          defaultCountOfProducts=1, countOfCategories=3) => {
+    let cards = [];
+    for (let i = 0; i < countOfCategories; i++) {
+        cards.push([]);
+        let productIds = categories[i].categoryCollection;
+
+        for (let productId of productIds) {
+            let product = products.find(p => p.productId === productId.productId);
+            cards[i].push(<Card key={productId} {...product} addProductToCart={addProductToCart}
+                                token={token} defaultCountOfProducts={defaultCountOfProducts}/>)
+        }
+    }
+
+    return cards;
+};
+
+const formTopCategories = (cards, categories) => {
+    return cards.map((c, index) =>
+        (<div key={c.ProductId} className={styles.block}>
+            <div className={styles.categoryTitle}>{categories[index].categoryName}</div>
+            <Carousel cards={c}/>
+        </div>)
+    );
+};
 
 const HomeContainer = (props) => {
 
@@ -34,24 +59,10 @@ const HomeContainer = (props) => {
 
     let sortedCategories = props.categories.sort((a, b) => b.categoryCollection.length - a.categoryCollection.length);
 
-    let cards = [];
-    for (let i = 0; i < props.countOfCategories; i++) {
-        cards.push([]);
-        let productIds = sortedCategories[i].categoryCollection;
+    let cards = formCardElements(sortedCategories, props.products, props.addProductToCart, props.token,
+                                    props.defaultCountOfProducts, props.countOfCategories);
 
-        for (let productId of productIds) {
-            let product = props.products.find(p => p.productId === productId.productId);
-            cards[i].push(<Card key={productId} {...product} addProductToCart={props.addProductToCart}
-                                token={props.token} defaultCountOfProducts={props.defaultCountOfProducts}/>)
-        }
-    }
-
-    let topCategories = cards.map((c, index) =>
-        (<div key={c.ProductId} className={styles.block}>
-            <div className={styles.categoryTitle}>{sortedCategories[index].categoryName}</div>
-            <Carousel cards={c}/>
-        </div>)
-    );
+    let topCategories = formTopCategories(cards, sortedCategories);
 
     return (
         <Home topCategories={topCategories}/>

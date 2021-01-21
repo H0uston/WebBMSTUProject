@@ -6,8 +6,8 @@ export const UPDATE_IS_REMEMBER_ME = "UPDATE-IS-REMEMBER-ME";
 export const UPDATE_IS_REGISTER_TAB = "UPDATE-IS-REGISTER-TAB";
 export const SET_USER_ID = "SET-USER-ID";
 
-export const setIsAuthenticatedAction = () => ({
-    type: SET_IS_AUTHENTICATED
+export const setIsAuthenticatedAction = (isAuthenticated) => ({
+    type: SET_IS_AUTHENTICATED, isAuthenticated
 });
 
 export const setTokenAction = (token) => ({

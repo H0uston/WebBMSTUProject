@@ -14,8 +14,7 @@
     width: 1440px;
     background-color: #C8E6C9;
 
-    border: 2px solid black;
-    border-bottom: 0;
+    border-top: 2px solid black;
 
     box-sizing: border-box;
     padding-right: 20px;

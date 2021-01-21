@@ -40,7 +40,7 @@ const authReducer = (state=initialState, action) => {
             stateCopy.userId = action.userId;
             break;
         case (SET_IS_AUTHENTICATED):
-            stateCopy.isAuthenticated = true;
+            stateCopy.isAuthenticated = action.isAuthenticated;
             break;
         case (UPDATE_EMAIL):
             stateCopy.email = action.email;
@@ -89,6 +89,13 @@ export const register = (data) => async (dispatch) => {
     } else {
         console.error("Internal error in login!");
     }
+};
+
+export const logout = () => async (dispatch) => {
+    debugger;
+    dispatch(setIsAuthenticatedAction(false));
+    dispatch(setTokenAction(null));
+    dispatch(setUserIdAction(null));
 };
 
 export const updateEmail = (email) => (dispatch) => {

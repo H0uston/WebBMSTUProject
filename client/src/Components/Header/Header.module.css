@@ -1,13 +1,16 @@
-.headerComponent {
-    flex: 1;
+.headerContent {
+    position: fixed;
+    top: 0;
+    z-index: 5;
     align-self: center;
-    justify-self: center;
+    display: flex;
+    padding: 0;
+}
 
-    max-height: 70px;
-    min-height: 70px;
+.headerComponent {
+    z-index: 5;
 
-    background-color: #C8E6C9;
-    box-shadow: 0 0 16px #cccccc;
+    align-self: center;
 
     display: flex;
     flex-direction: row;
@@ -15,8 +18,10 @@
     align-items: center;
     width: 1440px;
 
-    border: 2px solid #000000;
-    border-top: 0;
+    background-color: #C8E6C9;
+    box-shadow: 0 0 16px #cccccc;
+
+    border-bottom: 2px solid #000000;
 
     padding: 0 10px 0 10px;
     box-sizing: border-box;
@@ -50,10 +55,40 @@
     height: 55px;
 
     margin-right: 20px;
+    cursor: pointer;
 }
 
 .toAccountLink {
     display: flex;
 
     align-items: flex-end;
+}
+
+.menuContainer {
+    position: absolute;
+    transform-origin: bottom;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    z-index: 1;
+
+
+    right: 0;
+    top: 0;
+
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.moveDown {
+    transform: translateY(70px);
+    transition-duration: 0.5s;
+    transition-timing-function: linear;
+}
+
+.moveUp {
+    transform: translateY(-70px);
+    transition-duration: 0.5s;
+    transition-timing-function: linear;
 }

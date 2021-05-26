@@ -3,7 +3,6 @@ import styles from "./ProductReview.module.css";
 import UserReview from "./UserReview/UserReview";
 
 const ProductReview = (props) => {
-    debugger;
     return (
         <div className={styles.productReview}>
             { props.isAuthenticated &&

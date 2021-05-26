@@ -5,7 +5,7 @@ export const userAPI = {
         return fetch(fetchData.baseURL + `users/${id}`, {
             method: "GET",
             headers: {
-                "Authorization": "Bearer " + token,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": 'application/json'
             },
         });

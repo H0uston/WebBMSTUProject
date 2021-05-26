@@ -44,7 +44,7 @@
 
 .CartProductImg img {
     margin-left:40px;
-    width:138px;
+    width:140px;
     height: 109px;
     border-right: 1px solid black;
     border-left: 1px solid black;
@@ -56,10 +56,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-left:40px;
-    width:254px;
+    margin-left:20px;
+    width:250px;
     height: 109px;
     top:0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .CartProductPriceContainer {
@@ -67,9 +71,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width:162px;
+    width:160px;
     height: 109px;
     top:0;
+    padding-right: 40px;
 }
 
 .CartProductCloseButton button{
@@ -87,6 +92,8 @@
 .CartProductCloseButton img{
     width:16px;
     height:16px;
+    position: relative;
+    left: -2px;
 }
 
 .CartProductTotalAmountContainer {
@@ -94,5 +101,10 @@
     justify-content: center;
     align-items: center;
     height: 109px;
-    margin-left: 80px;
+    width: 300px;
+    margin-left: 5px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

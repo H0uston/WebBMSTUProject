@@ -53,7 +53,6 @@ export const fetchReviews = (productId) => async (dispatch) => {
 };
 
 export const createReview = (productId, reviewText, reviewRating, token) => async (dispatch) => {
-    debugger;
     dispatch(setIsFetching(true));
     let response = await reviewAPI.createReview({reviewText, reviewRating, productId}, productId,  token);
     if (response.status === 201) {
@@ -64,7 +63,6 @@ export const createReview = (productId, reviewText, reviewRating, token) => asyn
             dispatch(setIsFetching(false));
             response = await productAPI.fetchProduct(productId);
             if (response.status === 200) {
-                debugger;
                 result = await response.json();
                 dispatch(updateProductRating(result.productRating));
             }
@@ -77,7 +75,6 @@ export const createReview = (productId, reviewText, reviewRating, token) => asyn
 };
 
 export const changeReview = (productId, reviewText, reviewRating, token) => async (dispatch) => {
-    debugger;
     dispatch(setIsFetching(true));
     let response = await reviewAPI.changeReview({reviewText, reviewRating, productId}, productId, token);
     if (response.status === 200) {
@@ -88,7 +85,6 @@ export const changeReview = (productId, reviewText, reviewRating, token) => asyn
             dispatch(setIsFetching(false));
             response = await productAPI.fetchProduct(productId);
             if (response.status === 200) {
-                debugger;
                 result = await response.json();
                 dispatch(updateProductRating(result.productRating));
             }
@@ -101,7 +97,6 @@ export const changeReview = (productId, reviewText, reviewRating, token) => asyn
 };
 
 export const deleteReview = (reviewId, productId, token) => async (dispatch) => {
-    debugger;
     dispatch(setIsFetching(true));
     let response = await reviewAPI.deleteReview(reviewId, productId, token);
     if (response.status === 204) {
@@ -114,7 +109,6 @@ export const deleteReview = (reviewId, productId, token) => async (dispatch) => 
             dispatch(setIsFetching(false));
             response = await productAPI.fetchProduct(productId);
             if (response.status === 200) {
-                debugger;
                 result = await response.json();
                 dispatch(updateProductRating(result.productRating));
             }

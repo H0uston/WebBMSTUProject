@@ -2,9 +2,10 @@ import React from "react";
 import styles from "./ProductInCart.module.css";
 import noProduct from "../../../assets/images/no_product_photo.png";
 import Incrementer from "../../common/incrementer/Incrementer";
+import fetchData from "../../../API/fetchData";
 
 const ProductInCart = (props) => {
-    // TODO фото роут
+
     let saveCount = (count) => {
         props.changeProductCount(props.productInCartId, count, props.token);
     };
@@ -12,7 +13,7 @@ const ProductInCart = (props) => {
     return (
         <div className={styles.CartProduct}>
             <div className={styles.CartProductImg}>
-                <img src={props.productPhotoPath ? "http://localhost:443/" + props.productPhotoPath : noProduct} alt={""} />
+                <img src={props.productPhotoPath ? fetchData.domainURL + props.productPhotoPath : noProduct} alt={""} />
             </div>
             <div className={styles.CartProductNameContainer}>
                 <div className={styles.title}>Название продукта</div>

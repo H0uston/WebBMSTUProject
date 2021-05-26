@@ -8,11 +8,12 @@ import AccountLogo from "../../assets/images/accountIcon.svg";
 import FunctionalButton from "../common/buttons/FunctionalButton";
 
 
-const AccountMenu = ({status, logout}) => {
+const AccountMenu = ({status, logout, showMenu }) => {
+
     return (
         <div className={styles.menuContainer + " " + (status ? styles.moveDown : styles.moveUp)}>
             <LinkButton to={"/account"} text={"Редактировать"} />
-            <FunctionalButton text={"Выйти"} onClick={() => logout()} />
+            <FunctionalButton text={"Выйти"} onClick={() => { logout(); showMenu() }} />
         </div>
     )
 };
@@ -48,7 +49,7 @@ const Header = (props) => {
                     <LinkButton to={"/auth"} text={"Вход/Регистрация"} />
                 }
             </div>
-            { props.isAuthenticated && <AccountMenu status={isMenuShown} logout={props.logout}/> }
+            { props.isAuthenticated && <AccountMenu status={isMenuShown} logout={props.logout} showMenu={showMenu}/> }
         </header>
     )
 };

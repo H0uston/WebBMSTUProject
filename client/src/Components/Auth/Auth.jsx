@@ -13,10 +13,10 @@ const Auth = (props) => {
     return (
         <div className={styles.center}>
             <div className={styles.authContent}>
-                <div className={styles.login}>
+                <div className={styles.login + " " + (props.isRegisterTab ? styles.currentTab : "")}>
                     <div className={styles.authTab} onClick={() => props.updateIsRegisterTab(false)}>Вход</div>
                 </div>
-                <div className={styles.register}>
+                <div className={styles.register + " " + (props.isRegisterTab ? "" : styles.currentTab)}>
                     <div className={styles.authTab} onClick={() => props.updateIsRegisterTab(true)}>Регистрация</div>
                 </div>
                 <div className={styles.formField}>

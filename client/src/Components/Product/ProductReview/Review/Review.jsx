@@ -24,9 +24,7 @@ const Review = (props) => {
                                 :
                                 ""
                         }
-                        <div>
-                            { props.user.userEmail }
-                        </div>
+                        { props.user.userName == undefined && props.user.userSurname == undefined && "Аноним"}
                     </div>
                     <div className={styles.reviewRating}>
                         <Rating value={props.reviewRating} readOnly={true}/>

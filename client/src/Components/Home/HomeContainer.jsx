@@ -26,7 +26,7 @@ const formCardElements = (categories, products, addProductToCart, token,
 
         for (let productId of productIds) {
             let product = products.find(p => p.productId === productId.productId);
-            cards[i].push(<Card key={productId} {...product} addProductToCart={addProductToCart}
+            cards[i].push(<Card key={productId.productId} {...product} addProductToCart={addProductToCart}
                                 token={token} defaultCountOfProducts={defaultCountOfProducts}/>)
         }
     }
@@ -36,10 +36,10 @@ const formCardElements = (categories, products, addProductToCart, token,
 
 const formTopCategories = (cards, categories) => {
     return cards.map((c, index) =>
-        (<div key={c.ProductId} className={styles.block}>
+        <div key={categories[index].categoryId} className={styles.block}>
             <div className={styles.categoryTitle}>{categories[index].categoryName}</div>
             <Carousel cards={c}/>
-        </div>)
+        </div>
     );
 };
 

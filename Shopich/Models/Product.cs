@@ -39,7 +39,7 @@ namespace Shopich.Models
 
         public void SetPriceWithDiscount()
         {
-            this.ProductPriceWithDiscount = this.ProductPrice - (this.ProductPrice * (double)(this.ProductDiscount != null ? Math.Round((decimal)ProductDiscount / 100, 2) : 1));
+            this.ProductPriceWithDiscount = Math.Round(this.ProductPrice - (this.ProductPrice * (double)(this.ProductDiscount != null ? Math.Round((decimal)ProductDiscount / 100, 2) : 1)), 2);
         }
         public void SetProductRating()
         {

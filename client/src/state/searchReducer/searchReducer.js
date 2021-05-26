@@ -38,7 +38,6 @@ const searchReducer = (state=initialState, action) => {
 };
 
 export const fetchProducts = (searchString, currentPage, sizePage) => async (dispatch) => {
-    debugger;
     dispatch(setIsFetching(true));
     let response = await productAPI.fetchAll(searchString, currentPage, sizePage);
     if (response.status === 200) {

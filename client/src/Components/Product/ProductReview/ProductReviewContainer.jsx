@@ -62,7 +62,7 @@ class ProductReviewContainer extends React.Component {
         }
 
         let reviewsElements = reviews.map(r =>
-            <Review {...r}/>
+            <Review key={r.reviewId} {...r}/>
         );
 
         return (

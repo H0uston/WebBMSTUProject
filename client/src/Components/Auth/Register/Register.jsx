@@ -48,11 +48,11 @@ const RegisterForm = (props) => {
                     <FormField name={"password"} validate={composeValidators(required, checkPassword)}
                                formFieldStyle={styles.formField} placeholder={"Введите пароль"}
                                inputStyle={styles.field} errorStyle={styles.error} labelText={"Пароль"}
-                               inputType={"text"}/>
+                               inputType={"password"}/>
                     <FormField name={"check_password"} validate={required}
                                formFieldStyle={styles.formField} placeholder={"Повторите пароль"}
                                inputStyle={styles.field} errorStyle={styles.error} labelText={"Повторите пароль"}
-                               inputType={"text"}/>
+                               inputType={"password"}/>
                     {submitError &&  <div className={styles.error}>{submitError}</div>}
                     {submitSucceeded &&  <div className={styles.success}>{"Успешная регистрация"}</div>}
                     <div className={styles.formButton}>

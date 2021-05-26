@@ -58,3 +58,7 @@
     display: flex;
     justify-content:center;
 }
+
+.currentTab {
+    background-color: #E1E1E1
+}

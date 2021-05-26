@@ -40,7 +40,7 @@ class CartContainer extends Component {
         }
 
         let productInCart = this.props.products.map(p =>
-            <ProductInCart {...p} {...this.props} updateFinalPrice={this.updateFinalPrice.bind(this)} />
+            <ProductInCart key={p.productInCartId} {...p} {...this.props} updateFinalPrice={this.updateFinalPrice.bind(this)} />
         );
 
         let finalPrice = this.props.products.reduce((accum, current) => accum + (current.productPriceWithDiscount || current.productPrice) * current.count, 0);

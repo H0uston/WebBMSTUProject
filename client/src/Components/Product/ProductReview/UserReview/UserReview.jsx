@@ -4,7 +4,6 @@ import Rating from "@material-ui/lab/Rating";
 import FunctionalButton from "../../../common/buttons/FunctionalButton";
 
 const UserReview = (props) => {
-    debugger;
     return (
         <div className={styles.userReviewContainer}>
             <div className={styles.reviewContent}>

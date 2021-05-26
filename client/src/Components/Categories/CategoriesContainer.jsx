@@ -14,6 +14,7 @@ import Preloader from "../common/preloader/Preloader";
 import Categories from "./Categories";
 import Card from "../common/card/Card";
 import Category from "./CategoriesInfo/Category/Category";
+import {addProductToCart} from "../../state/cartReducer/cartReducer";
 
 class CategoriesContainer extends React.Component {
 
@@ -32,11 +33,11 @@ class CategoriesContainer extends React.Component {
         }
 
         let categories = this.props.categories.map(c =>
-            <Category {...c} {...this.props}/>
+            <Category key={c.categoryId} {...c} {...this.props}/>
         );
 
         let cards = this.props.products.map(p =>
-            <Card {...p} {...this.props} />
+            <Card key={p.productId} {...p} {...this.props} />
         );
 
         let currentCategory = this.props.categories.find(c => c.categoryId === this.props.chosenCategory);
@@ -58,5 +59,6 @@ let mapStateToProps = (state) => ({
 export default compose(connect(mapStateToProps, {
     setCategory,
     unsetCategory,
-    fetchCategories
+    fetchCategories,
+    addProductToCart
 }))(CategoriesContainer)

@@ -8,6 +8,7 @@ import minusIcon from "../../../assets/images/minus.svg";
 import plusIcon from "../../../assets/images/plus.svg";
 import Incrementer from "../incrementer/Incrementer";
 import {NavLink, useHistory} from "react-router-dom";
+import fetchData from "../../../API/fetchData";
 
 const Card = (props) => {
     let [currentCount, saveCurrentCount] = useState(props.defaultCountOfProducts);
@@ -18,17 +19,16 @@ const Card = (props) => {
         history.push("/cart");
     };
 
-    // TODO изменить роут
     return (
         <div className={styles.ProductCard}>
             <div className={styles.ProductImgContainer}>
                 <NavLink to={`/product/${props.productId}`}>
-                    <img className={styles.photo} src={props.productPhotoPath ? "http://localhost:443/" + props.productPhotoPath : noPhoto} alt={""}/>
+                    <img className={styles.photo} src={props.productPhotoPath ? fetchData.domainURL + props.productPhotoPath : noPhoto} alt={""}/>
                 </NavLink>
                 {props.productRating ?
                     <div className={styles.ProductRating}>
                         <img src={starIcon} alt={""}/>
-                        <div className={styles.productRatingTitle}>{props.productRating ? props.productRating : "n/a"}</div>
+                        <div className={styles.productRatingTitle}>{props.productRating ? props.productRating.toFixed(1) : "n/a"}</div>
                     </div>
                     : ""
                 }

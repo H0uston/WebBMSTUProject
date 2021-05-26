@@ -5,6 +5,7 @@ import FunctionalButton from "../../common/buttons/FunctionalButton";
 import noProductPhoto from "../../../assets/images/no_product_photo.png";
 import Rating from "@material-ui/lab/Rating";
 import { useHistory } from "react-router-dom";
+import fetchData from "../../../API/fetchData";
 
 const ProductInfo = (props) => {
     let [currentCount, saveCurrentCount] = useState(props.defaultCountOfProducts);
@@ -22,12 +23,12 @@ const ProductInfo = (props) => {
                     {props.productName}
                 </div>
                 <div className={styles.ratingContainer}>
-                    {!props.productRating ? "Нет оценок" : <Rating value={props.productRating}  readOnly={true} size={"large"} />}
+                    {!props.productRating ? "Нет оценок" : <Rating name={"productRating"} value={props.productRating}  readOnly={true} size={"large"} />}
                 </div>
             </div>
             <div className={styles.infoContainer}>
                 <div className={styles.imageContainer}>
-                    <img src={props.productPhotoPath ? "http://localhost:443/" + props.productPhotoPath : noProductPhoto}  alt={""}/>
+                    <img src={props.productPhotoPath ? fetchData.domainURL + props.productPhotoPath : noProductPhoto}  alt={""}/>
                 </div>
                 <div className={styles.productInfo}>
                     <div className={styles.title}>
